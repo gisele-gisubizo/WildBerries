@@ -1,1 +1,0 @@
-# WildBerries - Shipli Marketplace
