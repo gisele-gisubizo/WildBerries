@@ -1,0 +1,77 @@
+.footer {
+  background: linear-gradient(to right, #b826d1, #6b1aa0);
+  color: white;
+  padding: 40px 40px; /* Reduced vertical padding from 60px to 40px */
+  font-family: 'Roboto', 'Arial', sans-serif;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Linear grid layout */
+  gap: 40px; /* Slightly reduced gap from 50px to 40px */
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-left: 3em; /* Kept as requested */
+}
+
+.footer-section {
+  margin-bottom: 0; /* Relies on grid gap */
+}
+
+.footer-section h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 15px; /* Kept spacing below headings */
+}
+
+.footer-section p,
+.footer-section ul {
+  font-size: 14px;
+  line-height: 1.6; /* Kept for readability */
+  margin-bottom: 10px; /* Reduced from 15px to 10px */
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 10px; /* Reduced from 12px to 10px */
+}
+
+.footer-section ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+  text-decoration: underline;
+}
+
+.social-icons {
+  margin-top: 15px; /* Reduced from 20px to 15px */
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Kept even spacing between social icons */
+}
+
+.social-icons a {
+  color: white;
+  font-size: 22px; /* Kept size */
+  text-decoration: none;
+  transition: color 0.3s; /* Kept smooth hover transition */
+}
+
+.social-icons a:hover {
+  color: #ffcc00; /* Kept gold hover effect */
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 25px; /* Reduced from 40px to 25px */
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 30px; /* Reduced from 50px to 30px */
+  font-size: 12px;
+  padding-bottom: 15px; /* Reduced from 20px to 15px */
+}
