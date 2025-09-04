@@ -204,3 +204,96 @@
 .buy-btn:hover {
   background: #7b12c2;
 }
+@media (max-width: 992px) {
+  .slider {
+    height: 250px;
+  }
+
+  .item-image img {
+    height: 200px;
+  }
+
+  .current-price {
+    font-size: 15px;
+  }
+
+  .old-price {
+    font-size: 12px;
+  }
+
+  .buy-btn {
+    width: 85%;
+    padding: 6px;
+    font-size: 14px;
+  }
+}
+
+/* Small screens: mobile phones */
+@media (max-width: 768px) {
+  .slider {
+    height: 200px;
+  }
+
+  .items-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+  }
+
+  .item-image img {
+    height: 150px;
+  }
+
+  .current-price {
+    font-size: 14px;
+  }
+
+  .old-price {
+    font-size: 11px;
+  }
+
+  .buy-btn {
+    width: 90%;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  .discount {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+
+  .label {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+
+  .seller,
+  .rating {
+    font-size: 11px;
+  }
+}
+
+/* Extra small screens: very small mobile devices */
+@media (max-width: 480px) {
+  .slider {
+    height: 150px;
+  }
+
+  .item-image img {
+    height: 120px;
+  }
+
+  .buy-btn {
+    width: 95%;
+    padding: 4px;
+    font-size: 12px;
+  }
+
+  .current-price {
+    font-size: 13px;
+  }
+
+  .old-price {
+    font-size: 10px;
+  }
+}
