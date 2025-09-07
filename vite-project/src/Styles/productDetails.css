@@ -1,0 +1,72 @@
+.product-details {
+  max-width: 900px;
+  margin: 30px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.product-details img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.product-details h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.product-details .price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #a020f0; /* Wildberries purple */
+  margin-bottom: 10px;
+}
+
+.product-details .old-price {
+  font-size: 16px;
+  text-decoration: line-through;
+  color: #999;
+  margin-left: 8px;
+}
+
+.product-details .rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.product-details p {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.product-details .buy-btn {
+  background: #a020f0;
+  color: #fff;
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.3s ease;
+}
+
+.product-details .buy-btn:hover {
+  background: #7b12c2;
+}
