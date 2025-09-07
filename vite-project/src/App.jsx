@@ -4,6 +4,7 @@ import Home from './Components/Home'
 import Layout from './Components/Layout'
 import './App.css'
 import Sidebar from './AdminDashboard/Sidebar'
+import DashboardNavbar from './AdminDashboard/Navbar'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -19,6 +20,8 @@ function App() {
 
           </Route>
           <Route path='/Dashboard' index element={<Sidebar />} />
+          <Route path='/Dashboard' index element={<DashboardNavbar />} />
+
 
         </Routes>
 
