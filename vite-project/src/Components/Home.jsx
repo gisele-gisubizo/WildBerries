@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaArrowLeft, FaArrowRight, FaStar, FaShoppingCart } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom'; // ✅ added for navigation
 import clothes1 from '../assets/images/clothes1.jpg';
 import clothes2 from '../assets/images/clothes2.jpg';
 import clothes3 from '../assets/images/clothes3.jpg';
@@ -22,6 +23,8 @@ import item12 from '../assets/images/home/item12.jpg';
 import '../Styles/home.css';
 
 const Home = () => {
+  const navigate = useNavigate(); // ✅ navigation hook
+
   const images = [clothes1, clothes2, clothes3, clothes4, clothes5, clothes6];
   const items = [
     { id: 1, name: 'Item 1', image: item1, price: 29.99 },
@@ -49,12 +52,9 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
-    const slide = () => {
-      setCurrentSlide((prev) => (prev + 1) % images.length);
-    };
-
-    const interval = setInterval(slide, 10000); 
-    return () => clearInterval(interval); 
+    const slide = () => setCurrentSlide((prev) => (prev + 1) % images.length);
+    const interval = setInterval(slide, 10000);
+    return () => clearInterval(interval);
   }, [images.length]);
 
   const goToPrevious = () => {
@@ -67,6 +67,11 @@ const Home = () => {
     setCurrentSlide((prev) => (prev + 1) % images.length);
     const slider = document.querySelector('.slider');
     slider.style.transition = 'none';
+  };
+
+  // ✅ navigate to product details page
+  const goToProduct = (id) => {
+    navigate(`/product/${id}`);
   };
 
   return (
@@ -95,36 +100,41 @@ const Home = () => {
       {/* Items Grid */}
       <div className="items-grid">
         {items.map((item) => (
-          <div key={item.id} className="item-card">
+          <div
+            key={item.id}
+            className="item-card"
+            onClick={() => goToProduct(item.id)} // ✅ click card
+          >
             <div className="item-image">
               <img src={item.image} alt={item.name} />
               <div className="discount">-50%</div>
             </div>
 
             <div className="item-details">
-              {/* Price Section */}
               <div className="price">
                 <span className="current-price">${item.price.toFixed(2)}</span>
                 <span className="old-price">${(item.price * 1.5).toFixed(2)}</span>
               </div>
 
-              {/* Labels */}
               <div className="labels">
                 <span className="label sale">SALE</span>
                 <span className="label good-price">GOOD PRICE</span>
               </div>
 
-              {/* Seller Info */}
               <p className="seller">Brand / {item.name}</p>
 
-              {/* Rating */}
               <div className="rating">
                 <FaStar className="star-icon" /> 4.8 · 1,200 reviews
               </div>
             </div>
 
-            {/* Buy Button */}
-            <button className="buy-btn">
+            <button
+              className="buy-btn"
+              onClick={(e) => {
+                e.stopPropagation(); // ✅ prevent double navigation
+                goToProduct(item.id);
+              }}
+            >
               <FaShoppingCart className="cart-icon" /> Buy
             </button>
           </div>

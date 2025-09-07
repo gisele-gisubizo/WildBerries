@@ -1,77 +1,108 @@
+/* Footer Main Container */
 .footer {
-  background: linear-gradient(to right, #b826d1, #6b1aa0);
+  background-color: #240041; /* Deep, solid purple */
   color: white;
-  padding: 40px 40px; /* Reduced vertical padding from 60px to 40px */
+  padding: 40px 20px;
   font-family: 'Roboto', 'Arial', sans-serif;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
 }
 
+/* Footer Layout */
 .footer-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Linear grid layout */
-  gap: 40px; /* Slightly reduced gap from 50px to 40px */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 40px;
   max-width: 1200px;
   margin: 0 auto;
-  margin-left: 3em; /* Kept as requested */
 }
 
+/* Section Alignment */
 .footer-section {
-  margin-bottom: 0; /* Relies on grid gap */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
+/* Headings */
 .footer-section h3 {
   font-size: 18px;
   font-weight: 700;
-  margin-bottom: 15px; /* Kept spacing below headings */
+  margin-bottom: 15px;
+  color: #f6f6f6; /* Wildberries pink accent */
 }
 
+/* Text & Links */
 .footer-section p,
 .footer-section ul {
   font-size: 14px;
-  line-height: 1.6; /* Kept for readability */
-  margin-bottom: 10px; /* Reduced from 15px to 10px */
+  line-height: 1.6;
+  margin-bottom: 10px;
+  color: #d4baf5; /* Light orchid accent */
 }
 
 .footer-section ul {
   list-style: none;
   padding: 0;
 }
-
 .footer-section ul li {
-  margin-bottom: 10px; /* Reduced from 12px to 10px */
+  margin-bottom: 8px;
 }
-
 .footer-section ul li a {
-  color: white;
+  color: #d4baf5; /* Bright mint accent */
   text-decoration: none;
+  transition: 0.3s ease;
 }
-
 .footer-section ul li a:hover {
   text-decoration: underline;
 }
 
+/* Social Icons */
 .social-icons {
-  margin-top: 15px; /* Reduced from 20px to 15px */
+  margin-top: 15px;
   display: flex;
   align-items: center;
-  gap: 20px; /* Kept even spacing between social icons */
+  gap: 18px;
 }
-
 .social-icons a {
-  color: white;
-  font-size: 22px; /* Kept size */
-  text-decoration: none;
-  transition: color 0.3s; /* Kept smooth hover transition */
+  color: #d4baf5;
+  font-size: 22px;
+  transition: color 0.3s ease;
 }
-
 .social-icons a:hover {
-  color: #ffcc00; /* Kept gold hover effect */
+  color: #f9f6f7;
 }
 
+/* Bottom Footer Text */
 .footer-bottom {
   text-align: center;
-  padding-top: 25px; /* Reduced from 40px to 25px */
+  padding-top: 25px;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
-  margin-top: 30px; /* Reduced from 50px to 30px */
-  font-size: 12px;
-  padding-bottom: 15px; /* Reduced from 20px to 15px */
+  margin-top: 30px;
+  font-size: 13px;
+  padding-bottom: 15px;
+  color: #c79bff;
+}
+
+/* Mobile & Tablet Responsiveness */
+@media screen and (max-width: 992px) {
+  .footer-container {
+    gap: 30px;
+    padding: 0 15px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .footer {
+    padding: 25px 15px;
+  }
+  .footer-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+    align-items: center;
+  }
+  .footer-section {
+    align-items: center;
+  }
+  .social-icons {
+    justify-content: center;
+  }
 }
