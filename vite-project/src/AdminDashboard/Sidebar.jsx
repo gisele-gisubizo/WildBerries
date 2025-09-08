@@ -25,30 +25,30 @@ const Sidebar = () => {
 
       <nav className="sidebar-nav">
         <Link
-          to="/dashboard"
-          className={isActive("/dashboard") ? "nav-item active" : "nav-item"}
+          to="/Dashboard"
+          className={isActive("/Dashboard") ? "nav-item active" : "nav-item"}
         >
           <FaHome /> Dashboard
         </Link>
 
         <Link
-          to="/dashboard/vendors"
-          className={isActive("/dashboard/vendors") ? "nav-item active" : "nav-item"}
+          to="/Dashboard/vendors"
+          className={isActive("/Dashboard/vendors") ? "nav-item active" : "nav-item"}
         >
           <FaUserTie /> Vendors
         </Link>
 
         <Link
-          to="/dashboard/shops"
-          className={isActive("/dashboard/shops") ? "nav-item active" : "nav-item"}
+          to="/Dashboard/shops"
+          className={isActive("/Dashboard/shops") ? "nav-item active" : "nav-item"}
         >
           <FaStore /> Shops
         </Link>
 
         <Link
-          to="/dashboard/shopapplications"
+          to="/Dashboard/shopapplications"
           className={
-            isActive("/dashboard/shopapplications")
+            isActive("/Dashboard/shopapplications")
               ? "nav-item active"
               : "nav-item"
           }
@@ -57,15 +57,15 @@ const Sidebar = () => {
         </Link>
 
         <Link
-          to="/dashboard/messages"
-          className={isActive("/dashboard/messages") ? "nav-item active" : "nav-item"}
+          to="/Dashboard/messages"
+          className={isActive("/Dashboard/messages") ? "nav-item active" : "nav-item"}
         >
           <FaEnvelope /> Messages
         </Link>
 
         <Link
-          to="/dashboard/settings"
-          className={isActive("/dashboard/settings") ? "nav-item active" : "nav-item"}
+          to="/Dashboard/settings"
+          className={isActive("/Dashboard/settings") ? "nav-item active" : "nav-item"}
         >
           <FaCog /> Settings
         </Link>

@@ -1,0 +1,49 @@
+.dashboard-navbar {
+  height: 60px;
+  width: 80%; 
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  color: #4b4b4b;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+
+.dashboard-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.dashboard-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #4b4b4b;
+}
+
+.user-icon {
+  font-size: 36px;
+  color: #4b4b4b;
+}
+
+.username {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.dashboard-user:hover {
+  cursor: pointer;
+  opacity: 0.9;
+}
