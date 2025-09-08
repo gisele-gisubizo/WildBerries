@@ -1,4 +1,4 @@
-/* Navbar Container */
+/* -------------------- NAVBAR -------------------- */
 .navbar {
   background: linear-gradient(90deg, #d12291 0%, #C829DD 50%, #7B2BFF 100%);
   color: white;
@@ -14,14 +14,12 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* Left Section */
+/* -------------------- LEFT -------------------- */
 .navbar-left {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-
-/* Logo */
 .logo {
   font-size: 40px;
   font-weight: 800;
@@ -29,8 +27,6 @@
   text-transform: lowercase;
   cursor: pointer;
 }
-
-/* Menu Icon */
 .menu-icon {
   font-size: 28px;
   cursor: pointer;
@@ -41,13 +37,12 @@
   color: #ffddf5;
 }
 
-/* Search Box */
+/* -------------------- SEARCH -------------------- */
 .search-container {
   position: relative;
   display: flex;
   align-items: center;
 }
-
 .search-bar {
   padding: 12px 40px 12px 15px;
   border: none;
@@ -66,7 +61,6 @@
 .search-bar:focus {
   width: 350px;
 }
-
 .search-icon {
   position: absolute;
   right: 12px;
@@ -77,10 +71,11 @@
   cursor: pointer;
 }
 
-/* Center Links */
+/* -------------------- CENTER -------------------- */
 .navbar-center {
   display: flex;
   gap: 20px;
+  position: relative;
 }
 .nav-link {
   color: white;
@@ -94,10 +89,11 @@
   color: #ffe1ff;
 }
 
-/* Right Section */
+/* -------------------- RIGHT -------------------- */
 .navbar-right {
   display: flex;
   gap: 12px;
+  position: relative;
 }
 .icon-button {
   background-color: transparent;
@@ -111,17 +107,47 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 .icon-label {
   font-size: 10px;
   color: #c6b6f5;
   margin-top: 2px;
 }
-
-/* Hover Effects */
 .icon-button:hover {
   color: #fff;
   transform: scale(1.05);
+}
+
+/* -------------------- DROPDOWNS -------------------- */
+.dropdown {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  background-color: #fff;
+  color: #333;
+  min-width: 150px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+}
+.dropdown a {
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  transition: 0.2s;
+}
+.dropdown a:hover {
+  background-color: #f2f2f2;
+}
+
+/* Specific dropdown for account */
+.account-dropdown {
+  right: 0;
+  top: 50px;
 }
 
 /* -------------------- RESPONSIVENESS -------------------- */
@@ -159,5 +185,14 @@
   .navbar-right {
     margin-top: 8px;
     gap: 6px;
+  }
+  .navbar-center.active {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    background: linear-gradient(90deg, #d12291 0%, #C829DD 50%, #7B2BFF 100%);
+    padding: 10px;
+    border-radius: 6px;
   }
 }
