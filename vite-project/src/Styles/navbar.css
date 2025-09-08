@@ -196,3 +196,17 @@
     border-radius: 6px;
   }
 }
+/* Location dropdown */
+.location-button {
+  position: relative;
+}
+
+.location-dropdown {
+  top: 50px;
+  left: -20px;
+  min-width: 120px;
+}
+
+.location-dropdown a {
+  padding: 8px 12px;
+}
