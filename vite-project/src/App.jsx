@@ -3,7 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./Components/Home";
 import Layout from "./Components/Layout";
 import PageDetails from "./Components/ProductDetails";
-import Stores from "./Components/Stores"; // ✅ Import Stores page
+import Stores from "./Components/Stores";
+import Suppliers from "./Components/Suppliers"; // ✅ Import Suppliers page
 import "./App.css";
 
 function App() {
@@ -23,6 +24,9 @@ function App() {
 
           {/* Stores page */}
           <Route path="/stores" element={<Stores />} />
+
+          {/* Suppliers page */}
+          <Route path="/suppliers" element={<Suppliers />} />  {/* ✅ Added */}
 
         </Route>
       </Routes>
