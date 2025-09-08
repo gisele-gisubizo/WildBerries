@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  FaMapMarkerAlt,
-  FaUser,
-  FaShoppingCart,
-  FaSearch,
-} from "react-icons/fa";
+import { FaMapMarkerAlt, FaUser, FaShoppingCart, FaSearch } from "react-icons/fa";
 import "../Styles/navbar.css";
 
 const Navbar = () => {
@@ -12,66 +7,47 @@ const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
   const [showCatalogDropdown, setShowCatalogDropdown] = useState(false);
-  const [showLocationDropdown, setShowLocationDropdown] = useState(false); // ✅ FIXED
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
 
   return (
     <nav className="navbar">
-      {/* ---------- LEFT SECTION ---------- */}
+      {/* ---------- LEFT ---------- */}
       <div className="navbar-left">
         <span className="logo">wildBerries</span>
-        <span
-          className="menu-icon"
-          onClick={() => setShowMenu(!showMenu)}
-        >
-          ☰
-        </span>
+        <span className="menu-icon" onClick={() => setShowMenu(!showMenu)}>☰</span>
         <div className="search-container">
-          <input
-            type="text"
-            placeholder="Search wildBerries"
-            className="search-bar"
-          />
+          <input type="text" placeholder="Search wildBerries" className="search-bar" />
           <FaSearch className="search-icon" />
         </div>
       </div>
 
-      {/* ---------- CENTER LINKS ---------- */}
+      {/* ---------- CENTER ---------- */}
       <div className={`navbar-center ${showMenu ? "active" : ""}`}>
-        {/* Catalog with dropdown */}
-        <div
-          className="nav-item"
-          onMouseEnter={() => setShowCatalogDropdown(true)}
+        <div 
+          className="nav-item" 
+          onMouseEnter={() => setShowCatalogDropdown(true)} 
           onMouseLeave={() => setShowCatalogDropdown(false)}
         >
-          <a href="#" className="nav-link">
-            Catalog
-          </a>
+          <a href="#" className="nav-link">Catalog</a>
           {showCatalogDropdown && (
-            <div className="dropdown">
+            <div className="dropdown center-dropdown">
               <a href="#">Clothes</a>
               <a href="#">Shoes</a>
               <a href="#">Accessories</a>
             </div>
           )}
         </div>
-
-        <a href="#" className="nav-link">
-          Suppliers
-        </a>
-        <a href="#" className="nav-link">
-          Stores
-        </a>
-        <a href="#" className="nav-link">
-          Deals
-        </a>
+        <a href="#" className="nav-link">Suppliers</a>
+        <a href="#" className="nav-link">Stores</a>
+        <a href="#" className="nav-link">Deals</a>
       </div>
 
-      {/* ---------- RIGHT ICONS ---------- */}
+      {/* ---------- RIGHT ---------- */}
       <div className="navbar-right">
-        {/* Address dropdown */}
-        <div
-          className="icon-button location-button"
-          onMouseEnter={() => setShowLocationDropdown(true)}
+        {/* Location */}
+        <div 
+          className="icon-button location-button" 
+          onMouseEnter={() => setShowLocationDropdown(true)} 
           onMouseLeave={() => setShowLocationDropdown(false)}
         >
           <FaMapMarkerAlt />
@@ -85,16 +61,16 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Cart with count */}
+        {/* Cart */}
         <div className="icon-button cart-button">
           <FaShoppingCart />
           <span className="icon-label">Cart ({cartCount})</span>
         </div>
 
-        {/* Account dropdown */}
-        <div
-          className="icon-button user-button"
-          onMouseEnter={() => setShowAccountDropdown(true)}
+        {/* Account */}
+        <div 
+          className="icon-button user-button" 
+          onMouseEnter={() => setShowAccountDropdown(true)} 
           onMouseLeave={() => setShowAccountDropdown(false)}
         >
           <FaUser />
