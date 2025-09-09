@@ -125,7 +125,7 @@ export const loginUser = async (email: string, password: string) => {
 // Admin: Approve/Reject Seller
 // =============================
 export const reviewSeller = async (
-  sellerId: string,
+  sellerId: Number,
   status: "approved" | "rejected"
 ) => {
   const id = Number(sellerId); // convert string to number
@@ -204,4 +204,56 @@ export const getRejectedSellers = async () => {
   return userRepo.find({
     where: { role: "seller", status: "rejected" },
   });
+};
+
+
+
+// =============================
+// Get all users
+// =============================
+export const getAllUsers = async () => {
+  return userRepo.find();
+};
+
+// =============================
+// Get user by ID
+// =============================
+export const getUserById = async (id: number) => {
+  const user = await userRepo.findOneBy({ id });
+  if (!user) throw new AppError("User not found", 404);
+  return user;
+};
+
+// =============================
+// Get users by filter (role, status)
+// =============================
+interface UserFilter {
+  role?: UserRole;
+  status?: "pending" | "approved" | "rejected";
+}
+export const getUsersByFilter = async (filter: UserFilter) => {
+  return userRepo.find({ where: filter });
+};
+
+// =============================
+// Update user
+// =============================
+export const updateUser = async (id: number, data: Partial<User>) => {
+  const user = await userRepo.findOneBy({ id });
+  if (!user) throw new AppError("User not found", 404);
+
+  Object.assign(user, data);
+  await userRepo.save(user);
+  return user;
+};
+
+// =============================
+// Delete user
+// =============================
+export const deleteUser = async (id: number) => {
+  const user = await userRepo.findOneBy({ id });
+  if (!user) throw new AppError("User not found", 404);
+
+  await userRepo.remove(user);
+  return user;
 };

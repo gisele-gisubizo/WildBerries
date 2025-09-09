@@ -9,8 +9,8 @@ import {
   getAllUsersController,
   getUserByIdController,
   deleteUserController,
-  updateOwnAccountController,
-  deleteOwnAccountController,
+  // updateOwnAccountController,
+  // deleteOwnAccountController,
   loginController,
   getPendingSellersController,
   getApprovedSellersController,
@@ -63,7 +63,7 @@ router.get("/sellers/rejected", getRejectedSellersController);
 router.get("/", getAllUsersController);
 router.get("/:id", getUserByIdController);
 router.delete("/:id", deleteUserController);
-router.put("/me", updateOwnAccountController);
-router.delete("/me", deleteOwnAccountController);
+// router.put("/me", updateOwnAccountController);
+// router.delete("/me", deleteOwnAccountController);
 
 export default router;
