@@ -71,7 +71,7 @@
 /* ---------- CENTER ---------- */
 .navbar-center {
   display: flex;
-  align-items: center; /* ✅ Align links vertically */
+  align-items: center;
   gap: 20px;
 }
 .nav-link {
@@ -80,7 +80,7 @@
   font-size: 15px;
   font-weight: 500;
   padding: 5px 10px;
-  line-height: 60px; /* ✅ Ensures vertical alignment */
+  line-height: 60px;
   transition: 0.3s;
 }
 .nav-link:hover {
@@ -89,9 +89,9 @@
 
 /* Center dropdown */
 .center-dropdown {
-    position: absolute;
-  top: 100%; /* ✅ immediately below the link */
-  left: 0;    /* align to left edge of the link */
+  position: absolute;
+  top: 100%;
+  left: 0;
   background-color: #fff;
   color: #333;
   min-width: 150px;
@@ -108,19 +108,19 @@
   font-size: 14px;
 }
 .center-dropdown a:hover {
- background-color: #f2f2f2;
+  background-color: #f2f2f2;
 }
 
 /* ---------- RIGHT ---------- */
 .navbar-right {
   display: flex;
   gap: 12px;
-  align-items: center; /* Align icons vertically */
+  align-items: center;
   position: relative;
 }
 .icon-button {
   background-color: transparent;
-  border: none;
+  border: none; /* Ensure no default border */
   width: 50px;
   height: 50px;
   font-size: 18px;
@@ -131,14 +131,17 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  text-decoration: none; /* Remove underline from Link */
+  outline: none; /* Remove focus outline */
+}
+.icon-button:hover {
+  transform: scale(1.05);
+  color: #ffe1ff; /* Consistent hover color */
 }
 .icon-label {
   font-size: 10px;
   color: #c6b6f5;
   margin-top: 2px;
-}
-.icon-button:hover {
-  transform: scale(1.05);
 }
 
 /* ---------- DROPDOWNS ---------- */
@@ -161,12 +164,6 @@
 }
 .dropdown a:hover {
   background-color: #f2f2f2;
-}
-
-/* Account dropdown */
-.account-dropdown {
-  right: 0;
-  top: 50px;
 }
 
 /* Location dropdown */
@@ -221,5 +218,5 @@
 
 /* Center navbar links with dropdown */
 .nav-item {
-  position: relative; /* ✅ make dropdown relative to this link */
+  position: relative;
 }

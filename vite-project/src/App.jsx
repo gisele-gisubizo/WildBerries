@@ -4,7 +4,8 @@ import Home from "./Components/Home";
 import Layout from "./Components/Layout";
 import PageDetails from "./Components/ProductDetails";
 import Stores from "./Components/Stores";
-import StoreDetails from "./Components/StoreDetails"; // ✅ New store details page
+import Profile from "./Components/Profile"; // Import the new Profile component
+
 import "./App.css";
 
 function App() {
@@ -23,8 +24,8 @@ function App() {
           {/* Stores listing page */}
           <Route path="/stores" element={<Stores />} />
 
-          {/* ✅ Dynamic store details page */}
-          <Route path="/stores/:id" element={<StoreDetails />} />
+          {/* Profile page */}
+          <Route path="/profile" element={<Profile />} /> {/* Added profile route */}
 
         </Route>
       </Routes>

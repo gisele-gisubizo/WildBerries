@@ -1,11 +1,11 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { FaMapMarkerAlt, FaUser, FaShoppingCart, FaSearch } from "react-icons/fa";
 import "../Styles/navbar.css";
 
 const Navbar = () => {
   const [cartCount, setCartCount] = useState(2);
   const [showMenu, setShowMenu] = useState(false);
-  const [showAccountDropdown, setShowAccountDropdown] = useState(false);
   const [showCatalogDropdown, setShowCatalogDropdown] = useState(false);
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
 
@@ -38,7 +38,7 @@ const Navbar = () => {
           )}
         </div>
         <a href="/suppliers" className="nav-link">Suppliers</a>
-          <a href="/stores" className="nav-link">Stores</a>  
+        <a href="/stores" className="nav-link">Stores</a>  
         <a href="#" className="nav-link">Deals</a>
       </div>
 
@@ -68,22 +68,10 @@ const Navbar = () => {
         </div>
 
         {/* Account */}
-        <div 
-          className="icon-button user-button" 
-          onMouseEnter={() => setShowAccountDropdown(true)} 
-          onMouseLeave={() => setShowAccountDropdown(false)}
-        >
+        <Link to="/profile" className="icon-button user-button">
           <FaUser />
           <span className="icon-label">Account</span>
-          {showAccountDropdown && (
-            <div className="dropdown account-dropdown">
-              <a href="#">Profile</a>
-              <a href="#">Orders</a>
-              <a href="#">Favorites</a>
-              <a href="#">Logout</a>
-            </div>
-          )}
-        </div>
+        </Link>
       </div>
     </nav>
   );
