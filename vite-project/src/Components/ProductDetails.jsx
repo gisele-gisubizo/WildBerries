@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FaStar, FaShoppingCart, FaRulerCombined } from "react-icons/fa";
 import "../Styles/productDetails.css";
 
@@ -14,8 +14,9 @@ import item3 from "../assets/images/home/item3.jpg";
 import item4 from "../assets/images/home/item4.jpg";
 import item5 from "../assets/images/home/item5.jpg";
 
-const ProductDetails = () => {
+const ProductDetails = ({ setCartCount }) => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
@@ -43,6 +44,25 @@ const ProductDetails = () => {
   };
 
   const similarProducts = [item1, item2, item3, item4, item5];
+
+  const addToCart = () => {
+    if (!selectedSize) {
+      alert("Please select a size before adding to cart!");
+      return;
+    }
+    const cartItem = { ...product, size: selectedSize, quantity: 1 };
+    const savedCart = localStorage.getItem("cartItems");
+    const cartItems = savedCart ? JSON.parse(savedCart) : [];
+    const existingItem = cartItems.find((item) => item.id === product.id && item.size === selectedSize);
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cartItems.push(cartItem);
+    }
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0));
+    alert("Item added to cart!");
+  };
 
   return (
     <div className="product-details">
@@ -84,9 +104,7 @@ const ProductDetails = () => {
             {product.sizes.map((size, idx) => (
               <button
                 key={idx}
-                className={`size-btn ${
-                  selectedSize === size ? "active" : ""
-                }`}
+                className={`size-btn ${selectedSize === size ? "active" : ""}`}
                 onClick={() => setSelectedSize(size)}
               >
                 {size}
@@ -175,8 +193,14 @@ const ProductDetails = () => {
 
         {/* Buy Buttons */}
         <div className="action-buttons">
-          <button className="buy-now-btn">Buy Now</button>
-          <button className="add-to-cart-btn">
+          <button className="buy-now-btn" onClick={() => navigate(`/product/${id}/buy`)}>
+            Buy Now
+          </button>
+          <button
+            className="add-to-cart-btn"
+            onClick={addToCart}
+            disabled={!selectedSize}
+          >
             <FaShoppingCart /> Add to Cart
           </button>
         </div>

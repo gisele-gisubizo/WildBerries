@@ -208,6 +208,10 @@
   cursor: pointer;
   font-weight: bold;
   transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .buy-now-btn {
@@ -215,9 +219,27 @@
   color: #fff;
 }
 
+.buy-now-btn:hover {
+  background: #7b12c2;
+}
+
 .add-to-cart-btn {
   background: #f2e5ff;
   color: #a020f0;
+}
+
+.add-to-cart-btn:hover {
+  background: #e0c6ff;
+}
+
+.add-to-cart-btn:disabled {
+  background: #ccc;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.add-to-cart-btn:disabled:hover {
+  background: #ccc;
 }
 
 /* === Similar Products === */

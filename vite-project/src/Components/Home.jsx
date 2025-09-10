@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { FaArrowLeft, FaArrowRight, FaStar, FaShoppingCart } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom'; // ✅ added for navigation
+import { FaArrowLeft, FaArrowRight, FaStar } from 'react-icons/fa'; // Removed FaShoppingCart
+import { useNavigate } from 'react-router-dom';
 import clothes1 from '../assets/images/clothes1.jpg';
 import clothes2 from '../assets/images/clothes2.jpg';
 import clothes3 from '../assets/images/clothes3.jpg';
@@ -35,12 +35,10 @@ const storesData = [
   { id: 9, name: "Grocery King", logo: "", categories: ["Food", "Beverages"] },
   { id: 10, name: "Music Hub", logo: "", categories: ["Instruments", "Accessories"] },
   { id: 11, name: "Garden Center", logo: "", categories: ["Plants", "Tools"] },
-  { id: 12, name: "Office Supplies", logo: "", categories: ["Stationery", "Electronics"] },
-  { id: 13, name: "Travel Essentials", logo: "", categories: ["Luggage", "Accessories"] },
 ];
 
 const Home = () => {
-  const navigate = useNavigate(); // ✅ navigation hook
+  const navigate = useNavigate();
 
   const images = [clothes1, clothes2, clothes3, clothes4, clothes5, clothes6];
   const items = [
@@ -86,7 +84,6 @@ const Home = () => {
     slider.style.transition = 'none';
   };
 
-  // ✅ navigate to product details page
   const goToProduct = (id) => {
     navigate(`/product/${id}`);
   };
@@ -123,7 +120,7 @@ const Home = () => {
             <div
               key={item.id}
               className="item-card"
-              onClick={() => goToProduct(item.id)} // ✅ click card
+              onClick={() => goToProduct(item.id)}
             >
               <div className="item-image">
                 <img src={item.image} alt={item.name} />
@@ -151,11 +148,11 @@ const Home = () => {
               <button
                 className="buy-btn"
                 onClick={(e) => {
-                  e.stopPropagation(); // ✅ prevent double navigation
+                  e.stopPropagation();
                   goToProduct(item.id);
                 }}
               >
-                <FaShoppingCart className="cart-icon" /> Buy
+                Buy
               </button>
             </div>
           );

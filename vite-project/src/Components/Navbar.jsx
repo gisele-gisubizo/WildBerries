@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaMapMarkerAlt, FaUser, FaShoppingCart, FaSearch } from "react-icons/fa";
 import "../Styles/navbar.css";
 
-const Navbar = () => {
-  const [cartCount, setCartCount] = useState(2);
+const Navbar = ({ cartCount }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showCatalogDropdown, setShowCatalogDropdown] = useState(false);
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
@@ -62,10 +61,10 @@ const Navbar = () => {
         </div>
 
         {/* Cart */}
-        <div className="icon-button cart-button">
+        <Link to="/cart" className="icon-button cart-button">
           <FaShoppingCart />
           <span className="icon-label">Cart ({cartCount})</span>
-        </div>
+        </Link>
 
         {/* Account */}
         <Link to="/profile" className="icon-button user-button">
