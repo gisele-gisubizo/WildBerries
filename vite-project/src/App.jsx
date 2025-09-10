@@ -4,12 +4,10 @@ import Home from "./Components/Home";
 import Layout from "./Components/Layout";
 import PageDetails from "./Components/ProductDetails";
 import Stores from "./Components/Stores";
-import Suppliers from "./Components/Suppliers"; // ✅ Import Suppliers page
+import StoreDetails from "./Components/StoreDetails"; // ✅ New store details page
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <BrowserRouter>
       <Routes>
@@ -22,11 +20,11 @@ function App() {
           {/* Product details page */}
           <Route path="/product/:id" element={<PageDetails />} />
 
-          {/* Stores page */}
+          {/* Stores listing page */}
           <Route path="/stores" element={<Stores />} />
 
-          {/* Suppliers page */}
-          <Route path="/suppliers" element={<Suppliers />} />  {/* ✅ Added */}
+          {/* ✅ Dynamic store details page */}
+          <Route path="/stores/:id" element={<StoreDetails />} />
 
         </Route>
       </Routes>
