@@ -50,7 +50,7 @@ const ProductDetails = ({ setCartCount }) => {
       alert("Please select a size before adding to cart!");
       return;
     }
-    const cartItem = { ...product, size: selectedSize, quantity: 1 };
+    const cartItem = { ...product, size: selectedSize, quantity: 1, image: productImages[activeImage] };
     const savedCart = localStorage.getItem("cartItems");
     const cartItems = savedCart ? JSON.parse(savedCart) : [];
     const existingItem = cartItems.find((item) => item.id === product.id && item.size === selectedSize);

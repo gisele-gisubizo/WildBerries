@@ -2,16 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../Styles/cart.css";
 
-// Sample product data (replace with your actual data source)
-const initialItems = [
-  { id: 1, name: "Item 1", image: "path/to/item1.jpg", price: 29.99, quantity: 1 },
-  { id: 4, name: "Item 4", image: "path/to/item4.jpg", price: 39.99, quantity: 2 },
-];
-
 const Cart = () => {
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem("cartItems");
-    return savedCart ? JSON.parse(savedCart) : initialItems;
+    return savedCart ? JSON.parse(savedCart) : [];
   });
 
   useEffect(() => {
