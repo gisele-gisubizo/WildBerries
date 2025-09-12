@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { FiUsers, FiPackage, FiFileText } from 'react-icons/fi';
+import { FiUsers, FiFileText } from 'react-icons/fi';
 import { FaStore, FaUserTie } from 'react-icons/fa';
 import {
     PieChart,
@@ -19,32 +19,90 @@ import './dashboard.css';
 
 export default function DashboardHome() {
     const [isExporting, setIsExporting] = useState(false);
-    const [shopFilter, setShopFilter] = useState('');
-    const [sellerFilter, setSellerFilter] = useState('');
+    const [applicationFilter, setApplicationFilter] = useState('');
+    const [applicationSearch, setApplicationSearch] = useState('');
 
     const [kpis] = useState({
         totalVendors: '20',
         activeSellers: '45',
         totalsellers: '50',
-        totalShopsApplications: '15',
+        totalApplications: '15',
     });
 
-    const [sellers] = useState([
-        { id: 1, name: 'Alice Mutesi', status: 'Active', appliedDate: '2025-08-25' },
-        { id: 2, name: 'Brian Uwimana', status: 'Pending', appliedDate: '2025-09-01' },
-        { id: 3, name: 'Catherine Iradukunda', status: 'Approved', appliedDate: '2025-08-28' },
-        { id: 4, name: 'David Nshimiyimana', status: 'Declined', appliedDate: '2025-08-30' },
-        { id: 5, name: 'Esther Mukamana', status: 'Active', appliedDate: '2025-08-20' },
-        { id: 6, name: 'Fabrice Habimana', status: 'Pending', appliedDate: '2025-09-03' },
-    ]);
-
-    const [shopApplications] = useState([
-        { id: 1, name: 'Kigali Fresh', phone: '+250788123456', address: 'Kigali, Nyarutarama', idNo: 'ID001', doc: 'registration_kf.pdf' },
-        { id: 2, name: 'Musanze Groceries', phone: '+250788987654', address: 'Musanze Town', idNo: 'ID002', doc: 'registration_mg.pdf' },
-        { id: 3, name: 'Rubavu Traders', phone: '+250785112233', address: 'Rubavu City', idNo: 'ID003', doc: 'registration_rt.pdf' },
-        { id: 4, name: 'Huye Market', phone: '+250788556677', address: 'Huye District', idNo: 'ID004', doc: 'registration_hm.pdf' },
-        { id: 5, name: 'Nyagatare Shop', phone: '+250788667788', address: 'Nyagatare Town', idNo: 'ID005', doc: 'registration_ns.pdf' },
-        { id: 6, name: 'Kibuye Essentials', phone: '+250788445566', address: 'Kibuye City', idNo: 'ID006', doc: 'registration_ke.pdf' },
+    // 🔹 Combined seller + shop applications
+    const [applications] = useState([
+        {
+            id: 1,
+            sellerName: 'Alice Mutesi',
+            phone: '+250788123456',
+            shopName: 'Kigali Fresh',
+            category: 'Groceries',
+            address: 'Kigali, Nyarutarama',
+            status: 'Active',
+            appliedDate: '2025-08-25',
+            idDoc: 'ID001.pdf',
+            businessDoc: 'registration_kf.pdf',
+        },
+        {
+            id: 2,
+            sellerName: 'Brian Uwimana',
+            phone: '+250788987654',
+            shopName: 'Musanze Groceries',
+            category: 'Electronics',
+            address: 'Musanze Town',
+            status: 'Pending',
+            appliedDate: '2025-09-01',
+            idDoc: 'ID002.pdf',
+            businessDoc: 'registration_mg.pdf',
+        },
+        {
+            id: 3,
+            sellerName: 'Catherine Iradukunda',
+            phone: '+250785112233',
+            shopName: 'Rubavu Traders',
+            category: 'Clothing',
+            address: 'Rubavu City',
+            status: 'Approved',
+            appliedDate: '2025-08-28',
+            idDoc: 'ID003.pdf',
+            businessDoc: 'registration_rt.pdf',
+        },
+        {
+            id: 4,
+            sellerName: 'David Nshimiyimana',
+            phone: '+250788556677',
+            shopName: 'Huye Market',
+            category: 'Furniture',
+            address: 'Huye District',
+            status: 'Declined',
+            appliedDate: '2025-08-30',
+            idDoc: 'ID004.pdf',
+            businessDoc: 'registration_hm.pdf',
+        },
+        {
+            id: 5,
+            sellerName: 'Esther Mukamana',
+            phone: '+250788667788',
+            shopName: 'Nyagatare Shop',
+            category: 'Pharmacy',
+            address: 'Nyagatare Town',
+            status: 'Active',
+            appliedDate: '2025-08-20',
+            idDoc: 'ID005.pdf',
+            businessDoc: 'registration_ns.pdf',
+        },
+        {
+            id: 6,
+            sellerName: 'Fabrice Habimana',
+            phone: '+250788445566',
+            shopName: 'Kibuye Essentials',
+            category: 'Cosmetics',
+            address: 'Kibuye City',
+            status: 'Pending',
+            appliedDate: '2025-09-03',
+            idDoc: 'ID006.pdf',
+            businessDoc: 'registration_ke.pdf',
+        },
     ]);
 
     const [messages] = useState([
@@ -57,34 +115,23 @@ export default function DashboardHome() {
     ]);
 
     const itemsPerPage = 5;
-    const [sellerPage, setSellerPage] = useState(1);
-    const [shopPage, setShopPage] = useState(1);
+    const [applicationPage, setApplicationPage] = useState(1);
     const [messagePage, setMessagePage] = useState(1);
 
-    const [sellerSearch, setSellerSearch] = useState('');
-    const [shopSearch, setShopSearch] = useState('');
-    const [messageSearch, setMessageSearch] = useState('');
-
-    const filteredSellers = sellers.filter(
-        s =>
-            (s.name.toLowerCase().includes(sellerSearch.toLowerCase()) ||
-            s.status.toLowerCase().includes(sellerSearch.toLowerCase())) &&
-            (sellerFilter === '' || s.status === sellerFilter)
-    );
-
-    const filteredShops = shopApplications.filter(
-        s =>
-            (s.name.toLowerCase().includes(shopSearch.toLowerCase()) ||
-            s.phone.includes(shopSearch) ||
-            s.address.toLowerCase().includes(shopSearch)) &&
-            (shopFilter === '' || s.address.toLowerCase().includes(shopFilter.toLowerCase()))
+    const filteredApplications = applications.filter(
+        (a) =>
+            a.sellerName.toLowerCase().includes(applicationSearch.toLowerCase()) ||
+            a.shopName.toLowerCase().includes(applicationSearch.toLowerCase()) ||
+            a.phone.includes(applicationSearch) ||
+            a.address.toLowerCase().includes(applicationSearch.toLowerCase()) ||
+            a.status.toLowerCase().includes(applicationSearch.toLowerCase())
     );
 
     const filteredMessages = messages.filter(
-        m =>
-            m.sender.toLowerCase().includes(messageSearch.toLowerCase()) ||
-            m.email.toLowerCase().includes(messageSearch.toLowerCase()) ||
-            m.message.toLowerCase().includes(messageSearch.toLowerCase())
+        (m) =>
+            m.sender.toLowerCase().includes(applicationSearch.toLowerCase()) ||
+            m.email.toLowerCase().includes(applicationSearch.toLowerCase()) ||
+            m.message.toLowerCase().includes(applicationSearch.toLowerCase())
     );
 
     const paginate = (data, page) =>
@@ -115,12 +162,12 @@ export default function DashboardHome() {
 
     const sellerStatusData = useMemo(
         () => [
-            { name: 'Active', value: sellers.filter((s) => s.status === 'Active').length, color: '#007bff' },
-            { name: 'Inactive', value: sellers.filter((s) => s.status === 'Inactive').length, color: '#6c757d' },
-            { name: 'Pending', value: sellers.filter((s) => s.status === 'Pending').length, color: '#ffc107' },
-            { name: 'Declined', value: sellers.filter((s) => s.status === 'Declined').length, color: '#dc3545' },
+            { name: 'Active', value: applications.filter((a) => a.status === 'Active').length, color: '#007bff' },
+            { name: 'Approved', value: applications.filter((a) => a.status === 'Approved').length, color: '#6c757d' },
+            { name: 'Pending', value: applications.filter((a) => a.status === 'Pending').length, color: '#ffc107' },
+            { name: 'Declined', value: applications.filter((a) => a.status === 'Declined').length, color: '#dc3545' },
         ],
-        [sellers]
+        [applications]
     );
 
     return (
@@ -153,8 +200,8 @@ export default function DashboardHome() {
                 </div>
                 <div className="kpi-card">
                     <FaStore className="kpi-icon" />
-                    <div>Total Shops Applied</div>
-                    <div>{kpis.totalShopsApplications}</div>
+                    <div>Total Applications</div>
+                    <div>{kpis.totalApplications}</div>
                 </div>
             </div>
 
@@ -174,7 +221,7 @@ export default function DashboardHome() {
                 </div>
 
                 <div className="dashboard-chart-box">
-                    <h3>Seller Status Distribution</h3>
+                    <h3>Application Status Distribution</h3>
                     <ResponsiveContainer width="100%" height={250}>
                         <BarChart data={sellerStatusData}>
                             <CartesianGrid strokeDasharray="3 3" />
@@ -190,19 +237,19 @@ export default function DashboardHome() {
 
             <div className="dashboard-section">
                 <div className="dashboard-header-row">
-                    <h2>Sellers List</h2>
+                    <h2>Seller & Shop Applications</h2>
                     <div className="dashboard-controls">
                         <input
                             type="text"
-                            placeholder="Search sellers..."
-                            value={sellerSearch}
-                            onChange={(e) => setSellerSearch(e.target.value)}
+                            placeholder="Search applications..."
+                            value={applicationSearch}
+                            onChange={(e) => setApplicationSearch(e.target.value)}
                             className="search-input"
                         />
                         <select
                             className="select-filter"
-                            value={sellerFilter}
-                            onChange={(e) => setSellerFilter(e.target.value)}
+                            value={applicationFilter}
+                            onChange={(e) => setApplicationFilter(e.target.value)}
                         >
                             <option value="">All Statuses</option>
                             <option value="Active">Active</option>
@@ -215,94 +262,41 @@ export default function DashboardHome() {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th>Seller</th>
+                            <th>Phone</th>
+                            <th>Shop</th>
+                            <th>Category</th>
+                            <th>Address</th>
                             <th>Status</th>
                             <th>Applied Date</th>
+                            <th>ID Doc</th>
+                            <th>Business Doc</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {paginate(filteredSellers, sellerPage).map((seller) => (
-                            <tr key={seller.id}>
-                                <td>{seller.name}</td>
-                                <td><span className={`status-badge ${seller.status}`}>{seller.status}</span></td>
-                                <td>{seller.appliedDate}</td>
+                        {paginate(filteredApplications, applicationPage).map((app) => (
+                            <tr key={app.id}>
+                                <td>{app.sellerName}</td>
+                                <td>{app.phone}</td>
+                                <td>{app.shopName}</td>
+                                <td>{app.category}</td>
+                                <td>{app.address}</td>
+                                <td><span className={`status-badge ${app.status}`}>{app.status}</span></td>
+                                <td>{app.appliedDate}</td>
+                                <td><a href={`/docs/${app.idDoc}`} target="_blank" rel="noopener noreferrer">{app.idDoc}</a></td>
+                                <td><a href={`/docs/${app.businessDoc}`} target="_blank" rel="noopener noreferrer">{app.businessDoc}</a></td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
                 <div className="pagination">
-                    <button onClick={() => setSellerPage((prev) => Math.max(prev - 1, 1))} disabled={sellerPage === 1}>Prev</button>
-                    <span>Page {sellerPage}</span>
-                    <button onClick={() => setSellerPage((prev) => (prev * itemsPerPage < filteredSellers.length ? prev + 1 : prev))} disabled={sellerPage * itemsPerPage >= filteredSellers.length}>Next</button>
-                </div>
-
-                <div className="dashboard-header-row">
-                    <h2>Shop Applications</h2>
-                    <div className="dashboard-controls">
-                        <input
-                            type="text"
-                            placeholder="Search shops..."
-                            value={shopSearch}
-                            onChange={(e) => setShopSearch(e.target.value)}
-                            className="search-input"
-                        />
-                        <select
-                            className="select-filter"
-                            value={shopFilter}
-                            onChange={(e) => setShopFilter(e.target.value)}
-                        >
-                            <option value="">All Places</option>
-                            <option value="Kigali">Kigali</option>
-                            <option value="Musanze">Musanze</option>
-                            <option value="Rubavu">Rubavu</option>
-                            <option value="Huye">Huye</option>
-                            <option value="Nyagatare">Nyagatare</option>
-                            <option value="Kibuye">Kibuye</option>
-                        </select>
-                    </div>
-                </div>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Address</th>
-                            <th>ID No</th>
-                            <th>Document</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {paginate(filteredShops, shopPage).map((shop) => (
-                            <tr key={shop.id}>
-                                <td>{shop.name}</td>
-                                <td>{shop.phone}</td>
-                                <td>{shop.address}</td>
-                                <td>{shop.idNo}</td>
-                                <td>{shop.doc}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <div className="pagination">
-                    <button onClick={() => setShopPage((prev) => Math.max(prev - 1, 1))} disabled={shopPage === 1}>Prev</button>
-                    <span>Page {shopPage}</span>
-                    <button onClick={() => setShopPage((prev) => (prev * itemsPerPage < filteredShops.length ? prev + 1 : prev))} disabled={shopPage * itemsPerPage >= filteredShops.length}>Next</button>
+                    <button onClick={() => setApplicationPage((prev) => Math.max(prev - 1, 1))} disabled={applicationPage === 1}>Prev</button>
+                    <span>Page {applicationPage}</span>
+                    <button onClick={() => setApplicationPage((prev) => (prev * itemsPerPage < filteredApplications.length ? prev + 1 : prev))} disabled={applicationPage * itemsPerPage >= filteredApplications.length}>Next</button>
                 </div>
 
                 <div className="dashboard-header-row">
                     <h2>Messages</h2>
-                    <div className="dashboard-controls">
-                        <input
-                            type="text"
-                            placeholder="Search messages..."
-                            value={messageSearch}
-                            onChange={(e) => setMessageSearch(e.target.value)}
-                            className="search-input"
-                        />
-                        <select className="select-filter">
-                            <option value="">All Messages</option>
-                        </select>
-                    </div>
                 </div>
                 <table className="table">
                     <thead>
