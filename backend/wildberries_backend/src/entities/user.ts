@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
 
 export type UserRole = "admin" | "seller" | "customer";
 export type UserStatus = "pending" | "approved" | "rejected";
@@ -40,4 +40,13 @@ export class User {
 
   @Column({ nullable: true })
   licenseDoc?: string;
+
+  @Column({ nullable: true })
+  category?: string;   // Seller category (e.g. electronics, clothing, etc.)
+
+  @Column({ nullable: true })
+  address?: string;    // Physical address
+
+  @CreateDateColumn({ type: "timestamp" })
+  createdAt!: Date;    // Auto-generated when row is created
 }

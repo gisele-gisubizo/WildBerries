@@ -23,11 +23,19 @@ export const registerCustomerSchema = z.object({
 
 // ✅ Seller registration schema
 export const registerSellerSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  phone: z.string().min(10),
-  password: z.string().min(6),
-
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email"),
+  phone: phoneSchema,
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(255, "Password must be less than 255 characters")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      "Password must contain at least one lowercase, one uppercase letter, and one number"
+    ),
+  category: z.string().min(1, "Category is required"),
+  address: z.string().min(1, "Address is required"),
 });
 
 

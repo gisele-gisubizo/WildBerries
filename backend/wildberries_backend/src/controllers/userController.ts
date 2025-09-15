@@ -44,7 +44,7 @@ interface MulterRequestFields extends Request {
 
 export const registerSellerController = asyncHandler(
   async (req: MulterRequestFields, res: Response<ApiResponse>) => {
-    const { email, phone, password } = req.body;
+    const { name, email, phone, password, category, address } = req.body;
     const idCopy = req.files?.idCopy?.[0]?.path;
     const licenseDoc = req.files?.licenseDoc?.[0]?.path;
 
@@ -52,12 +52,12 @@ export const registerSellerController = asyncHandler(
       return res.status(400).json({ success: false, message: "Both ID copy and license document are required." });
     }
 
-    const parsed = registerSellerSchema.safeParse({ email, phone, password, idCopy, licenseDoc });
+    const parsed = registerSellerSchema.safeParse({ name, email, phone, password, category, address });
     if (!parsed.success) {
       return res.status(400).json({ success: false, message: "Validation failed", errors: parsed.error.issues });
     }
 
-    const seller = await UserService.registerSeller(email, phone, password, idCopy, licenseDoc);
+    const seller = await UserService.registerSeller(name, email, phone, password, idCopy, licenseDoc, category, address);
 
     return res.status(201).json({ success: true, message: "Seller registered successfully. Awaiting admin approval.", data: seller });
   }

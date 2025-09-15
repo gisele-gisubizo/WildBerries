@@ -54,11 +54,14 @@ export const registerCustomer = async (
 // Register Seller
 // =============================
 export const registerSeller = async (
+  name: string,
   email: string,
   phone: string,
   password: string,
   idCopy: string,
-  licenseDoc: string
+  licenseDoc: string,
+  category: string,
+  address: string
 ) => {
   const existingEmail = await userRepo.findOneBy({ email });
   if (existingEmail) throw new AppError("Email is already registered", 400);
@@ -69,11 +72,14 @@ export const registerSeller = async (
   const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
   const seller = userRepo.create({
+    name,
     email,
     phone,
     password: hashedPassword,
     idCopy,
     licenseDoc,
+    category,
+    address,
     role: "seller",
     isVerified: false,
     status: "pending",
