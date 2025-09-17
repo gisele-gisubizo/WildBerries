@@ -1,7 +1,8 @@
-import { AppDataSource } from "./data-source";
+                                                                                                                                                                                                                                                      import { AppDataSource } from "./data-source";
 import "reflect-metadata";
 import express from "express";
 import userRoutes from "./routes/userRoutes";
+import categoryRoutes from "./routes/categoryRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -15,6 +16,7 @@ app.use(express.json());
 
 // Routes
 app.use("/users", userRoutes);
+app.use("/categories", categoryRoutes);
 
 // Health check
 app.get("/", (req, res) => {

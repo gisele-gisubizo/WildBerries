@@ -287,6 +287,93 @@
           "path": ["users", "1"]
         }
       }
+    },
+    {
+      "name": "Get All Categories",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4000/categories",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["categories"]
+        }
+      }
+    },
+    {
+      "name": "Create Category",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Fashion & Clothing\",\n  \"fields\": [\n    {\"name\": \"sizes\", \"type\": \"array\", \"required\": true, \"options\": [\"S\", \"M\", \"L\", \"XL\"]},\n    {\"name\": \"color\", \"type\": \"string\", \"required\": true},\n    {\"name\": \"material\", \"type\": \"string\", \"required\": true},\n    {\"name\": \"gender\", \"type\": \"enum\", \"required\": true, \"options\": [\"Men\", \"Women\", \"Unisex\", \"Kids\"]},\n    {\"name\": \"brand\", \"type\": \"string\", \"required\": true},\n    {\"name\": \"images\", \"type\": \"array\", \"required\": true}\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:4000/categories",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["categories"]
+        }
+      }
+    },
+    {
+      "name": "Update Category",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated Category\",\n  \"fields\": [\n    {\"name\": \"field1\", \"type\": \"string\", \"required\": true}\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:4000/categories/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["categories", "1"]
+        }
+      }
+    },
+    {
+      "name": "Delete Category",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:4000/categories/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["categories", "1"]
+        }
+      }
     }
   ],
   "variable": [
