@@ -1,0 +1,20 @@
+{
+  "dashboard": "Ibiro",
+  "messages": "Ubutumwa",
+  "applications": "Ibyasabwe",
+  "shops": "Amaduka",
+  "settings": "Amabwiriza",
+
+  "sender": "Uwohereje",
+  "type": "Ubwoko",
+  "subject": "Insanganyamatsiko",
+  "date": "Itariki",
+  "status": "Imiterere",
+  "reply": "Subiza",
+  "viewReply": "Reba igisubizo",
+  "saveSettings": "Bika Amabwiriza",
+  "profileSettings": "Amabwiriza y’umwirondoro",
+  "notificationPreferences": "Uburyo bwo kumenyeshwa",
+  "systemPreferences": "Uburyo bw’urusobe",
+  "security": "Umutekano"
+}
