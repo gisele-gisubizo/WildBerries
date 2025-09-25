@@ -6,17 +6,17 @@ import { Product } from "./product";
 @Entity()
 export class OrderItem {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @ManyToOne(() => Order, (order) => order.items)
-  order: Order;
+  order!: Order;
 
   @ManyToOne(() => Product, { eager: true })
-  product: Product;
+  product!: Product;
 
   @Column()
-  quantity: number;
+  quantity!: number;
 
   @Column("decimal", { precision: 10, scale: 2 })
-  price: number; // price at time of purchase
+  price!: number; // price at time of purchase
 }
