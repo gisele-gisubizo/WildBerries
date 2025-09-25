@@ -15,6 +15,8 @@ import {
     Legend,
 } from 'recharts';
 import toast from 'react-hot-toast';
+// import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import './dashboard.css';
 
 export default function DashboardHome() {
@@ -36,7 +38,6 @@ export default function DashboardHome() {
             sellerName: 'Alice Mutesi',
             phone: '+250788123456',
             shopName: 'Kigali Fresh',
-            category: 'Groceries',
             address: 'Kigali, Nyarutarama',
             status: 'Active',
             appliedDate: '2025-08-25',
@@ -48,7 +49,6 @@ export default function DashboardHome() {
             sellerName: 'Brian Uwimana',
             phone: '+250788987654',
             shopName: 'Musanze Groceries',
-            category: 'Electronics',
             address: 'Musanze Town',
             status: 'Pending',
             appliedDate: '2025-09-01',
@@ -60,7 +60,6 @@ export default function DashboardHome() {
             sellerName: 'Catherine Iradukunda',
             phone: '+250785112233',
             shopName: 'Rubavu Traders',
-            category: 'Clothing',
             address: 'Rubavu City',
             status: 'Approved',
             appliedDate: '2025-08-28',
@@ -72,7 +71,6 @@ export default function DashboardHome() {
             sellerName: 'David Nshimiyimana',
             phone: '+250788556677',
             shopName: 'Huye Market',
-            category: 'Furniture',
             address: 'Huye District',
             status: 'Declined',
             appliedDate: '2025-08-30',
@@ -84,7 +82,6 @@ export default function DashboardHome() {
             sellerName: 'Esther Mukamana',
             phone: '+250788667788',
             shopName: 'Nyagatare Shop',
-            category: 'Pharmacy',
             address: 'Nyagatare Town',
             status: 'Active',
             appliedDate: '2025-08-20',
@@ -96,7 +93,6 @@ export default function DashboardHome() {
             sellerName: 'Fabrice Habimana',
             phone: '+250788445566',
             shopName: 'Kibuye Essentials',
-            category: 'Cosmetics',
             address: 'Kibuye City',
             status: 'Pending',
             appliedDate: '2025-09-03',
@@ -104,14 +100,37 @@ export default function DashboardHome() {
             businessDoc: 'registration_ke.pdf',
         },
     ]);
-
-    const [messages] = useState([
-        { id: 1, sender: 'Afua Hamissi', email: 'afua.hamissi@mail.com', message: 'Hello, I need help with my order.' },
-        { id: 2, sender: 'Brian Uwimana', email: 'brian.uwimana@mail.com', message: 'I want to apply as a seller.' },
-        { id: 3, sender: 'Catherine Iradukunda', email: 'catherine.iradukunda@mail.com', message: 'Payment not received yet.' },
-        { id: 4, sender: 'David Nshimiyimana', email: 'david.nshimiyimana@mail.com', message: 'How do I update my profile?' },
-        { id: 5, sender: 'Esther Mukamana', email: 'esther.mukamana@mail.com', message: 'Inquiry about product availability.' },
-        { id: 6, sender: 'Fabrice Habimana', email: 'fabrice.habimana@mail.com', message: 'Requesting a refund for my last order.' },
+        const [messages, setMessages] = useState([
+        {
+            id: 1,
+            sender: "Alice Mutesi",
+            type: "Seller",
+            subject: "Issue with shop approval",
+            content: "Hello admin, my shop approval seems delayed. Could you check?",
+            date: "2025-09-05",
+            status: "Unread",
+            reply: ""
+        },
+        {
+            id: 2,
+            sender: "John Doe",
+            type: "Customer",
+            subject: "Problem with order",
+            content: "I placed an order but it hasn’t arrived yet.",
+            date: "2025-09-07",
+            status: "Read",
+            reply: ""
+        },
+        {
+            id: 3,
+            sender: "Brian Uwimana",
+            type: "Seller",
+            subject: "Payment issue",
+            content: "I have not received payment for my last sales.",
+            date: "2025-09-08",
+            status: "Replied",
+            reply: "Hello Brian, we checked and your payment is being processed."
+        }
     ]);
 
     const itemsPerPage = 5;
@@ -169,6 +188,63 @@ export default function DashboardHome() {
         ],
         [applications]
     );
+
+
+    const [selectedMessage, setSelectedMessage] = useState(null);
+    const [replyText, setReplyText] = useState("");
+    const [showModal, setShowModal] = useState(false);
+
+    // Open modal + mark Unread → Read
+    const handleReply = (message) => {
+        setMessages((prev) =>
+            prev.map((msg) =>
+                msg.id === message.id && msg.status === "Unread"
+                    ? { ...msg, status: "Read" }
+                    : msg
+            )
+        );
+        setSelectedMessage(message);
+        setReplyText("");
+        setShowModal(true);
+    };
+
+    // Send reply
+    const sendReply = () => {
+        if (!replyText.trim()) return;
+
+        setMessages((prev) =>
+            prev.map((msg) =>
+                msg.id === selectedMessage.id
+                    ? { ...msg, reply: replyText, status: "Replied" }
+                    : msg
+            )
+        );
+        toast.success("Reply sent successfully ✅");
+        setShowModal(false);
+        setReplyText("");
+        setSelectedMessage(null);
+    };
+
+    // Show reply in toast + mark Unread → Read
+    const viewReply = (message) => {
+        setMessages((prev) =>
+            prev.map((msg) =>
+                msg.id === message.id && msg.status === "Unread"
+                    ? { ...msg, status: "Read" }
+                    : msg
+            )
+        );
+
+        toast.info(`Reply: ${message.reply}`, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true
+        });
+    };
+
 
     return (
         <div className="dashboard-container">
@@ -265,7 +341,6 @@ export default function DashboardHome() {
                             <th>Seller</th>
                             <th>Phone</th>
                             <th>Shop</th>
-                            <th>Category</th>
                             <th>Address</th>
                             <th>Status</th>
                             <th>Applied Date</th>
@@ -279,7 +354,6 @@ export default function DashboardHome() {
                                 <td>{app.sellerName}</td>
                                 <td>{app.phone}</td>
                                 <td>{app.shopName}</td>
-                                <td>{app.category}</td>
                                 <td>{app.address}</td>
                                 <td><span className={`status-badge ${app.status}`}>{app.status}</span></td>
                                 <td>{app.appliedDate}</td>
@@ -295,32 +369,63 @@ export default function DashboardHome() {
                     <button onClick={() => setApplicationPage((prev) => (prev * itemsPerPage < filteredApplications.length ? prev + 1 : prev))} disabled={applicationPage * itemsPerPage >= filteredApplications.length}>Next</button>
                 </div>
 
-                <div className="dashboard-header-row">
-                    <h2>Messages</h2>
-                </div>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Sender</th>
-                            <th>Email</th>
-                            <th>Message</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {paginate(filteredMessages, messagePage).map((msg) => (
-                            <tr key={msg.id}>
-                                <td>{msg.sender}</td>
-                                <td>{msg.email}</td>
-                                <td>{msg.message}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <div className="pagination">
-                    <button onClick={() => setMessagePage((prev) => Math.max(prev - 1, 1))} disabled={messagePage === 1}>Prev</button>
-                    <span>Page {messagePage}</span>
-                    <button onClick={() => setMessagePage((prev) => (prev * itemsPerPage < filteredMessages.length ? prev + 1 : prev))} disabled={messagePage * itemsPerPage >= filteredMessages.length}>Next</button>
-                </div>
+      <div className="dashboard-header-row">
+  <h2>Messages</h2>
+</div>
+<table className="table">
+  <thead>
+    <tr>
+      <th>Sender</th>
+      <th>Type</th>
+      <th>Subject</th>
+      <th>Content</th>
+      <th>Date</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {paginate(filteredMessages, messagePage).map((msg) => (
+      <tr key={msg.id}>
+        <td>{msg.sender}</td>
+        <td>{msg.type}</td>
+        <td>{msg.subject}</td>
+        <td>{msg.content}</td>
+        <td>{msg.date}</td>
+        <td>
+          <span className={`status-badge ${msg.status.toLowerCase()}`}>{msg.status}</span>
+        </td>
+        <td>
+          {msg.status === "Replied" ? (
+            <button onClick={() => viewReply(msg)}  className="view-reply-btn">View Reply</button>
+          ) : (
+            <button onClick={() => handleReply(msg)} className="reply-btn">Reply</button>
+          )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+<div className="pagination">
+  <button
+    onClick={() => setMessagePage((prev) => Math.max(prev - 1, 1))}
+    disabled={messagePage === 1}
+  >
+    Prev
+  </button>
+  <span>Page {messagePage}</span>
+  <button
+    onClick={() =>
+      setMessagePage((prev) =>
+        prev * itemsPerPage < filteredMessages.length ? prev + 1 : prev
+      )
+    }
+    disabled={messagePage * itemsPerPage >= filteredMessages.length}
+  >
+    Next
+  </button>
+</div>
+
             </div>
         </div>
     );

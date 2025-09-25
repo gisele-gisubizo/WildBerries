@@ -1,0 +1,20 @@
+{
+  "dashboard": "Tableau de bord",
+  "messages": "Messages",
+  "applications": "Applications",
+  "shops": "Magasins",
+  "settings": "Paramètres",
+
+  "sender": "Expéditeur",
+  "type": "Type",
+  "subject": "Sujet",
+  "date": "Date",
+  "status": "Statut",
+  "reply": "Répondre",
+  "viewReply": "Voir la réponse",
+  "saveSettings": "Enregistrer les paramètres",
+  "profileSettings": "Paramètres du profil",
+  "notificationPreferences": "Préférences de notification",
+  "systemPreferences": "Préférences système",
+  "security": "Sécurité"
+}

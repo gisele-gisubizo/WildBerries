@@ -1,16 +1,15 @@
-import { FaUserCircle } from 'react-icons/fa';
+import React from 'react'
 import { useTranslation } from 'react-i18next';
-import './navbar.css';
-
-const DashboardNavbar = () => {
-  const user = {
-    username: 'Admin',
-    profile_picture_url: null,
+import { FaUserCircle } from 'react-icons/fa';
+import '../AdminDashboard/navbar.css';
+const SellerNavbar = () => {
+const user = {
+    username: 'Alice',
+    profile_picture_url: null,                                                                                                                                                                                                                                       
   };
 
   const { i18n } = useTranslation();
 
-  // Function to change language
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
   };
@@ -20,7 +19,6 @@ const DashboardNavbar = () => {
       <h1 className="dashboard-title">Dashboard</h1>
 
       <div className="navbar-right">
-        {/* Language Switcher */}
         <select
           className="language-switcher"
           value={i18n.language}
@@ -31,7 +29,6 @@ const DashboardNavbar = () => {
           <option value="rw">Kinyarwanda</option>
         </select>
 
-        {/* User Info */}
         {user && (
           <div className="dashboard-user">
             {user.profile_picture_url ? (
@@ -53,4 +50,4 @@ const DashboardNavbar = () => {
   );
 };
 
-export default DashboardNavbar;
+export default SellerNavbar

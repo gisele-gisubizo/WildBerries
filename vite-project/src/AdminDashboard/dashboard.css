@@ -687,6 +687,75 @@
   background: #0056b3;
 }
 
+
+.status-badge.draft { background: #6c757d; }        /* gray */
+.status-badge.active { background: #28a745; }       /* green */
+.status-badge.out-of-stock { background: #ffc107; } /* yellow */
+.status-badge.ordered { background: #17a2b8; }      /* teal */
+.status-badge.shipped { background: #007bff; }      /* blue */
+.status-badge.delivered { background: #20c997; }    /* light green */
+.status-badge.cancelled { background: #dc3545; }    /* red */
+.status-badge.returned { background: #6610f2; }     /* purple */
+
+
+.add-product {
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+}
+
+.subcategory-cards {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.subcategory-card {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.subcategory-card.active {
+padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: linear-gradient(135deg, #000000, #1a1a1a96, #333333e0, #4d4d4d);
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.form-group {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+}
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+textarea,
+input[type="text"],
+input[type="file"],
+select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+.submit-btn {
+padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: linear-gradient(135deg, #000000, #1a1a1a96, #333333e0, #4d4d4d);
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+
+}
+
 /* -------------------- MOBILE RESPONSIVENESS -------------------- */
 @media (max-width: 768px) {
     .dashboard-header-top h1 {

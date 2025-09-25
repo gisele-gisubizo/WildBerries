@@ -12,6 +12,10 @@ import ApplicationsPage from './AdminDashboard/Applications';
 import { ShopProvider } from './AdminDashboard/ShopContext';
 import MessagesPage from './AdminDashboard/Messages';
 import SettingsPage from './AdminDashboard/Settings';
+import SellerDashboardLayout from './SellersDashboard/SellerDashboardLayout';
+import SellerDashboard from './SellersDashboard/SellerDashboard';
+import ProductsPage from './SellersDashboard/Products';
+import AddProductPage from './SellersDashboard/Addproduct';
 function App() {
   const [count, setCount] = useState(0);
 
@@ -36,6 +40,13 @@ function App() {
           <Route path='settings' element={<SettingsPage />} />
 
           <Route path='messages' element={<MessagesPage />} />
+        </Route>
+        <Route path='/SellerDashboard' element={<SellerDashboardLayout />}>
+                  <Route index element={<SellerDashboard />} />
+                  <Route path='products' element={<ProductsPage />} />
+                  <Route path='add-product' element={<AddProductPage />} />
+
+
         </Route>
       </Routes>
     </BrowserRouter>

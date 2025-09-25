@@ -6,15 +6,15 @@ export default function ApplicationsPage() {
     const { addApprovedShop } = useShops();
 
     const [applications, setApplications] = useState([
-        { id: 1, type: 'Seller', name: 'Alice Mutesi', email: 'alice@example.com', shop: '', phone: '+250788123456', appliedDate: '2025-08-25', status: 'Pending', category: 'Groceries', address: 'Kigali City', idDoc: 'ID001.pdf', registrationDoc: 'reg_kf.pdf' },
-        { id: 2, type: 'Seller', name: '', email: 'brian@example.com', shop: 'Musanze Groceries', phone: '+250788987654', appliedDate: '2025-09-01', status: 'Pending', category: 'Electronics', address: 'Musanze Town', idDoc: 'ID002.pdf', registrationDoc: 'reg_mg.pdf' },
-        { id: 3, type: 'Seller', name: 'Catherine Iradukunda', email: 'catherine@example.com', shop: '', phone: '+250785112233', appliedDate: '2025-08-28', status: 'Pending', category: 'Clothing', address: 'Ruhango', idDoc: 'ID003.pdf', registrationDoc: 'reg_rt.pdf' },
+        { id: 1, type: 'Seller', name: 'Alice Mutesi', email: 'alice@example.com', shop: '', phone: '+250788123456', appliedDate: '2025-08-25', status: 'Pending',  address: 'Kigali City', idDoc: 'ID001.pdf', registrationDoc: 'reg_kf.pdf' },
+        { id: 2, type: 'Seller', name: '', email: 'brian@example.com', shop: 'Musanze Groceries', phone: '+250788987654', appliedDate: '2025-09-01', status: 'Pending', address: 'Musanze Town', idDoc: 'ID002.pdf', registrationDoc: 'reg_mg.pdf' },
+        { id: 3, type: 'Seller', name: 'Catherine Iradukunda', email: 'catherine@example.com', shop: '', phone: '+250785112233', appliedDate: '2025-08-28', status: 'Pending',  address: 'Ruhango', idDoc: 'ID003.pdf', registrationDoc: 'reg_rt.pdf' },
         { id: 4, type: 'Shop', name: 'Huye Market', email: 'huye@example.com', phone: '+250788556677', appliedDate: '2025-08-30', status: 'Pending', address: 'Huye District', idDoc: 'ID004.pdf', registrationDoc: 'registration_hm.pdf' },
         { id: 5, type: 'Shop', name: 'Nyagatare Shop', email: 'nyagatare@example.com', phone: '+250788667788', appliedDate: '2025-08-20', status: 'Pending', address: 'Nyagatare Town', idDoc: 'ID005.pdf', registrationDoc: 'registration_ns.pdf' },
-        { id: 6, type: 'Seller', name: '', email: 'david@example.com', shop: 'Huye Market', phone: '+250788556678', appliedDate: '2025-08-31', status: 'Pending', category: 'Hardware', address: 'Huye', idDoc: 'ID006.pdf', registrationDoc: 'reg_hm.pdf' },
-        { id: 7, type: 'Seller', name: 'Esther Mukamana', email: 'esther@example.com', shop: '', phone: '+250788667789', appliedDate: '2025-08-22', status: 'Pending', category: 'Stationery', address: 'Kigali', idDoc: 'ID007.pdf', registrationDoc: 'reg_ns.pdf' },
+        { id: 6, type: 'Seller', name: '', email: 'david@example.com', shop: 'Huye Market', phone: '+250788556678', appliedDate: '2025-08-31', status: 'Pending',  address: 'Huye', idDoc: 'ID006.pdf', registrationDoc: 'reg_hm.pdf' },
+        { id: 7, type: 'Seller', name: 'Esther Mukamana', email: 'esther@example.com', shop: '', phone: '+250788667789', appliedDate: '2025-08-22', status: 'Pending', address: 'Kigali', idDoc: 'ID007.pdf', registrationDoc: 'reg_ns.pdf' },
         { id: 8, type: 'Shop', name: 'Kigali Central', email: 'kigali@example.com', phone: '+250788334455', appliedDate: '2025-09-02', status: 'Pending', address: 'Kigali City', idDoc: 'ID008.pdf', registrationDoc: 'registration_kc.pdf' },
-        { id: 9, type: 'Seller', name: '', email: 'fabrice@example.com', shop: 'Kibuye Essentials', phone: '+250788445566', appliedDate: '2025-09-03', status: 'Pending', category: 'Groceries', address: 'Kibuye', idDoc: 'ID009.pdf', registrationDoc: 'reg_ke.pdf' },
+        { id: 9, type: 'Seller', name: '', email: 'fabrice@example.com', shop: 'Kibuye Essentials', phone: '+250788445566', appliedDate: '2025-09-03', status: 'Pending',  address: 'Kibuye', idDoc: 'ID009.pdf', registrationDoc: 'reg_ke.pdf' },
         { id: 10, type: 'Shop', name: 'Rubavu Traders', email: 'rubavu@example.com', phone: '+250788112244', appliedDate: '2025-09-04', status: 'Pending', address: 'Rubavu District', idDoc: 'ID010.pdf', registrationDoc: 'registration_rt.pdf' },
     ]);
 
@@ -112,7 +112,6 @@ export default function ApplicationsPage() {
                                         {app.email && <p><b>Email:</b> {app.email}</p>}
                                         <p><b>Phone:</b> {app.phone}</p>
                                         <p><b>Address:</b> {app.address}</p>
-                                        {app.type === 'Seller' && <p><b>Category:</b> {app.category}</p>}
                                         <p><b>Applied Date:</b> {app.appliedDate}</p>
                                     </div>
                                     <div className="application-section lower">
