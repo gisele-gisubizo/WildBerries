@@ -1,0 +1,672 @@
+{
+  "fields": [
+    {
+      "id": "formly_3583_sections__0",
+      "type": "sections",
+      "props": {},
+      "expressions": {},
+      "validation": {
+        "messages": {}
+      },
+      "validators": null,
+      "asyncValidators": null,
+      "fieldGroup": [
+        {
+          "key": "decoderOfferDetails",
+          "id": "formly_3584_formly-group_decoderOfferDetails_0",
+          "type": "formly-group",
+          "props": {
+            "label": "Decoder & Offer Details",
+            "disabled": false,
+            "placeholder": ""
+          },
+          "expressions": {},
+          "validation": {
+            "messages": {}
+          },
+          "fieldGroup": [
+            {
+              "key": "offerDetails",
+              "id": "formly_3585_block_offerDetails_0",
+              "type": "block",
+              "props": {
+                "label": " Offer Details ",
+                "disabled": false,
+                "placeholder": ""
+              },
+              "expressions": {},
+              "validation": {
+                "messages": {}
+              },
+              "fieldGroup": [
+                {
+                  "key": "renewPreviousSubscription",
+                  "id": "formly_3598_radio_renewPreviousSubscription_0",
+                  "type": "radio",
+                  "props": {
+                    "hint": "",
+                    "label": "Renew previous subscription ?",
+                    "options": [
+                      {
+                        "label": "Yes",
+                        "value": "Yes"
+                      },
+                      {
+                        "label": "No",
+                        "value": "No"
+                      }
+                    ],
+                    "tooltip": "",
+                    "disabled": false,
+                    "readonly": false,
+                    "required": true,
+                    "formCheck": "default",
+                    "placeholder": "Radio Input",
+                    "defaultRequired": true,
+                    "validationsModel": {
+                      "required": {
+                        "logics": []
+                      }
+                    },
+                    "internalDescription": ""
+                  },
+                  "defaultValue": null,
+                  "expressions": {
+                    "props.required": "!(field?.props?.hideField || field?.hide) && field?.props?.defaultRequired"
+                  },
+                  "validation": {
+                    "messages": {
+                      "required": "This field is required"
+                    }
+                  },
+                  "validators": null,
+                  "asyncValidators": null
+                },
+                {
+                  "key": "decoderNumber",
+                  "id": "formly_3598_customgenericdatafetch_decoderNumber_1",
+                  "type": "customgenericdatafetch",
+                  "props": {
+                    "url": "/integration/v1/fetch/sync",
+                    "hint": "",
+                    "label": "Decoder number",
+                    "tooltip": "",
+                    "disabled": false,
+                    "isStatic": false,
+                    "readonly": false,
+                    "required": true,
+                    "hideField": false,
+                    "populates": [
+                      {
+                        "valueKey": "idBase",
+                        "targetKey": "idbase"
+                      },
+                      {
+                        "valueKey": "numSubscriber",
+                        "targetKey": "numsubscriber"
+                      },
+                      {
+                        "valueKey": "numContract",
+                        "targetKey": "numcontract"
+                      },
+                      {
+                        "valueKey": "tokenId",
+                        "targetKey": "tokenid"
+                      }
+                    ],
+                    "runAction": false,
+                    "payloadKey": "decoderNumber",
+                    "useBaseUrl": true,
+                    "placeholder": "Enter your decoder number",
+                    "triggerType": "TRIGGER_BUTTON",
+                    "debounceTime": 500,
+                    "endpointCode": "GISELE_ENDPOINT",
+                    "runningAction": false,
+                    "documentTypeKey": "DocumentTypeComponentKey",
+                    "showGlobalError": false,
+                    "internalDescription": "",
+                    "useMultiplePayloadKeys": false,
+                    "populateRelativeToRootForm": false
+                  },
+                  "defaultValue": null,
+                  "expressions": {
+                    "props.runningAction": "field?.props?.runAction"
+                  },
+                  "validation": {
+                    "messages": {
+                      "pattern": "Error message for pattern",
+                      "required": "Error message for `required`",
+                      "invalidId": "Error message for failed response",
+                      "invalidInput": "Error message for invalid input"
+                    }
+                  },
+                  "validators": null,
+                  "asyncValidators": null
+                },
+                {
+                  "key": "idbase",
+                  "id": "formly_3598_input_idbase_2",
+                  "type": "input",
+                  "props": {
+                    "hint": "",
+                    "label": "idBase",
+                    "hidden": true,
+                    "tooltip": "",
+                    "disabled": false,
+                    "readonly": false,
+                    "required": false,
+                    "placeholder": "",
+                    "displayRuleModel": {
+                      "action": "show",
+                      "displayRules": [
+                        {
+                          "condition": "is Above",
+                          "comparator": "OR",
+                          "compareField": {
+                            "label": "Decoder number",
+                            "value": "decoderNumber",
+                            "fieldKey": "decoderNumber",
+                            "fieldType": "customgenericdatafetch",
+                            "fieldRefPath": "decoderOfferDetails?.offerDetails?.decoderNumber",
+                            "rootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                          },
+                          "comparedValues": {
+                            "isValue": "0",
+                            "valueAsNumber": false
+                          },
+                          "comparedAgainst": "fieldValue",
+                          "compareFieldType": "customgenericdatafetch"
+                        }
+                      ],
+                      "configuredFieldRefPath": "decoderOfferDetails?.offerDetails?.idbase",
+                      "configuredFieldRootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                    },
+                    "internalDescription": ""
+                  },
+                  "defaultValue": null,
+                  "expressions": {
+                    "hide": "!(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.offerDetails?.decoderNumber > '0')"
+                  },
+                  "validation": {
+                    "messages": {}
+                  },
+                  "validators": null,
+                  "asyncValidators": null
+                },
+                {
+                  "key": "numsubscriber",
+                  "id": "formly_3598_input_numsubscriber_3",
+                  "type": "input",
+                  "props": {
+                    "hint": "",
+                    "label": "numSubscriber",
+                    "hidden": true,
+                    "tooltip": "",
+                    "disabled": false,
+                    "readonly": false,
+                    "required": false,
+                    "placeholder": "",
+                    "displayRuleModel": {
+                      "action": "show",
+                      "displayRules": [
+                        {
+                          "condition": "is Above",
+                          "comparator": "OR",
+                          "compareField": {
+                            "label": "Decoder number",
+                            "value": "decoderNumber",
+                            "fieldKey": "decoderNumber",
+                            "fieldType": "customgenericdatafetch",
+                            "fieldRefPath": "decoderOfferDetails?.offerDetails?.decoderNumber",
+                            "rootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                          },
+                          "comparedValues": {
+                            "isValue": "0",
+                            "valueAsNumber": false
+                          },
+                          "comparedAgainst": "fieldValue",
+                          "compareFieldType": "customgenericdatafetch"
+                        }
+                      ],
+                      "configuredFieldRefPath": "decoderOfferDetails?.offerDetails?.numsubscriber",
+                      "configuredFieldRootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                    },
+                    "internalDescription": ""
+                  },
+                  "defaultValue": null,
+                  "expressions": {
+                    "hide": "!(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.offerDetails?.decoderNumber > '0')"
+                  },
+                  "validation": {
+                    "messages": {}
+                  },
+                  "validators": null,
+                  "asyncValidators": null
+                },
+                {
+                  "key": "numcontract",
+                  "id": "formly_3598_input_numcontract_4",
+                  "type": "input",
+                  "props": {
+                    "hint": "",
+                    "label": "numContract",
+                    "hidden": true,
+                    "tooltip": "",
+                    "disabled": false,
+                    "readonly": false,
+                    "required": false,
+                    "placeholder": "",
+                    "displayRuleModel": {
+                      "action": "show",
+                      "displayRules": [
+                        {
+                          "condition": "is Above",
+                          "comparator": "OR",
+                          "compareField": {
+                            "label": "Decoder number",
+                            "value": "decoderNumber",
+                            "fieldKey": "decoderNumber",
+                            "fieldType": "customgenericdatafetch",
+                            "fieldRefPath": "decoderOfferDetails?.offerDetails?.decoderNumber",
+                            "rootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                          },
+                          "comparedValues": {
+                            "isValue": "0",
+                            "valueAsNumber": false
+                          },
+                          "comparedAgainst": "fieldValue",
+                          "compareFieldType": "customgenericdatafetch"
+                        }
+                      ],
+                      "configuredFieldRefPath": "decoderOfferDetails?.offerDetails?.numcontract",
+                      "configuredFieldRootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                    },
+                    "internalDescription": ""
+                  },
+                  "defaultValue": null,
+                  "expressions": {
+                    "hide": "!(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.offerDetails?.decoderNumber > '0')"
+                  },
+                  "validation": {
+                    "messages": {}
+                  },
+                  "validators": null,
+                  "asyncValidators": null
+                },
+                {
+                  "key": "tokenid",
+                  "id": "formly_3598_input_tokenid_5",
+                  "type": "input",
+                  "props": {
+                    "hint": "",
+                    "label": "tokenId",
+                    "hidden": true,
+                    "tooltip": "",
+                    "disabled": false,
+                    "readonly": false,
+                    "required": false,
+                    "placeholder": "Text Input",
+                    "displayRuleModel": {
+                      "action": "show",
+                      "displayRules": [
+                        {
+                          "condition": "is Above",
+                          "comparator": "OR",
+                          "compareField": {
+                            "label": "Decoder number",
+                            "value": "decoderNumber",
+                            "fieldKey": "decoderNumber",
+                            "fieldType": "customgenericdatafetch",
+                            "fieldRefPath": "decoderOfferDetails?.offerDetails?.decoderNumber",
+                            "rootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                          },
+                          "comparedValues": {
+                            "isValue": "0",
+                            "valueAsNumber": false
+                          },
+                          "comparedAgainst": "fieldValue",
+                          "compareFieldType": "customgenericdatafetch"
+                        }
+                      ],
+                      "configuredFieldRefPath": "decoderOfferDetails?.offerDetails?.tokenid",
+                      "configuredFieldRootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                    },
+                    "internalDescription": ""
+                  },
+                  "defaultValue": null,
+                  "expressions": {
+                    "hide": "!(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.offerDetails?.decoderNumber > '0')"
+                  },
+                  "validation": {
+                    "messages": {}
+                  },
+                  "validators": null,
+                  "asyncValidators": null
+                },
+                {
+                  "key": "previousTvSubscriptionOffermfwls0ncmlwv0",
+                  "id": "formly_3598_input_previousTvSubscriptionOffermfwls0ncmlwv0_6",
+                  "type": "input",
+                  "props": {
+                    "hint": "",
+                    "label": "Previous TV subscription offer",
+                    "hidden": true,
+                    "tooltip": "",
+                    "disabled": false,
+                    "readonly": false,
+                    "required": true,
+                    "placeholder": "",
+                    "displayRuleModel": {
+                      "action": "show",
+                      "displayRules": [
+                        {
+                          "condition": "is Equal To",
+                          "comparator": "OR",
+                          "compareField": {
+                            "label": "Renew previous subscription ?",
+                            "value": "renewPreviousSubscription",
+                            "fieldKey": "renewPreviousSubscription",
+                            "fieldType": "radio",
+                            "fieldRefPath": "decoderOfferDetails?.offerDetails?.renewPreviousSubscription",
+                            "rootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                          },
+                          "comparedValues": {
+                            "isValue": "Yes"
+                          },
+                          "comparedAgainst": "fieldValue",
+                          "compareFieldType": "radio"
+                        }
+                      ],
+                      "configuredFieldRefPath": "decoderOfferDetails?.offerDetails?.previousTvSubscriptionOffermfwls0ncmlwv0",
+                      "configuredFieldRootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                    },
+                    "internalDescription": ""
+                  },
+                  "defaultValue": null,
+                  "expressions": {
+                    "hide": "!(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.offerDetails?.renewPreviousSubscription === 'Yes')"
+                  },
+                  "validation": {
+                    "messages": {
+                      "required": "This field is required"
+                    }
+                  },
+                  "validators": null,
+                  "asyncValidators": null
+                },
+                {
+                  "key": "previousSubscriptionDurationMonths",
+                  "id": "formly_3598_input_previousSubscriptionDurationMonths_7",
+                  "type": "input",
+                  "props": {
+                    "hint": "",
+                    "label": "Previous subscription duration (Months) ",
+                    "hidden": true,
+                    "tooltip": "",
+                    "disabled": false,
+                    "readonly": false,
+                    "required": false,
+                    "placeholder": "",
+                    "displayRuleModel": {
+                      "action": "show",
+                      "displayRules": [
+                        {
+                          "condition": "is Equal To",
+                          "comparator": "OR",
+                          "compareField": {
+                            "label": "Renew previous subscription ?",
+                            "value": "renewPreviousSubscription",
+                            "fieldKey": "renewPreviousSubscription",
+                            "fieldType": "radio",
+                            "fieldRefPath": "decoderOfferDetails?.offerDetails?.renewPreviousSubscription",
+                            "rootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                          },
+                          "comparedValues": {
+                            "isValue": "Yes"
+                          },
+                          "comparedAgainst": "fieldValue",
+                          "compareFieldType": "radio"
+                        }
+                      ],
+                      "configuredFieldRefPath": "decoderOfferDetails?.offerDetails?.previousSubscriptionDurationMonths",
+                      "configuredFieldRootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                    },
+                    "internalDescription": ""
+                  },
+                  "defaultValue": null,
+                  "expressions": {
+                    "hide": "!(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.offerDetails?.renewPreviousSubscription === 'Yes')"
+                  },
+                  "validation": {
+                    "messages": {}
+                  },
+                  "validators": null,
+                  "asyncValidators": null
+                },
+                {
+                  "key": "totalPrice",
+                  "id": "formly_3598_input_totalPrice_8",
+                  "type": "input",
+                  "props": {
+                    "hint": "",
+                    "label": "Total Price ",
+                    "hidden": true,
+                    "tooltip": "",
+                    "disabled": false,
+                    "readonly": false,
+                    "required": false,
+                    "placeholder": "",
+                    "displayRuleModel": {
+                      "action": "show",
+                      "displayRules": [
+                        {
+                          "condition": "is Equal To",
+                          "comparator": "OR",
+                          "compareField": {
+                            "label": "Renew previous subscription ?",
+                            "value": "renewPreviousSubscription",
+                            "fieldKey": "renewPreviousSubscription",
+                            "fieldType": "radio",
+                            "fieldRefPath": "decoderOfferDetails?.offerDetails?.renewPreviousSubscription",
+                            "rootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                          },
+                          "comparedValues": {
+                            "isValue": "Yes"
+                          },
+                          "comparedAgainst": "fieldValue",
+                          "compareFieldType": "radio"
+                        }
+                      ],
+                      "configuredFieldRefPath": "decoderOfferDetails?.offerDetails?.totalPrice",
+                      "configuredFieldRootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                    },
+                    "internalDescription": ""
+                  },
+                  "defaultValue": null,
+                  "expressions": {
+                    "hide": "!(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.offerDetails?.renewPreviousSubscription === 'Yes')"
+                  },
+                  "validation": {
+                    "messages": {}
+                  },
+                  "validators": null,
+                  "asyncValidators": null
+                },
+                {
+                  "key": "businessActivities",
+                  "id": "formly_3598_customdropdowndatafetchpaginated_tvSubscriptionoffer_9",
+                  "type": "customdropdowndatafetchpaginated",
+                  "props": {
+                    "url": "/integration/v1/fetch/sync",
+                    "label": "TV Subscription offer",
+                    "hidden": true,
+                    "dataset": {
+                      "params": {
+                        "page": 0,
+                        "size": 20
+                      },
+                      "dataField": "offersList",
+                      "pageStart": 1,
+                      "searching": true,
+                      "pagination": true,
+                      "totalPagesKey": "totalElements",
+                      "responseAdapter": "return JSON.parse(response.data.response);"
+                    },
+                    "disabled": false,
+                    "bindLabel": "label",
+                    "bindValue": "code",
+                    "populates": [],
+                    "useBaseUrl": true,
+                    "placeholder": "Select TV Subscription offer",
+                    "triggerType": "FIELD_LISTENER",
+                    "endpointCode": "GISELE_ENDPOINT",
+                    "payloadKeyMappings": [
+                      {
+                        "key": "searchkey",
+                        "isStatic": false,
+                        "sourceField": "otherBest"
+                      }
+                    ],
+                    "useMultiplePayloadKeys": true
+                  },
+                  "defaultValue": null,
+                  "expressions": {
+                    "hide": "!(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.offerDetails?.renewPreviousSubscription === 'No')"
+                  },
+                  "validation": {
+                    "messages": {
+                      "required": "This field is required"
+                    }
+                  },
+                  "validators": null,
+                  "asyncValidators": null
+                },
+                {
+                  "key": "totalPricePerMonth",
+                  "id": "formly_3598_input_offerPricePerMonth_10",
+                  "type": "input",
+                  "props": {
+                    "hint": "",
+                    "type": "number",
+                    "label": "Offer Price per Month ",
+                    "hidden": true,
+                    "tooltip": "",
+                    "disabled": false,
+                    "readonly": false,
+                    "required": false,
+                    "placeholder": "",
+                    "displayRuleModel": {
+                      "action": "show",
+                      "displayRules": [
+                        {
+                          "condition": "is Equal To",
+                          "comparator": "OR",
+                          "compareField": {
+                            "label": "Renew previous subscription ?",
+                            "value": "renewPreviousSubscription",
+                            "fieldKey": "renewPreviousSubscription",
+                            "fieldType": "radio",
+                            "fieldRefPath": "decoderOfferDetails?.offerDetails?.renewPreviousSubscription",
+                            "rootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                          },
+                          "comparedValues": {
+                            "isValue": "No"
+                          },
+                          "comparedAgainst": "fieldValue",
+                          "compareFieldType": "radio"
+                        }
+                      ],
+                      "configuredFieldRefPath": "decoderOfferDetails?.offerDetails?.totalPricePerMonth",
+                      "configuredFieldRootModelPath": "field?.parent?.parent?.parent?.parent?.model"
+                    },
+                    "internalDescription": ""
+                  },
+                  "defaultValue": null,
+                  "expressions": {
+                    "hide": "!(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.offerDetails?.renewPreviousSubscription === 'No')!(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.decoderDetails?.businessActivities)",
+                    "model.totalPricePerMonth": "model?.decoderNumber && formState?.FETCHED_DATA?.decoderNumber?.offersList ?  formState?.FETCHED_DATA?.decoderNumber?.offersList.find(offer => offer.code == model.subscriptionoffer)?.amount : 350"
+                  },
+                  "validation": {
+                    "messages": {}
+                  },
+                  "validators": null,
+                  "asyncValidators": null
+                },
+                {
+                  "key": "subscriptionDurationMonths",
+                  "id": "formly_3598_customdropdown_subscriptionDurationMonths_11",
+                  "type": "customdropdown",
+                  "props": {
+                    "hint": "",
+                    "label": "Subscription duration (Months)",
+                    "hidden": true,
+                    "options": [],
+                    "subType": "CUSTOM_DROPDOWN_DATAFETCH",
+                    "tooltip": "",
+                    "disabled": false,
+                    "multiple": false,
+                    "readonly": false,
+                    "required": true,
+                    "bindLabel": "label",
+                    "bindValue": "code",
+                    "dataField": "durationsList",
+                    "useBaseUrl": true,
+                    "placeholder": "Subscription duration (Months)",
+                    "virtualScroll": true,
+                    "hideFromPreview": true,
+              
+                    "internalDescription": ""
+                  },
+                  "defaultValue": null,
+                  "expressions": {
+                    "hide": "!(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.offerDetails?.renewPreviousSubscription === 'No') || !(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.decoderDetails?.businessActivities)",
+                    "props.options": "model?.decoderNumber && formState?.FETCHED_DATA?.decoderNumber?.offersList ?  formState?.FETCHED_DATA?.decoderNumber?.offersList.find(offer => offer.code == model.businessActivities)?.durationsList.map(item => item)  : []"
+                  },
+                  "validation": {
+                    "messages": {
+                      "required": "This field is required"
+                    }
+                  },
+                  "validators": null,
+                  "asyncValidators": null
+                },
+                {
+                  "key": "subscriptionOfferOption",
+                  "id": "formly_3598_customdropdown_offerOption_12",
+                  "type": "customdropdown",
+                  "props": {
+                    "hint": "",
+                    "label": "Offer Option",
+                    "hidden": true,
+                    "options": [],
+                    "subType": "CUSTOM_DROPDOWN_DATAFETCH",
+                    "tooltip": "",
+                    "disabled": false,
+                    "multiple": true,
+                    "readonly": false,
+                    "required": true,
+                    "useBaseUrl": true,
+                    "bindLabel": "label",
+                    "bindValue": "value",
+                    "placeholder": "",
+                    "internalDescription": ""
+                  },
+                  "defaultValue": null,
+                  "expressions": {
+                    "hide": "!(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.decoderDetails?.renewPreviousSubscription === 'No') || !(field?.parent?.parent?.parent?.parent?.model?.decoderOfferDetails?.decoderDetails?.businessActivities)",
+                    "props.options": "model?.decoderNumber && formState?.FETCHED_DATA?.decoderNumber?.offersList ?  formState?.FETCHED_DATA?.decoderNumber?.offersList.find(offer => offer.code == model.subscriptionoffer)?.optionsList.map(item => item)  : []"
+                  },
+                  "validation": {
+                    "messages": {}
+                  },
+                  "validators": null,
+                  "asyncValidators": null
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

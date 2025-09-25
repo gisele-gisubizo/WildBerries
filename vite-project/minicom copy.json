@@ -1,0 +1,351 @@
+{
+  "workflow": [
+    {
+      "startState": "NEW",
+      "event": "APPLY",
+      "endStateOne": {
+        "stateName": "Pending Assign Office",
+        "stateNames": null,
+        "stateCode": "PENDING_ASSIGN_OFFICE",
+        "breakingAction": null,
+        "breakingActions": null,
+        "nonBreakingActions": [
+          {
+            "actionType": "NOTIFICATION",
+            "args": {
+              "notificationType": "NOTIFICATION_ENGINE_TEMPLATE",
+              "dynamicTemplate": {
+                "en": {
+                  "emailTemplateName": "PAYMENT_PENDING_EMAIL_EN",
+                  "smsTemplateName": "PAYMENT_PENDING_SMS_EN"
+                }
+              },
+              "certificateWithList": false,
+              "updateFieldWithDatasetValue": false
+            }
+          }
+        ],
+        "nextEvent": "ASSIGN_OFFICE",
+        "position": null
+      },
+      "endStateTwo": {
+        "stateName": "Pending Assign Office",
+        "stateNames": null,
+        "stateCode": "PENDING_ASSIGN_OFFICE",
+        "breakingAction": null,
+        "breakingActions": null,
+        "nonBreakingActions": null,
+        "nextEvent": "ASSIGN_OFFICE",
+        "position": null
+      },
+      "endStateCondition": null,
+      "authorisation": null,
+      "position": null,
+      "eventNames": null,
+      "eventConfigs": null
+    },
+    {
+      "startState": "PENDING_ASSIGN_OFFICE",
+      "event": "ASSIGN_OFFICE",
+      "endStateOne": {
+        "stateName": "Pending Officer Processing",
+        "stateNames": null,
+        "stateCode": "PENDING_OFFICER_PROCESSING_LEVEL_1",
+        "breakingAction": {
+          "actionType": "OFFICE_ASSIGNMENT",
+          "args": {
+            "officeAssignmentType": "CODE_FIXED_OFFICE",
+            "officeLevel": "LEVEL_1",
+            "officeId": "3b874636-f017-4947-a463-182846d57441",
+            "certificateWithList": false,
+            "updateFieldWithDatasetValue": false
+          }
+        },
+        "breakingActions": null,
+        "nonBreakingActions": null,
+        "nextEvent": null,
+        "position": {
+          "x": 825,
+          "y": 240
+        }
+      },
+      "endStateTwo": null,
+      "endStateCondition": null,
+      "authorisation": null,
+      "position": {
+        "x": 554,
+        "y": 183
+      },
+      "eventNames": null,
+      "eventConfigs": null
+    },
+    {
+      "startState": "PENDING_OFFICER_PROCESSING_LEVEL_1",
+      "event": "REQUEST_FOR_ACTION",
+      "endStateOne": {
+        "stateName": "Pending Resubmission",
+        "stateNames": null,
+        "stateCode": "PENDING_RESUBMISSION",
+        "breakingAction": null,
+        "breakingActions": null,
+        "nonBreakingActions": [
+          {
+            "actionType": "NOTIFICATION",
+            "args": {
+              "notificationType": "NOTIFICATION_ENGINE_TEMPLATE",
+              "dynamicTemplate": {
+                "en": {
+                  "emailTemplateName": "PENDING_RESUBMISSION_EMAIL_EN",
+                  "smsTemplateName": "PENDING_RESUBMISSION_SMS_EN"
+                }
+              },
+              "certificateWithList": false,
+              "updateFieldWithDatasetValue": false
+            }
+          }
+        ],
+        "nextEvent": null,
+        "position": {
+          "x": 1273,
+          "y": -82
+        }
+      },
+      "endStateTwo": null,
+      "endStateCondition": null,
+      "authorisation": null,
+      "position": {
+        "x": 1057,
+        "y": -108
+      },
+      "eventNames": null,
+      "eventConfigs": null
+    },
+    {
+      "startState": "PENDING_OFFICER_PROCESSING_LEVEL_1",
+      "event": "REJECT",
+      "endStateOne": {
+        "stateName": "Reject",
+        "stateNames": null,
+        "stateCode": "REJECTED",
+        "breakingAction": null,
+        "breakingActions": null,
+        "nonBreakingActions": [
+          {
+            "actionType": "NOTIFICATION",
+            "args": {
+              "notificationType": "STATIC",
+              "staticTemplate": {
+                "en": {
+                  "title": null,
+                  "subject": "Your application status",
+                  "emailBody": "<p>Dear ($applicant_name), </p><p><br></p><p>Your application for <strong>$service_name </strong>was rejected. </p><p><br></p><p>These are your application details:</p><p><br></p><p><strong>Industrial park</strong>: $Industrial Park</p><p><strong>Size of Plot: $</strong>Size of plot </p><p><strong>Application number: </strong>$application_number</p><p><strong>Status:</strong> Rejected</p><p><strong>Reason for rejection: </strong>$reason_for_rejection</p><p><br></p><p>Thank you for using IremboGov!</p><p>Need help?</p><p>Email us at support@irembo.com</p><p>Visit our Support Center </p><p><br></p><p>If you are receiving this email by mistake, please ignore it!</p>",
+                  "smsBody": "Dear ($applicant_name), \n\nYour application for $service_name was rejected. \n\nThese are your application details:\n\nIndustrial park: $Industrial Park\nSize of Plot: $Size of plot \nApplication number: $application_number\nStatus: Rejected\nReason for rejection: $reason_for_rejection\n\nThank you for using IremboGov!\nNeed help?\nEmail us at support@irembo.com\nVisit our Support Center \n\nIf you are receiving this email by mistake, please ignore it!",
+                  "emailMessage": null
+                }
+              },
+              "certificateWithList": false,
+              "updateFieldWithDatasetValue": false
+            }
+          }
+        ],
+        "nextEvent": null,
+        "position": null
+      },
+      "endStateTwo": null,
+      "endStateCondition": null,
+      "authorisation": null,
+      "position": {
+        "x": 842,
+        "y": 52
+      },
+      "eventNames": null,
+      "eventConfigs": null
+    },
+    {
+      "startState": "PENDING_OFFICER_PROCESSING_LEVEL_1",
+      "event": "ESCALATE",
+      "endStateOne": {
+        "stateName": "pending approval",
+        "stateNames": null,
+        "stateCode": "PENDING_OFFICER_PROCESSING_LEVEL_2",
+        "breakingAction": {
+          "actionType": "OFFICE_ASSIGNMENT",
+          "args": {
+            "officeAssignmentType": "CODE_FIXED_OFFICE",
+            "officeLevel": "LEVEL_2",
+            "officeId": "d76ed647-c9d7-4e9c-82c9-1efd8c6b19ce",
+            "certificateWithList": false,
+            "updateFieldWithDatasetValue": false
+          }
+        },
+        "breakingActions": null,
+        "nonBreakingActions": null,
+        "nextEvent": null,
+        "position": null
+      },
+      "endStateTwo": null,
+      "endStateCondition": null,
+      "authorisation": null,
+      "position": null,
+      "eventNames": null,
+      "eventConfigs": null
+    },
+    {
+      "startState": "PENDING_OFFICER_PROCESSING_LEVEL_2",
+      "event": "TRANSITION",
+      "endStateOne": {
+        "stateName": "Pending approval",
+        "stateNames": null,
+        "stateCode": "PENDING_OFFICER_PROCESSING_LEVEL_1",
+        "breakingAction": {
+          "actionType": "OFFICE_ASSIGNMENT",
+          "args": {
+            "officeAssignmentType": "CODE_FIXED_OFFICE",
+            "officeLevel": "LEVEL_1",
+            "officeId": "3b874636-f017-4947-a463-182846d57441",
+            "certificateWithList": false,
+            "updateFieldWithDatasetValue": false
+          }
+        },
+        "breakingActions": null,
+        "nonBreakingActions": null,
+        "nextEvent": null,
+        "position": null
+      },
+      "endStateTwo": null,
+      "endStateCondition": null,
+      "authorisation": null,
+      "position": {
+        "x": 1487,
+        "y": 23
+      },
+      "eventNames": null,
+      "eventConfigs": null
+    },
+    {
+      "startState": "PENDING_OFFICER_PROCESSING_LEVEL_2",
+      "event": "REJECT",
+      "endStateOne": {
+        "stateName": "Reject",
+        "stateNames": null,
+        "stateCode": "REJECTED",
+        "breakingAction": null,
+        "breakingActions": null,
+        "nonBreakingActions": [
+          {
+            "actionType": "NOTIFICATION",
+            "args": {
+              "notificationType": "STATIC",
+              "staticTemplate": {
+                "en": {
+                  "title": null,
+                  "subject": "Status of your application",
+                  "emailBody": "<p>Dear ($applicant_name), </p><p><br></p><p>Your application for <strong>$service_name </strong>was rejected. </p><p><br></p><p>These are your application details:</p><p><br></p><p><strong>Industrial park</strong>: $Industrial Park</p><p><strong>Size of Plot: $</strong>Size of plot </p><p><strong>Application number: </strong>$application_number</p><p><strong>Status:</strong> Rejected</p><p><strong>Reason for rejection: </strong>$reason_for_rejection</p><p><br></p><p>Thank you for using IremboGov!</p><p>Need help?</p><p>Email us at support@irembo.com</p><p>Visit our Support Center </p><p><br></p><p>If you are receiving this email by mistake, please ignore it!</p>",
+                  "smsBody": "Dear ($applicant_name), \n\nYour application for $service_name was rejected. \n\nThese are your application details:\n\nIndustrial park: $Industrial Park\nSize of Plot: $Size of plot \nApplication number: $application_number\nStatus: Rejected\nReason for rejection: $reason_for_rejection\n\nThank you for using IremboGov!\nNeed help?\nEmail us at support@irembo.com\nVisit our Support Center \n\nIf you are receiving this email by mistake, please ignore it!",
+                  "emailMessage": null
+                }
+              },
+              "certificateWithList": false,
+              "updateFieldWithDatasetValue": false
+            }
+          }
+        ],
+        "nextEvent": null,
+        "position": null
+      },
+      "endStateTwo": null,
+      "endStateCondition": null,
+      "authorisation": null,
+      "position": null,
+      "eventNames": null,
+      "eventConfigs": null
+    },
+    {
+      "startState": "PENDING_OFFICER_PROCESSING_LEVEL_2",
+      "event": "ESCALATE",
+      "endStateOne": {
+        "stateName": "Pending approval",
+        "stateNames": null,
+        "stateCode": "PENDING_OFFICER_PROCESSING_LEVEL_3",
+        "breakingAction": null,
+        "breakingActions": null,
+        "nonBreakingActions": null,
+        "nextEvent": null,
+        "position": null
+      },
+      "endStateTwo": null,
+      "endStateCondition": null,
+      "authorisation": null,
+      "position": null,
+      "eventNames": null,
+      "eventConfigs": null
+    },
+    {
+      "startState": "PENDING_OFFICER_PROCESSING_LEVEL_3",
+      "event": "TRANSITION",
+      "endStateOne": {
+        "stateName": "Pending submission to officer 2",
+        "stateNames": null,
+        "stateCode": "PENDING_OFFICER_PROCESSING_LEVEL_2",
+        "breakingAction": null,
+        "breakingActions": [],
+        "nonBreakingActions": null,
+        "nextEvent": null,
+        "position": null
+      },
+      "endStateTwo": null,
+      "endStateCondition": null,
+      "authorisation": null,
+      "position": null,
+      "eventNames": null,
+      "eventConfigs": null
+    },
+    {
+      "startState": "PENDING_RESUBMISSION",
+      "event": "SUBMIT_RFA",
+      "endStateOne": {
+        "stateName": "Pending assign office",
+        "stateNames": null,
+        "stateCode": "PENDING_ASSIGN_OFFICE",
+        "breakingAction": null,
+        "breakingActions": null,
+        "nonBreakingActions": [
+          {
+            "actionType": "NOTIFICATION",
+            "args": {
+              "notificationType": "NOTIFICATION_ENGINE_TEMPLATE",
+              "dynamicTemplate": {
+                "en": {
+                  "emailTemplateName": "RESUBMITTED_EMAIL_EN",
+                  "smsTemplateName": "RESUBMITTED_SMS_EN"
+                }
+              },
+              "certificateWithList": false,
+              "updateFieldWithDatasetValue": false
+            }
+          }
+        ],
+        "nextEvent": "ASSIGN_OFFICE",
+        "position": null
+      },
+      "endStateTwo": null,
+      "endStateCondition": null,
+      "authorisation": null,
+      "position": {
+        "x": 1688,
+        "y": -91
+      },
+      "eventNames": null,
+      "eventConfigs": null
+    }
+  ],
+  "nextSteps": [
+    {
+      "title": "Payment",
+      "condition": null,
+      "description": "<p>Payment</p>"
+    }
+  ],
+  "expectedProcessingTime": 30,
+  "expectedProcessingMeasurementUnit": "DAY"
+}
