@@ -9,8 +9,9 @@ import Cart from "./Components/Cart";
 import EntryPage from "./Components/EntryPage";
 import Login from "./Components/Login";
 import Register from "./Components/Register";
-import Checkout from "./Components/Checkout"; // ⬅️ add this
-
+import Checkout from "./Components/Checkout"; 
+import OrderSuccess from "./Components/OrderSuccess"; // ⬅️ added
+import MomoPayment from "./Components/MomoPayment"; // ⬅️ added
 
 import "./App.css";
 
@@ -53,7 +54,8 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />
-
+          <Route path="order-success" element={<OrderSuccess />} /> {/* ⬅️ added */}
+          <Route path="momo-payment" element={<MomoPayment />} />   {/* ⬅️ added */}
         </Route>
       </Routes>
     </BrowserRouter>

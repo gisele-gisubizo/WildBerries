@@ -34,6 +34,9 @@ const Checkout = () => {
     // Optionally clear cart
     localStorage.removeItem("cartItems");
     setCartItems([]);
+    
+  // Redirect to Order Success page
+  window.location.href = "/site/order-success";
   };
 
   const total = subtotal + shipping;
