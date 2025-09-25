@@ -1,0 +1,66 @@
+/* Navbar container */
+.dashboard-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #007BFF; /* primary blue */
+  padding: 12px 24px;
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 8px 8px;
+}
+
+/* Dashboard title */
+.dashboard-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Right side container for user info + language */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Language dropdown */
+.language-switcher {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background-color: #fff;
+  color: #007BFF;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.language-switcher:hover {
+  background-color: #e0e0e0;
+}
+
+/* User info container */
+.dashboard-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* User avatar image */
+.user-avatar {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* User icon (fallback) */
+.user-icon {
+  font-size: 1.8rem;
+}
+
+/* Username text */
+.username {
+  font-weight: 500;
+  font-size: 1rem;
+}

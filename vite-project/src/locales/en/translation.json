@@ -1,0 +1,20 @@
+{
+  "dashboard": "Dashboard",
+  "messages": "Messages",
+  "applications": "Applications",
+  "shops": "Shops",
+  "settings": "Settings",
+
+  "sender": "Sender",
+  "type": "Type",
+  "subject": "Subject",
+  "date": "Date",
+  "status": "Status",
+  "reply": "Reply",
+  "viewReply": "View Reply",
+  "saveSettings": "Save Settings",
+  "profileSettings": "Profile Settings",
+  "notificationPreferences": "Notification Preferences",
+  "systemPreferences": "System Preferences",
+  "security": "Security"
+}
