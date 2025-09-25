@@ -1,17 +1,24 @@
-import { AppDataSource } from "./src/data-source";
-import { Category } from "./src/entities/category";
+// src/seed/categoriesData.ts
+import { CategoryType, CategoryField } from "../entities/category";
 
-const categoriesData = [
+export interface CategorySeedData {
+  name: CategoryType;
+  fields: CategoryField[];
+  description?: string;
+}
+
+export const categoriesData: CategorySeedData[] = [
   {
-    name: "Fashion & Clothing" as const,
+    name: "Fashion & Clothing",
     fields: [
       { name: "sizes", type: "array", required: true, options: ["S", "M", "L", "XL"] },
       { name: "color", type: "string", required: true },
       { name: "material", type: "string", required: true },
       { name: "gender", type: "string", required: true, options: ["Men", "Women", "Unisex", "Kids"] },
       { name: "brand", type: "string", required: true },
-      { name: "images", type: "array", required: true }
-    ]
+      { name: "images", type: "array", required: true }, 
+    ],
+    description: "Clothing and fashion items",
   },
   {
     name: "Electronics & Gadgets",
@@ -23,8 +30,9 @@ const categoriesData = [
       { name: "batteryCapacity", type: "string", required: false },
       { name: "storageMemory", type: "string", required: true },
       { name: "colorOptions", type: "array", required: true },
-      { name: "images", type: "array", required: true }
-    ]
+      { name: "images", type: "array", required: true },
+    ],
+    description: "Electronic devices and gadgets",
   },
   {
     name: "Home & Furniture",
@@ -35,8 +43,9 @@ const categoriesData = [
       { name: "weight", type: "string", required: true },
       { name: "assemblyRequired", type: "boolean", required: true },
       { name: "brand", type: "string", required: true },
-      { name: "images", type: "array", required: true }
-    ]
+      { name: "images", type: "array", required: true },
+    ],
+    description: "Furniture and home essentials",
   },
   {
     name: "Food & Beverages",
@@ -47,8 +56,9 @@ const categoriesData = [
       { name: "expiryDate", type: "date", required: true },
       { name: "storageInstructions", type: "string", required: true },
       { name: "dietaryInfo", type: "string", required: true },
-      { name: "images", type: "array", required: true }
-    ]
+      { name: "images", type: "array", required: true },
+    ],
+    description: "Food items and beverages",
   },
   {
     name: "Beauty & Personal Care",
@@ -59,8 +69,9 @@ const categoriesData = [
       { name: "expiryDate", type: "date", required: true },
       { name: "skinHairType", type: "string", required: true },
       { name: "genderTarget", type: "string", required: true, options: ["Men", "Women", "Unisex"] },
-      { name: "images", type: "array", required: true }
-    ]
+      { name: "images", type: "array", required: true },
+    ],
+    description: "Beauty and personal care products",
   },
   {
     name: "Books & Stationery",
@@ -72,8 +83,9 @@ const categoriesData = [
       { name: "language", type: "string", required: true },
       { name: "genre", type: "string", required: true },
       { name: "isbn", type: "string", required: true },
-      { name: "images", type: "array", required: true }
-    ]
+      { name: "images", type: "array", required: true },
+    ],
+    description: "Books, stationery, and educational materials",
   },
   {
     name: "Health & Fitness",
@@ -84,8 +96,9 @@ const categoriesData = [
       { name: "ingredients", type: "string", required: true },
       { name: "expiryDate", type: "date", required: true },
       { name: "usageInstructions", type: "string", required: true },
-      { name: "images", type: "array", required: true }
-    ]
+      { name: "images", type: "array", required: true },
+    ],
+    description: "Health, fitness, and supplements",
   },
   {
     name: "Automotive & Accessories",
@@ -96,8 +109,9 @@ const categoriesData = [
       { name: "condition", type: "string", required: true, options: ["New", "Used"] },
       { name: "warranty", type: "string", required: true },
       { name: "material", type: "string", required: true },
-      { name: "images", type: "array", required: true }
-    ]
+      { name: "images", type: "array", required: true },
+    ],
+    description: "Automotive products and accessories",
   },
   {
     name: "Kids & Baby Products",
@@ -107,8 +121,9 @@ const categoriesData = [
       { name: "material", type: "string", required: true },
       { name: "safetyCertifications", type: "string", required: true },
       { name: "brand", type: "string", required: true },
-      { name: "images", type: "array", required: true }
-    ]
+      { name: "images", type: "array", required: true },
+    ],
+    description: "Products for kids and babies",
   },
   {
     name: "Real Estate & Property",
@@ -120,8 +135,9 @@ const categoriesData = [
       { name: "furnished", type: "boolean", required: true },
       { name: "availability", type: "string", required: true },
       { name: "contactInfo", type: "string", required: true },
-      { name: "images", type: "array", required: true }
-    ]
+      { name: "images", type: "array", required: true },
+    ],
+    description: "Real estate and property listings",
   },
   {
     name: "Services",
@@ -130,30 +146,8 @@ const categoriesData = [
       { name: "serviceArea", type: "string", required: true },
       { name: "availability", type: "string", required: true },
       { name: "contactInfo", type: "string", required: true },
-      { name: "images", type: "array", required: false }
-    ]
-  }
+      { name: "images", type: "array", required: false },
+    ],
+    description: "Various services",
+  },
 ];
-
-async function seedCategories() {
-  await AppDataSource.initialize();
-  const categoryRepo = AppDataSource.getRepository(Category);
-
-  for (const catData of categoriesData) {
-    const existing = await categoryRepo.findOneBy({ name: catData.name });
-    if (!existing) {
-      const category = categoryRepo.create(catData);
-      await categoryRepo.save(category);
-      console.log(`Seeded category: ${catData.name}`);
-    } else {
-      existing.fields = catData.fields;
-      await categoryRepo.save(existing);
-      console.log(`Updated category: ${catData.name}`);
-    }
-  }
-
-  await AppDataSource.destroy();
-  console.log("Seeding completed");
-}
-
-seedCategories().catch(console.error);

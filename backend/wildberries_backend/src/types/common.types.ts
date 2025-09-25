@@ -1,7 +1,6 @@
-import { Request } from 'express';
-// import { User } from '../entities/User';
-import { User } from '../entities/user';
-import { ZodIssue } from 'zod';
+import { ZodIssue } from "zod";
+import { Request } from "express";
+import { User } from "../entities/user";
 
 export interface AuthenticatedRequest extends Request {
   user?: User;
@@ -18,8 +17,9 @@ export interface ApiResponse<T = any> {
   success: boolean;
   message?: string;
   data?: T;
-  errors?: Record<string, string[]> | ZodIssue[]; // ✅ strict instead of "any"
+  errors?: Record<string, string[]> | ZodIssue[];
 }
 
-// Roles
-export type UserRole = "user" | "admin";
+// Roles must match User entity
+export type UserRole = "admin" | "seller" | "customer";
+export type UserStatus = "pending" | "approved" | "rejected";

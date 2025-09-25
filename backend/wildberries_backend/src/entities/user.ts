@@ -1,4 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne,OneToMany } from "typeorm";
+import { Category } from "./category";
+import { Product } from "./product"; 
+
 
 export type UserRole = "admin" | "seller" | "customer";
 export type UserStatus = "pending" | "approved" | "rejected";
@@ -41,8 +44,13 @@ export class User {
   @Column({ nullable: true })
   licenseDoc?: string;
 
-  @Column({ nullable: true })
-  category?: string;   // Seller category (e.g. electronics, clothing, etc.)
+ @ManyToOne(() => Category, (category) => category.sellers, { nullable: true })
+  category?: Category;
+
+  // Inside User class
+@OneToMany(() => Product, (product) => product.seller)
+products!: Product[];
+
 
   @Column({ nullable: true })
   address?: string;    // Physical address

@@ -34,7 +34,7 @@ export const registerSellerSchema = z.object({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
       "Password must contain at least one lowercase, one uppercase letter, and one number"
     ),
-  category: z.string().min(1, "Category is required"),
+  // category: z.string().min(1, "Category is required"),
   address: z.string().min(1, "Address is required"),
 });
 

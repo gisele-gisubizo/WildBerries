@@ -1,55 +1,39 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
+// src/entities/order.ts
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { User } from "./user";
-import { Product } from "./product";
-
-export type OrderStatus =
-  | "pending"
-  | "confirmed"
-  | "shipped"
-  | "delivered"
-  | "cancelled"
-  | "returned";
-
-export interface OrderItem {
-  productId: number;
-  quantity: number;
-  price: number; // Price at time of order
-}
+import { OrderItem } from "./orderItem";
 
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
-  @ManyToOne(() => User)
-  @JoinColumn()
-  customer!: User;
+  @ManyToOne(() => User, (user) => user.orders, { eager: true })
+  user: User;
 
-  @Column({ type: "json" })
-  items!: OrderItem[];
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {
+    cascade: true,
+    eager: true,
+  })
+  items: OrderItem[];
 
-  @Column({ type: "decimal", precision: 10, scale: 2 })
-  totalAmount!: number;
+  @Column({ default: "pending" })
+  status: string; // pending, processing, shipped, delivered
 
-  @Column({ type: "enum", enum: [
-    "pending",
-    "confirmed",
-    "shipped",
-    "delivered",
-    "cancelled",
-    "returned"
-  ], default: "pending" })
-  status!: OrderStatus;
-
-  @Column({ nullable: true })
-  shippingAddress?: string;
-
-  @Column({ nullable: true })
-  paymentMethod?: string;
+  @Column("decimal", { precision: 10, scale: 2 })
+  totalAmount: number;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  updatedAt: Date;
 }

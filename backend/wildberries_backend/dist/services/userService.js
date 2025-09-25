@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRejectedSellers = exports.getApprovedSellers = exports.getPendingSellers = exports.generateToken = exports.comparePassword = exports.findByEmail = exports.reviewSeller = exports.loginUser = exports.verifyOTP = exports.registerSeller = exports.registerCustomer = void 0;
+exports.deleteUser = exports.updateUser = exports.getUsersByFilter = exports.getUserById = exports.getAllUsers = exports.getRejectedSellers = exports.getApprovedSellers = exports.getPendingSellers = exports.generateToken = exports.comparePassword = exports.findByEmail = exports.reviewSeller = exports.loginUser = exports.verifyOTP = exports.registerSeller = exports.registerCustomer = void 0;
 // src/services/userService.ts
 const data_source_1 = require("../data-source");
 const errors_1 = require("../utilis/errors");
@@ -33,11 +33,11 @@ const registerCustomer = (email_1, phone_1, password_1, ...args_1) => __awaiter(
     const existingPhone = yield userRepo.findOneBy({ phone });
     if (existingPhone)
         throw new errors_1.AppError("Phone number is already registered", 400);
-    if (role === "admin") {
-        const existingAdmin = yield userRepo.findOneBy({ role: "admin" });
-        if (existingAdmin)
-            throw new errors_1.AppError("Admin already exists", 400);
-    }
+    // Temporarily allow multiple admins for testing
+    // if (role === "admin") {
+    //   const existingAdmin = await userRepo.findOneBy({ role: "admin" });
+    //   if (existingAdmin) throw new AppError("Admin already exists", 400);
+    // }
     const hashedPassword = yield bcrypt_1.default.hash(password, SALT_ROUNDS);
     const otp = (0, otp_1.generateOTP)();
     const user = userRepo.create({
@@ -57,7 +57,7 @@ exports.registerCustomer = registerCustomer;
 // =============================
 // Register Seller
 // =============================
-const registerSeller = (email, phone, password, idCopy, licenseDoc) => __awaiter(void 0, void 0, void 0, function* () {
+const registerSeller = (name, email, phone, password, idCopy, licenseDoc, category, address) => __awaiter(void 0, void 0, void 0, function* () {
     const existingEmail = yield userRepo.findOneBy({ email });
     if (existingEmail)
         throw new errors_1.AppError("Email is already registered", 400);
@@ -65,17 +65,23 @@ const registerSeller = (email, phone, password, idCopy, licenseDoc) => __awaiter
     if (existingPhone)
         throw new errors_1.AppError("Phone number is already registered", 400);
     const hashedPassword = yield bcrypt_1.default.hash(password, SALT_ROUNDS);
+    const otp = (0, otp_1.generateOTP)();
     const seller = userRepo.create({
+        name,
         email,
         phone,
         password: hashedPassword,
+        otp,
         idCopy,
         licenseDoc,
+        category,
+        address,
         role: "seller",
         isVerified: false,
         status: "pending",
     });
     yield userRepo.save(seller);
+    yield (0, nodemailer_1.sendEmail)(email, "Your OTP Verification Code", `Your OTP is: ${otp}`);
     return seller;
 });
 exports.registerSeller = registerSeller;
@@ -86,7 +92,8 @@ const verifyOTP = (email, otp) => __awaiter(void 0, void 0, void 0, function* ()
     const user = yield userRepo.findOneBy({ email });
     if (!user)
         throw new errors_1.AppError("User not found", 404);
-    if (user.otp !== otp)
+    // Temporarily accept 123456 for testing
+    if (otp !== "123456")
         throw new errors_1.AppError("Invalid OTP", 400);
     user.isVerified = true;
     user.otp = null;
@@ -178,3 +185,47 @@ const getRejectedSellers = () => __awaiter(void 0, void 0, void 0, function* () 
     });
 });
 exports.getRejectedSellers = getRejectedSellers;
+// =============================
+// Get all users
+// =============================
+const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
+    return userRepo.find();
+});
+exports.getAllUsers = getAllUsers;
+// =============================
+// Get user by ID
+// =============================
+const getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield userRepo.findOneBy({ id });
+    if (!user)
+        throw new errors_1.AppError("User not found", 404);
+    return user;
+});
+exports.getUserById = getUserById;
+const getUsersByFilter = (filter) => __awaiter(void 0, void 0, void 0, function* () {
+    return userRepo.find({ where: filter });
+});
+exports.getUsersByFilter = getUsersByFilter;
+// =============================
+// Update user
+// =============================
+const updateUser = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield userRepo.findOneBy({ id });
+    if (!user)
+        throw new errors_1.AppError("User not found", 404);
+    Object.assign(user, data);
+    yield userRepo.save(user);
+    return user;
+});
+exports.updateUser = updateUser;
+// =============================
+// Delete user
+// =============================
+const deleteUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield userRepo.findOneBy({ id });
+    if (!user)
+        throw new errors_1.AppError("User not found", 404);
+    yield userRepo.remove(user);
+    return user;
+});
+exports.deleteUser = deleteUser;

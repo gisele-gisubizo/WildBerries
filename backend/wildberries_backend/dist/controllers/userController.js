@@ -42,7 +42,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRejectedSellersController = exports.getApprovedSellersController = exports.getPendingSellersController = exports.rejectSellerController = exports.approveSellerController = exports.deleteOwnAccountController = exports.updateOwnAccountController = exports.deleteUserController = exports.getUserByIdController = exports.getAllUsersController = exports.loginController = exports.verifyOtpController = exports.registerSellerController = exports.registerCustomerController = void 0;
+exports.deleteUserController = exports.updateUserController = exports.getUsersByFilterController = exports.getUserByIdController = exports.getAllUsersController = exports.getRejectedSellersController = exports.getApprovedSellersController = exports.getPendingSellersController = exports.rejectSellerController = exports.approveSellerController = exports.loginController = exports.verifyOtpController = exports.registerSellerController = exports.registerCustomerController = void 0;
 const errorHandler_1 = require("../middlewares/errorHandler");
 const errors_1 = require("../utilis/errors");
 const user_schemas_1 = require("../schemas/user.schemas");
@@ -53,11 +53,15 @@ const UserService = __importStar(require("../services/userService"));
 exports.registerCustomerController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const parsed = user_schemas_1.registerCustomerSchema.safeParse(req.body);
     if (!parsed.success) {
-        throw new errors_1.AppError("Validation failed", 400, parsed.error.issues);
+        return res.status(400).json({
+            success: false,
+            message: "Validation failed",
+            errors: parsed.error.issues,
+        });
     }
     const { email, phone, password, role } = parsed.data;
     const user = yield UserService.registerCustomer(email, phone, password, role);
-    res.status(201).json({
+    return res.status(201).json({
         success: true,
         message: "Registered successfully. Please verify your email with the OTP sent.",
         data: { id: user.id, email: user.email, phone: user.phone, role: user.role },
@@ -65,28 +69,21 @@ exports.registerCustomerController = (0, errorHandler_1.asyncHandler)((req, res)
 }));
 exports.registerSellerController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e, _f;
-    const { name, email, phone, password } = req.body;
+    const { name, email, phone, password, category, address } = req.body;
     const idCopy = (_c = (_b = (_a = req.files) === null || _a === void 0 ? void 0 : _a.idCopy) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.path;
     const licenseDoc = (_f = (_e = (_d = req.files) === null || _d === void 0 ? void 0 : _d.licenseDoc) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f.path;
     if (!idCopy || !licenseDoc) {
-        throw new errors_1.AppError("Both ID copy and license document are required.", 400);
+        return res.status(400).json({ success: false, message: "Both ID copy and license document are required." });
     }
-    const parsed = user_schemas_1.registerSellerSchema.safeParse({
-        name,
-        email,
-        phone,
-        password,
-        idCopy,
-        licenseDoc,
-    });
+    const parsed = user_schemas_1.registerSellerSchema.safeParse({ name, email, phone, password, category, address });
     if (!parsed.success) {
-        throw new errors_1.AppError("Validation failed", 400, parsed.error.issues);
+        return res.status(400).json({ success: false, message: "Validation failed", errors: parsed.error.issues });
     }
-    const seller = yield UserService.registerSeller(name, email, phone, password, idCopy, licenseDoc);
-    res.status(201).json({
+    const seller = yield UserService.registerSeller(name, email, phone, password, idCopy, licenseDoc, category, address);
+    return res.status(201).json({
         success: true,
         message: "Seller registered successfully. Awaiting admin approval.",
-        data: seller,
+        data: { id: seller.id, name: seller.name, email: seller.email, phone: seller.phone, role: seller.role, category: seller.category, address: seller.address },
     });
 }));
 // ========================
@@ -94,91 +91,29 @@ exports.registerSellerController = (0, errorHandler_1.asyncHandler)((req, res) =
 // ========================
 exports.verifyOtpController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, otp } = req.body;
-    const user = yield UserService.getUserByEmail(email);
+    const user = yield UserService.findByEmail(email);
     if (!user)
-        throw new errors_1.AppError("User not found", 404);
+        return res.status(404).json({ success: false, message: "User not found" });
     if (user.isVerified)
-        throw new errors_1.AppError("User already verified", 400);
-    if (user.otp !== otp)
-        throw new errors_1.AppError("Invalid OTP", 400);
+        return res.status(400).json({ success: false, message: "User already verified" });
+    // Temporarily accept 123456 for testing
+    if (otp !== "123456")
+        return res.status(400).json({ success: false, message: "Invalid OTP" });
     user.isVerified = true;
     user.otp = null;
-    yield UserService.updateUser(user);
-    res.status(200).json({ success: true, message: "Email verified successfully" });
+    yield UserService.verifyOTP(email, otp);
+    return res.status(200).json({ success: true, message: "Email verified successfully" });
 }));
 // ========================
 // Login
 // ========================
 exports.loginController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const parsed = user_schemas_1.loginSchema.safeParse(req.body);
-    if (!parsed.success) {
-        throw new errors_1.AppError("Validation failed", 400, parsed.error.issues.map((e) => ({ path: e.path, message: e.message })));
-    }
+    if (!parsed.success)
+        throw new errors_1.AppError("Validation failed", 400, parsed.error.issues);
     const { email, password } = parsed.data;
-    const user = yield UserService.findByEmail(email);
-    if (!user)
-        throw new errors_1.AppError("Invalid email or password", 401);
-    if (!user.isVerified)
-        throw new errors_1.AppError("Please verify your email before logging in", 403);
-    if (user.role === "seller" && user.status !== "approved") {
-        throw new errors_1.AppError("Your seller account is not approved yet", 403);
-    }
-    const isPasswordValid = yield UserService.comparePassword(password, user.password);
-    if (!isPasswordValid)
-        throw new errors_1.AppError("Invalid email or password", 401);
-    const token = UserService.generateToken(user);
-    res.status(200).json({
-        success: true,
-        message: "Login successful",
-        data: { id: user.id, email: user.email, role: user.role, token },
-    });
-}));
-// ========================
-// Get all users
-// ========================
-exports.getAllUsersController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield UserService.getAllUsers();
-    res.status(200).json({ success: true, data: users });
-}));
-// ========================
-// Get user by ID
-// ========================
-exports.getUserByIdController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = Number(req.params.id);
-    if (isNaN(userId))
-        throw new errors_1.AppError("Invalid user ID", 400);
-    const user = yield UserService.getUserById(userId);
-    res.status(200).json({ success: true, data: user });
-}));
-// ========================
-// Delete user (Admin)
-// ========================
-exports.deleteUserController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = Number(req.params.id);
-    if (isNaN(userId))
-        throw new errors_1.AppError("Invalid user ID", 400);
-    const deleted = yield UserService.deleteUser(userId);
-    res.status(200).json({ success: true, message: "User deleted successfully", data: deleted });
-}));
-// ========================
-// Update own account
-// ========================
-exports.updateOwnAccountController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = Number(req.userId);
-    if (!userId)
-        throw new errors_1.AppError("User not authenticated", 401);
-    const updated = yield UserService.updateOwnAccount(userId, req.body);
-    res.status(200).json({ success: true, message: "Account updated successfully", data: updated });
-}));
-// ========================
-// Delete own account
-// ========================
-exports.deleteOwnAccountController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = Number(req.userId);
-    if (!userId)
-        throw new errors_1.AppError("User not authenticated", 401);
-    yield UserService.deleteOwnAccount(userId);
-    res.status(200).json({ success: true, message: "Account deleted successfully" });
+    const { user, token } = yield UserService.loginUser(email, password);
+    return res.status(200).json({ success: true, message: "Login successful", data: { id: user.id, email: user.email, role: user.role, token } });
 }));
 // ========================
 // Approve Seller
@@ -187,32 +122,90 @@ exports.approveSellerController = (0, errorHandler_1.asyncHandler)((req, res) =>
     const sellerId = Number(req.params.id);
     if (isNaN(sellerId))
         throw new errors_1.AppError("Invalid seller ID", 400);
-    const seller = yield UserService.approveSeller(sellerId);
-    res.status(200).json({ success: true, message: "Seller approved successfully", data: seller });
+    const seller = yield UserService.reviewSeller(sellerId, "approved");
+    return res.status(200).json({ success: true, message: "Seller approved successfully", data: seller });
 }));
 // ========================
 // Reject Seller
 // ========================
 exports.rejectSellerController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const sellerId = Number(req.params.id);
-    const { reason } = req.body;
     if (isNaN(sellerId))
         throw new errors_1.AppError("Invalid seller ID", 400);
-    const seller = yield UserService.rejectSeller(sellerId, reason);
-    res.status(200).json({ success: true, message: "Seller rejected successfully", data: seller });
+    const seller = yield UserService.reviewSeller(sellerId, "rejected");
+    return res.status(200).json({ success: true, message: "Seller rejected successfully", data: seller });
 }));
 // ========================
-// Get sellers by status
+// Get pending sellers
 // ========================
 exports.getPendingSellersController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const sellers = yield UserService.getPendingSellers();
     res.status(200).json({ success: true, message: "Pending sellers retrieved successfully", data: sellers });
 }));
+// ========================
+// Get approved sellers
+// ========================
 exports.getApprovedSellersController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const sellers = yield UserService.getApprovedSellers();
     res.status(200).json({ success: true, message: "Approved sellers retrieved successfully", data: sellers });
 }));
+// ========================
+// Get rejected sellers
+// ========================
 exports.getRejectedSellersController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const sellers = yield UserService.getRejectedSellers();
     res.status(200).json({ success: true, message: "Rejected sellers retrieved successfully", data: sellers });
+}));
+// ========================
+// Get all users
+// ========================
+// =============================
+// Get all users
+// =============================
+exports.getAllUsersController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const users = yield UserService.getAllUsers();
+    res.status(200).json({ success: true, message: "Users retrieved", data: users });
+}));
+// =============================
+// Get user by ID
+// =============================
+exports.getUserByIdController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(req.params.id);
+    if (isNaN(id))
+        throw new errors_1.AppError("Invalid user ID", 400);
+    const user = yield UserService.getUserById(id);
+    res.status(200).json({ success: true, message: "User retrieved", data: user });
+}));
+// =============================
+// Get users by filter (role/status)
+// =============================
+exports.getUsersByFilterController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { role, status } = req.query;
+    const filter = {};
+    if (role)
+        filter.role = role;
+    if (status)
+        filter.status = status;
+    const users = yield UserService.getUsersByFilter(filter);
+    res.status(200).json({ success: true, message: "Filtered users retrieved", data: users });
+}));
+// =============================
+// Update user
+// =============================
+exports.updateUserController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(req.params.id);
+    if (isNaN(id))
+        throw new errors_1.AppError("Invalid user ID", 400);
+    const updatedUser = yield UserService.updateUser(id, req.body);
+    res.status(200).json({ success: true, message: "User updated", data: updatedUser });
+}));
+// =============================
+// Delete user
+// =============================
+exports.deleteUserController = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(req.params.id);
+    if (isNaN(id))
+        throw new errors_1.AppError("Invalid user ID", 400);
+    const deletedUser = yield UserService.deleteUser(id);
+    res.status(200).json({ success: true, message: "User deleted", data: deletedUser });
 }));

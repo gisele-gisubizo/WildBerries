@@ -1,16 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { User } from "./user";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { Category } from "./category";
-
-export type ProductStatus =
-  | "draft"
-  | "active"
-  | "out_of_stock"
-  | "ordered"
-  | "shipped"
-  | "delivered"
-  | "cancelled"
-  | "returned";
+import { User } from "./user";
 
 @Entity()
 export class Product {
@@ -20,40 +17,26 @@ export class Product {
   @Column()
   name!: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 2 })
+  @Column("decimal", { precision: 10, scale: 2 })
   price!: number;
 
-  @Column({ type: "text" })
-  description!: string;
+  @Column("int")
+  stock!: number;
 
-  @Column({ default: 0 })
-  stockQuantity!: number;
+  // ✅ Flexible attributes (category-specific)
+  @Column({ type: "jsonb" })
+  attributes!: Record<string, any>;
 
-  @Column({ type: "enum", enum: [
-    "draft",
-    "active",
-    "out_of_stock",
-    "ordered",
-    "shipped",
-    "delivered",
-    "cancelled",
-    "returned"
-  ], default: "draft" })
-  status!: ProductStatus;
+  // ✅ Store multiple image URLs
+  @Column("text", { array: true, nullable: true })
+  images!: string[];
 
-  @ManyToOne(() => User)
-  @JoinColumn()
-  seller!: User;
-
-  @ManyToOne(() => Category)
-  @JoinColumn()
+  // ✅ Relations
+  @ManyToOne(() => Category, (category) => category.products, { eager: true })
   category!: Category;
 
-  @Column({ type: "json", nullable: true })
-  categoryFields?: Record<string, any>; // Dynamic fields based on category
-
-  @Column({ type: "json", nullable: true })
-  images?: string[]; // Array of image URLs
+  @ManyToOne(() => User, (user) => user.products, { eager: true })
+  seller!: User;
 
   @CreateDateColumn()
   createdAt!: Date;

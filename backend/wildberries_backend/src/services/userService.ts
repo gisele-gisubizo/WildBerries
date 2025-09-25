@@ -4,11 +4,13 @@ import { AppError } from "../utilis/errors";
 import { generateOTP } from "../utilis/otp";
 import { sendEmail } from "../utilis/nodemailer";
 import { User, UserRole } from "../entities/user";
+import { Category } from  "../entities/category"
 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const userRepo = AppDataSource.getRepository(User);
+const categoryRepo = AppDataSource.getRepository(Category);
 const SALT_ROUNDS = 10;
 
 // =============================
@@ -61,7 +63,7 @@ export const registerSeller = async (
   password: string,
   idCopy: string,
   licenseDoc: string,
-  category: string,
+  // category: string,
   address: string
 ) => {
   const existingEmail = await userRepo.findOneBy({ email });
@@ -81,7 +83,7 @@ export const registerSeller = async (
     otp,
     idCopy,
     licenseDoc,
-    category,
+    // category,
     address,
     role: "seller",
     isVerified: false,
@@ -101,8 +103,8 @@ export const verifyOTP = async (email: string, otp: string) => {
   const user = await userRepo.findOneBy({ email });
   if (!user) throw new AppError("User not found", 404);
 
-  // Temporarily accept 123456 for testing
-  if (otp !== "123456") throw new AppError("Invalid OTP", 400);
+  // Compare with the real generated OTP
+  if (user.otp !== otp) throw new AppError("Invalid OTP", 400);
 
   user.isVerified = true;
   user.otp = null;
@@ -110,6 +112,28 @@ export const verifyOTP = async (email: string, otp: string) => {
 
   return user;
 };
+
+
+// =============================
+// Resend OTP
+// =============================
+export const resendOTP = async (email: string) => {
+  const user = await userRepo.findOneBy({ email });
+  if (!user) throw new AppError("User not found", 404);
+
+  if (user.isVerified) {
+    throw new AppError("User is already verified", 400);
+  }
+
+  const newOtp = generateOTP();
+  user.otp = newOtp;
+  await userRepo.save(user);
+
+  await sendEmail(email, "Your New OTP Verification Code", `Your new OTP is: ${newOtp}`);
+
+  return { message: "A new OTP has been sent to your email" };
+};
+
 
 // =============================
 // Login
