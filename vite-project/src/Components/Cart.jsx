@@ -24,13 +24,15 @@ const Cart = () => {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
 
-  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
+  const total = cartItems
+    .reduce((sum, item) => sum + item.price * item.quantity, 0)
+    .toFixed(2);
 
   return (
     <div className="cart-container">
-      <h2>Your Cart</h2>
+      <h2 className="cart-title">Shopping Bag</h2>
       {cartItems.length === 0 ? (
-        <p>Your cart is empty.</p>
+        <p className="empty-cart">Your bag is empty.</p>
       ) : (
         <>
           <div className="cart-items">
@@ -39,12 +41,14 @@ const Cart = () => {
                 <img src={item.image} alt={item.name} className="cart-item-image" />
                 <div className="cart-item-details">
                   <h3>{item.name}</h3>
-                  <p>${item.price.toFixed(2)}</p>
+                  <p className="cart-price">${item.price.toFixed(2)}</p>
+
                   <div className="quantity-controls">
                     <button onClick={() => updateQuantity(item.id, -1)}>-</button>
                     <span>{item.quantity}</span>
                     <button onClick={() => updateQuantity(item.id, 1)}>+</button>
                   </div>
+
                   <button className="remove-btn" onClick={() => removeItem(item.id)}>
                     Remove
                   </button>
@@ -52,9 +56,14 @@ const Cart = () => {
               </div>
             ))}
           </div>
+
+          {/* Sticky Summary */}
           <div className="cart-summary">
-            <p>Total: ${total}</p>
-            <Link to="/checkout" className="checkout-btn">
+            <div className="summary-row">
+              <span>Total</span>
+              <span className="summary-price">${total}</span>
+            </div>
+            <Link to="/site/checkout" className="checkout-btn">
               Proceed to Checkout
             </Link>
           </div>

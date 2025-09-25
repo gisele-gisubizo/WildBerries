@@ -6,9 +6,11 @@ import PageDetails from "./Components/ProductDetails";
 import Stores from "./Components/Stores";
 import Profile from "./Components/Profile";
 import Cart from "./Components/Cart";
-import EntryPage from "./Components/EntryPage";  // ✅ new
-import Login from "./Components/Login";          // ✅ new
-import Register from "./Components/Register";    // ✅ new
+import EntryPage from "./Components/EntryPage";
+import Login from "./Components/Login";
+import Register from "./Components/Register";
+import Checkout from "./Components/Checkout"; // ⬅️ add this
+
 
 import "./App.css";
 
@@ -44,10 +46,14 @@ function App() {
         {/* ✅ Main site inside Layout */}
         <Route path="/site" element={<Layout cartCount={cartCount} />}>
           <Route index element={<Home />} />
-          <Route path="/site/product/:id" element={<PageDetails setCartCount={setCartCount} />} />
-          <Route path="/site/stores" element={<Stores />} />
-          <Route path="/site/profile" element={<Profile />} />
-          <Route path="/site/cart" element={<Cart />} />
+          <Route path="category/:category" element={<Home />} />
+          <Route path="category/:category/:subcategory" element={<Home />} />
+          <Route path="product/:id" element={<PageDetails setCartCount={setCartCount} />} />
+          <Route path="stores" element={<Stores />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="cart" element={<Cart />} />
+          <Route path="checkout" element={<Checkout />} />
+
         </Route>
       </Routes>
     </BrowserRouter>
