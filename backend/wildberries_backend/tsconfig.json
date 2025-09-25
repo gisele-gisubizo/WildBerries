@@ -10,5 +10,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["src"]
+  "include": ["src/**/*", "src/types/express.d.ts", "src/seed"]
+
+  // "include": ["src"]
 }

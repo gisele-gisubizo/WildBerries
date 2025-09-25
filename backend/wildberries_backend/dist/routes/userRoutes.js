@@ -44,6 +44,6 @@ router.get("/sellers/rejected", userController_1.getRejectedSellersController);
 router.get("/", userController_1.getAllUsersController);
 router.get("/:id", userController_1.getUserByIdController);
 router.delete("/:id", userController_1.deleteUserController);
-router.put("/me", userController_1.updateOwnAccountController);
-router.delete("/me", userController_1.deleteOwnAccountController);
+// router.put("/me", updateOwnAccountController);
+// router.delete("/me", deleteOwnAccountController);
 exports.default = router;

@@ -5,6 +5,7 @@ import { AppError } from "../utilis/errors";
 import { ApiResponse, AuthenticatedRequest } from "../types/common.types";
 import { registerCustomerSchema, registerSellerSchema, loginSchema } from "../schemas/user.schemas";
 import * as UserService from "../services/userService";
+import {resendOTP} from "../services/userService"
 
 // ========================
 // Register Customer
@@ -44,7 +45,7 @@ interface MulterRequestFields extends Request {
 
 export const registerSellerController = asyncHandler(
   async (req: MulterRequestFields, res: Response<ApiResponse>) => {
-    const { email, phone, password } = req.body;
+    const { name, email, phone, password, address } = req.body;
     const idCopy = req.files?.idCopy?.[0]?.path;
     const licenseDoc = req.files?.licenseDoc?.[0]?.path;
 
@@ -52,34 +53,49 @@ export const registerSellerController = asyncHandler(
       return res.status(400).json({ success: false, message: "Both ID copy and license document are required." });
     }
 
-    const parsed = registerSellerSchema.safeParse({ email, phone, password, idCopy, licenseDoc });
+    const parsed = registerSellerSchema.safeParse({ name, email, phone, password, address });
     if (!parsed.success) {
       return res.status(400).json({ success: false, message: "Validation failed", errors: parsed.error.issues });
     }
 
-    const seller = await UserService.registerSeller(email, phone, password, idCopy, licenseDoc);
+    const seller = await UserService.registerSeller(name, email, phone, password, idCopy, licenseDoc, address);
 
-    return res.status(201).json({ success: true, message: "Seller registered successfully. Awaiting admin approval.", data: seller });
+    return res.status(201).json({
+      success: true,
+      message: "Seller registered successfully. Awaiting admin approval.",
+      data: { id: seller.id, name: seller.name, email: seller.email, phone: seller.phone, role: seller.role, address: seller.address },
+    });
   }
 );
+
 
 // ========================
 // Verify OTP
 // ========================
 export const verifyOtpController = asyncHandler(async (req: Request, res: Response<ApiResponse>) => {
   const { email, otp } = req.body;
-  const user = await UserService.findByEmail(email);
 
+  const user = await UserService.findByEmail(email);
   if (!user) return res.status(404).json({ success: false, message: "User not found" });
   if (user.isVerified) return res.status(400).json({ success: false, message: "User already verified" });
-  if (user.otp !== otp) return res.status(400).json({ success: false, message: "Invalid OTP" });
 
-  user.isVerified = true;
-  user.otp = null;
+  // Call the service that compares the OTP
   await UserService.verifyOTP(email, otp);
 
   return res.status(200).json({ success: true, message: "Email verified successfully" });
 });
+
+
+//Resend Uotp
+export const resendOtpController = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    const result = await resendOTP(email);
+    res.json({ success: true, ...result });
+  } catch (err: any) {
+    res.status(err.statusCode || 500).json({ success: false, message: err.message });
+  }
+};
 
 // ========================
 // Login

@@ -7,6 +7,7 @@ const data_source_1 = require("./data-source");
 require("reflect-metadata");
 const express_1 = __importDefault(require("express"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const categoryRoutes_1 = __importDefault(require("./routes/categoryRoutes"));
 const errorHandler_1 = require("./middlewares/errorHandler");
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
@@ -17,6 +18,7 @@ app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 // Routes
 app.use("/users", userRoutes_1.default);
+app.use("/categories", categoryRoutes_1.default);
 // Health check
 app.get("/", (req, res) => {
     res.send("Hello TypeScript + Postgres 🚀");

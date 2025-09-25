@@ -19,10 +19,16 @@ exports.registerCustomerSchema = zod_1.z.object({
 });
 // ✅ Seller registration schema
 exports.registerSellerSchema = zod_1.z.object({
-    name: zod_1.z.string().min(2),
-    email: zod_1.z.string().email(),
-    phone: zod_1.z.string().min(10),
-    password: zod_1.z.string().min(6),
+    name: zod_1.z.string().min(2, "Name must be at least 2 characters"),
+    email: zod_1.z.string().email("Invalid email"),
+    phone: exports.phoneSchema,
+    password: zod_1.z
+        .string()
+        .min(8, "Password must be at least 8 characters")
+        .max(255, "Password must be less than 255 characters")
+        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Password must contain at least one lowercase, one uppercase letter, and one number"),
+    category: zod_1.z.string().min(1, "Category is required"),
+    address: zod_1.z.string().min(1, "Address is required"),
 });
 // Login schema
 exports.loginSchema = zod_1.z.object({

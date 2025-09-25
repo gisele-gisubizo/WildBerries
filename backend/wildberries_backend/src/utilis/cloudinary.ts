@@ -1,27 +1,30 @@
 import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 import multer, { FileFilterCallback } from "multer";
 import { Request } from "express";
+import dotenv from "dotenv";
 
-// Use require for CloudinaryStorage
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+dotenv.config();
 
 // Configure Cloudinary
 cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME || "your-cloud-name",
-  api_key: process.env.CLOUDINARY_API_KEY || "your-api-key",
-  api_secret: process.env.CLOUDINARY_API_SECRET || "your-api-secret",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
 });
 
 // Cloudinary storage
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: async (req: Request, file: Express.Multer.File) => ({
-    folder: "book_covers",
-    public_id: `${Date.now()}-${file.originalname}`,
+  params: async (req, file) => ({
+    folder: process.env.CLOUDINARY_FOLDER,
+    public_id: `${Date.now()}-${file.originalname.replace(/\s+/g, "_")}`,
     transformation: [{ width: 600, height: 800, crop: "limit" }],
     resource_type: "image",
   }),
 });
+
 
 // File filter
 const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
@@ -29,7 +32,7 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallb
   else cb(new Error("Only image files are allowed"));
 };
 
-// Multer upload
+// Multer upload using Cloudinary storage
 const upload = multer({ storage, fileFilter });
 
 export { cloudinary, upload };

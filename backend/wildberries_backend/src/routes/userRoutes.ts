@@ -14,6 +14,7 @@ import {
   loginController,
   getPendingSellersController,
   getApprovedSellersController,
+  resendOtpController,
   getRejectedSellersController} from "../controllers/userController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import fs from "fs";
@@ -42,9 +43,12 @@ const uploadFields = upload.fields([
 ]);
 
 // --- Public routes (no token required) ---
+// --- Public routes (no token required) ---
 router.post("/register-seller", uploadFields, registerSellerController);
 router.post("/register", registerCustomerController);
 router.post("/verify-otp", verifyOtpController);
+router.post("/login", loginController);
+
 router.post("/login", loginController);
 
 // --- Protected routes (token required) ---
