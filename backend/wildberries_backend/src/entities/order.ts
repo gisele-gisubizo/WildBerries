@@ -14,26 +14,26 @@ import { OrderItem } from "./orderItem";
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @ManyToOne(() => User, (user) => user.orders, { eager: true })
-  user: User;
+  user!: User;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {
     cascade: true,
     eager: true,
   })
-  items: OrderItem[];
+  items!: OrderItem[];
 
   @Column({ default: "pending" })
-  status: string; // pending, processing, shipped, delivered
+  status!: string; // pending, processing, shipped, delivered
 
   @Column("decimal", { precision: 10, scale: 2 })
-  totalAmount: number;
+  totalAmount!: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

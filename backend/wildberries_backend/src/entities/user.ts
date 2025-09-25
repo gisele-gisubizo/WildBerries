@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne,OneToMany } from "typeorm";
 import { Category } from "./category";
 import { Product } from "./product"; 
-
+import { Order } from "./order";
+import { Cart } from "./cart";
 
 export type UserRole = "admin" | "seller" | "customer";
 export type UserStatus = "pending" | "approved" | "rejected";
@@ -57,4 +58,8 @@ products!: Product[];
 
   @CreateDateColumn({ type: "timestamp" })
   createdAt!: Date;    // Auto-generated when row is created
+  @OneToMany(() => Order, (order) => order.user)
+  orders!: Order[];
+   @OneToMany(() => Cart, (cart) => cart.user)
+  cart!: Cart[];
 }
