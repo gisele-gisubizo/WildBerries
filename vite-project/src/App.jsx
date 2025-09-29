@@ -14,6 +14,7 @@ import Register from "./Components/Register";
 import Checkout from "./Components/Checkout";
 import OrderSuccess from "./Components/OrderSuccess";
 import MomoPayment from "./Components/MomoPayment";
+import Location from "./Components/Location"; // Added import for Location component
 
 // Admin dashboard components
 import DashboardLayout from "./AdminDashboard/Layout";
@@ -74,6 +75,7 @@ function App() {
           <Route path="checkout" element={<Checkout />} />
           <Route path="order-success" element={<OrderSuccess />} />
           <Route path="momo-payment" element={<MomoPayment />} />
+          <Route path="location" element={<Location />} /> {/* Added Location route */}
         </Route>
 
         {/* Admin Dashboard */}
