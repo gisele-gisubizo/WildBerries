@@ -1,0 +1,386 @@
+{
+  "info": {
+    "name": "WildBerries Backend API",
+    "description": "API collection for testing WildBerries backend endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4000/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": [""]
+        }
+      }
+    },
+    {
+      "name": "Register Customer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"customer@example.com\",\n  \"phone\": \"+1234567890\",\n  \"password\": \"Password123\",\n  \"role\": \"customer\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:4000/users/register",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["users", "register"]
+        }
+      }
+    },
+    {
+      "name": "Register Seller",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "name",
+              "value": "John Seller",
+              "type": "text"
+            },
+            {
+              "key": "email",
+              "value": "seller@example.com",
+              "type": "text"
+            },
+            {
+              "key": "phone",
+              "value": "+1234567890",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "Password123",
+              "type": "text"
+            },
+            {
+              "key": "category",
+              "value": "Electronics",
+              "type": "text"
+            },
+            {
+              "key": "address",
+              "value": "123 Main St, City, Country",
+              "type": "text"
+            },
+            {
+              "key": "idCopy",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "licenseDoc",
+              "type": "file",
+              "src": []
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:4000/users/register-seller",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["users", "register-seller"]
+        }
+      }
+    },
+    {
+      "name": "Verify OTP",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"customer@example.com\",\n  \"otp\": \"123456\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:4000/users/verify-otp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["users", "verify-otp"]
+        }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"Password123\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:4000/users/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["users", "login"]
+        }
+      }
+    },
+    {
+      "name": "Get Pending Sellers",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:4000/users/sellers/pending",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["users", "sellers", "pending"]
+        }
+      }
+    },
+    {
+      "name": "Approve Seller",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:4000/users/sellers/1/approve",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["users", "sellers", "1", "approve"]
+        }
+      }
+    },
+    {
+      "name": "Reject Seller",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:4000/users/sellers/1/reject",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["users", "sellers", "1", "reject"]
+        }
+      }
+    },
+    {
+      "name": "Get All Users",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:4000/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["users"]
+        }
+      }
+    },
+    {
+      "name": "Get User by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:4000/users/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["users", "1"]
+        }
+      }
+    },
+    {
+      "name": "Update User",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated Name\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:4000/users/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["users", "1"]
+        }
+      }
+    },
+    {
+      "name": "Delete User",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:4000/users/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["users", "1"]
+        }
+      }
+    },
+    {
+      "name": "Get All Categories",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4000/categories",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["categories"]
+        }
+      }
+    },
+    {
+      "name": "Create Category",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Fashion & Clothing\",\n  \"fields\": [\n    {\"name\": \"sizes\", \"type\": \"array\", \"required\": true, \"options\": [\"S\", \"M\", \"L\", \"XL\"]},\n    {\"name\": \"color\", \"type\": \"string\", \"required\": true},\n    {\"name\": \"material\", \"type\": \"string\", \"required\": true},\n    {\"name\": \"gender\", \"type\": \"enum\", \"required\": true, \"options\": [\"Men\", \"Women\", \"Unisex\", \"Kids\"]},\n    {\"name\": \"brand\", \"type\": \"string\", \"required\": true},\n    {\"name\": \"images\", \"type\": \"array\", \"required\": true}\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:4000/categories",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["categories"]
+        }
+      }
+    },
+    {
+      "name": "Update Category",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated Category\",\n  \"fields\": [\n    {\"name\": \"field1\", \"type\": \"string\", \"required\": true}\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:4000/categories/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["categories", "1"]
+        }
+      }
+    },
+    {
+      "name": "Delete Category",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:4000/categories/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["categories", "1"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

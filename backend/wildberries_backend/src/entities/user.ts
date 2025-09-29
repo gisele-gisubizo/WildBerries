@@ -1,4 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne,OneToMany } from "typeorm";
+import { Category } from "./category";
+import { Product } from "./product"; 
+import { Order } from "./order";
+import { Cart } from "./cart";
 
 export type UserRole = "admin" | "seller" | "customer";
 export type UserStatus = "pending" | "approved" | "rejected";
@@ -40,4 +44,22 @@ export class User {
 
   @Column({ nullable: true })
   licenseDoc?: string;
+
+ @ManyToOne(() => Category, (category) => category.sellers, { nullable: true })
+  category?: Category;
+
+  // Inside User class
+@OneToMany(() => Product, (product) => product.seller)
+products!: Product[];
+
+
+  @Column({ nullable: true })
+  address?: string;    // Physical address
+
+  @CreateDateColumn({ type: "timestamp" })
+  createdAt!: Date;    // Auto-generated when row is created
+  @OneToMany(() => Order, (order) => order.user)
+  orders!: Order[];
+   @OneToMany(() => Cart, (cart) => cart.user)
+  cart!: Cart[];
 }
