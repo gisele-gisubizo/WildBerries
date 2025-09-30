@@ -11,6 +11,8 @@ import cartRoutes from "./routes/cartRoutes";
 import orderRoutes from "./routes/orderRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
 
+import {setupSwagger} from "./swagger"
+
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -32,6 +34,8 @@ app.get("/", (req, res) => {
 
 // Error handler (must be AFTER all routes)
 app.use(errorHandler);
+
+setupSwagger(app);
 
 // Initialize DB and start server
 AppDataSource.initialize()
