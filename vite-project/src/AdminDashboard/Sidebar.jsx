@@ -7,7 +7,6 @@ import {
   FaEnvelope,
   FaCog,
   FaSignOutAlt,
-  FaUserTie,
 } from "react-icons/fa";
 import "./sidebar.css";
 
@@ -32,10 +31,10 @@ const Sidebar = () => {
         </Link>
 
         <Link
-          to="/Dashboard/vendors"
-          className={isActive("/Dashboard/vendors") ? "nav-item active" : "nav-item"}
+          to="/Dashboard/applications"
+          className={isActive("/Dashboard/applications") ? "nav-item active" : "nav-item"}
         >
-          <FaUserTie /> Vendors
+          <FaClipboardList /> Applications
         </Link>
 
         <Link
@@ -43,17 +42,6 @@ const Sidebar = () => {
           className={isActive("/Dashboard/shops") ? "nav-item active" : "nav-item"}
         >
           <FaStore /> Shops
-        </Link>
-
-        <Link
-          to="/Dashboard/shopapplications"
-          className={
-            isActive("/Dashboard/shopapplications")
-              ? "nav-item active"
-              : "nav-item"
-          }
-        >
-          <FaClipboardList /> Shop&apos;s Applications
         </Link>
 
         <Link

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { FiUsers, FiPackage, FiFileText } from 'react-icons/fi';
+import { FiUsers, FiFileText } from 'react-icons/fi';
 import { FaStore, FaUserTie } from 'react-icons/fa';
 import {
     PieChart,
@@ -15,76 +15,142 @@ import {
     Legend,
 } from 'recharts';
 import toast from 'react-hot-toast';
+// import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import './dashboard.css';
 
 export default function DashboardHome() {
     const [isExporting, setIsExporting] = useState(false);
-    const [shopFilter, setShopFilter] = useState('');
-    const [sellerFilter, setSellerFilter] = useState('');
+    const [applicationFilter, setApplicationFilter] = useState('');
+    const [applicationSearch, setApplicationSearch] = useState('');
 
     const [kpis] = useState({
         totalVendors: '20',
         activeSellers: '45',
         totalsellers: '50',
-        totalShopsApplications: '15',
+        totalApplications: '15',
     });
 
-    const [sellers] = useState([
-        { id: 1, name: 'Alice Mutesi', status: 'Active', appliedDate: '2025-08-25' },
-        { id: 2, name: 'Brian Uwimana', status: 'Pending', appliedDate: '2025-09-01' },
-        { id: 3, name: 'Catherine Iradukunda', status: 'Approved', appliedDate: '2025-08-28' },
-        { id: 4, name: 'David Nshimiyimana', status: 'Declined', appliedDate: '2025-08-30' },
-        { id: 5, name: 'Esther Mukamana', status: 'Active', appliedDate: '2025-08-20' },
-        { id: 6, name: 'Fabrice Habimana', status: 'Pending', appliedDate: '2025-09-03' },
+    // 🔹 Combined seller + shop applications
+    const [applications] = useState([
+        {
+            id: 1,
+            sellerName: 'Alice Mutesi',
+            phone: '+250788123456',
+            shopName: 'Kigali Fresh',
+            address: 'Kigali, Nyarutarama',
+            status: 'Active',
+            appliedDate: '2025-08-25',
+            idDoc: 'ID001.pdf',
+            businessDoc: 'registration_kf.pdf',
+        },
+        {
+            id: 2,
+            sellerName: 'Brian Uwimana',
+            phone: '+250788987654',
+            shopName: 'Musanze Groceries',
+            address: 'Musanze Town',
+            status: 'Pending',
+            appliedDate: '2025-09-01',
+            idDoc: 'ID002.pdf',
+            businessDoc: 'registration_mg.pdf',
+        },
+        {
+            id: 3,
+            sellerName: 'Catherine Iradukunda',
+            phone: '+250785112233',
+            shopName: 'Rubavu Traders',
+            address: 'Rubavu City',
+            status: 'Approved',
+            appliedDate: '2025-08-28',
+            idDoc: 'ID003.pdf',
+            businessDoc: 'registration_rt.pdf',
+        },
+        {
+            id: 4,
+            sellerName: 'David Nshimiyimana',
+            phone: '+250788556677',
+            shopName: 'Huye Market',
+            address: 'Huye District',
+            status: 'Declined',
+            appliedDate: '2025-08-30',
+            idDoc: 'ID004.pdf',
+            businessDoc: 'registration_hm.pdf',
+        },
+        {
+            id: 5,
+            sellerName: 'Esther Mukamana',
+            phone: '+250788667788',
+            shopName: 'Nyagatare Shop',
+            address: 'Nyagatare Town',
+            status: 'Active',
+            appliedDate: '2025-08-20',
+            idDoc: 'ID005.pdf',
+            businessDoc: 'registration_ns.pdf',
+        },
+        {
+            id: 6,
+            sellerName: 'Fabrice Habimana',
+            phone: '+250788445566',
+            shopName: 'Kibuye Essentials',
+            address: 'Kibuye City',
+            status: 'Pending',
+            appliedDate: '2025-09-03',
+            idDoc: 'ID006.pdf',
+            businessDoc: 'registration_ke.pdf',
+        },
     ]);
-
-    const [shopApplications] = useState([
-        { id: 1, name: 'Kigali Fresh', phone: '+250788123456', address: 'Kigali, Nyarutarama', idNo: 'ID001', doc: 'registration_kf.pdf' },
-        { id: 2, name: 'Musanze Groceries', phone: '+250788987654', address: 'Musanze Town', idNo: 'ID002', doc: 'registration_mg.pdf' },
-        { id: 3, name: 'Rubavu Traders', phone: '+250785112233', address: 'Rubavu City', idNo: 'ID003', doc: 'registration_rt.pdf' },
-        { id: 4, name: 'Huye Market', phone: '+250788556677', address: 'Huye District', idNo: 'ID004', doc: 'registration_hm.pdf' },
-        { id: 5, name: 'Nyagatare Shop', phone: '+250788667788', address: 'Nyagatare Town', idNo: 'ID005', doc: 'registration_ns.pdf' },
-        { id: 6, name: 'Kibuye Essentials', phone: '+250788445566', address: 'Kibuye City', idNo: 'ID006', doc: 'registration_ke.pdf' },
-    ]);
-
-    const [messages] = useState([
-        { id: 1, sender: 'Afua Hamissi', email: 'afua.hamissi@mail.com', message: 'Hello, I need help with my order.' },
-        { id: 2, sender: 'Brian Uwimana', email: 'brian.uwimana@mail.com', message: 'I want to apply as a seller.' },
-        { id: 3, sender: 'Catherine Iradukunda', email: 'catherine.iradukunda@mail.com', message: 'Payment not received yet.' },
-        { id: 4, sender: 'David Nshimiyimana', email: 'david.nshimiyimana@mail.com', message: 'How do I update my profile?' },
-        { id: 5, sender: 'Esther Mukamana', email: 'esther.mukamana@mail.com', message: 'Inquiry about product availability.' },
-        { id: 6, sender: 'Fabrice Habimana', email: 'fabrice.habimana@mail.com', message: 'Requesting a refund for my last order.' },
+        const [messages, setMessages] = useState([
+        {
+            id: 1,
+            sender: "Alice Mutesi",
+            type: "Seller",
+            subject: "Issue with shop approval",
+            content: "Hello admin, my shop approval seems delayed. Could you check?",
+            date: "2025-09-05",
+            status: "Unread",
+            reply: ""
+        },
+        {
+            id: 2,
+            sender: "John Doe",
+            type: "Customer",
+            subject: "Problem with order",
+            content: "I placed an order but it hasn’t arrived yet.",
+            date: "2025-09-07",
+            status: "Read",
+            reply: ""
+        },
+        {
+            id: 3,
+            sender: "Brian Uwimana",
+            type: "Seller",
+            subject: "Payment issue",
+            content: "I have not received payment for my last sales.",
+            date: "2025-09-08",
+            status: "Replied",
+            reply: "Hello Brian, we checked and your payment is being processed."
+        }
     ]);
 
     const itemsPerPage = 5;
-    const [sellerPage, setSellerPage] = useState(1);
-    const [shopPage, setShopPage] = useState(1);
+    const [applicationPage, setApplicationPage] = useState(1);
     const [messagePage, setMessagePage] = useState(1);
 
-    const [sellerSearch, setSellerSearch] = useState('');
-    const [shopSearch, setShopSearch] = useState('');
-    const [messageSearch, setMessageSearch] = useState('');
-
-    const filteredSellers = sellers.filter(
-        s =>
-            (s.name.toLowerCase().includes(sellerSearch.toLowerCase()) ||
-            s.status.toLowerCase().includes(sellerSearch.toLowerCase())) &&
-            (sellerFilter === '' || s.status === sellerFilter)
-    );
-
-    const filteredShops = shopApplications.filter(
-        s =>
-            (s.name.toLowerCase().includes(shopSearch.toLowerCase()) ||
-            s.phone.includes(shopSearch) ||
-            s.address.toLowerCase().includes(shopSearch)) &&
-            (shopFilter === '' || s.address.toLowerCase().includes(shopFilter.toLowerCase()))
+    const filteredApplications = applications.filter(
+        (a) =>
+            a.sellerName.toLowerCase().includes(applicationSearch.toLowerCase()) ||
+            a.shopName.toLowerCase().includes(applicationSearch.toLowerCase()) ||
+            a.phone.includes(applicationSearch) ||
+            a.address.toLowerCase().includes(applicationSearch.toLowerCase()) ||
+            a.status.toLowerCase().includes(applicationSearch.toLowerCase())
     );
 
     const filteredMessages = messages.filter(
-        m =>
-            m.sender.toLowerCase().includes(messageSearch.toLowerCase()) ||
-            m.email.toLowerCase().includes(messageSearch.toLowerCase()) ||
-            m.message.toLowerCase().includes(messageSearch.toLowerCase())
+        (m) =>
+            m.sender.toLowerCase().includes(applicationSearch.toLowerCase()) ||
+            m.email.toLowerCase().includes(applicationSearch.toLowerCase()) ||
+            m.message.toLowerCase().includes(applicationSearch.toLowerCase())
     );
 
     const paginate = (data, page) =>
@@ -115,13 +181,70 @@ export default function DashboardHome() {
 
     const sellerStatusData = useMemo(
         () => [
-            { name: 'Active', value: sellers.filter((s) => s.status === 'Active').length, color: '#007bff' },
-            { name: 'Inactive', value: sellers.filter((s) => s.status === 'Inactive').length, color: '#6c757d' },
-            { name: 'Pending', value: sellers.filter((s) => s.status === 'Pending').length, color: '#ffc107' },
-            { name: 'Declined', value: sellers.filter((s) => s.status === 'Declined').length, color: '#dc3545' },
+            { name: 'Active', value: applications.filter((a) => a.status === 'Active').length, color: '#007bff' },
+            { name: 'Approved', value: applications.filter((a) => a.status === 'Approved').length, color: '#6c757d' },
+            { name: 'Pending', value: applications.filter((a) => a.status === 'Pending').length, color: '#ffc107' },
+            { name: 'Declined', value: applications.filter((a) => a.status === 'Declined').length, color: '#dc3545' },
         ],
-        [sellers]
+        [applications]
     );
+
+
+    const [selectedMessage, setSelectedMessage] = useState(null);
+    const [replyText, setReplyText] = useState("");
+    const [showModal, setShowModal] = useState(false);
+
+    // Open modal + mark Unread → Read
+    const handleReply = (message) => {
+        setMessages((prev) =>
+            prev.map((msg) =>
+                msg.id === message.id && msg.status === "Unread"
+                    ? { ...msg, status: "Read" }
+                    : msg
+            )
+        );
+        setSelectedMessage(message);
+        setReplyText("");
+        setShowModal(true);
+    };
+
+    // Send reply
+    const sendReply = () => {
+        if (!replyText.trim()) return;
+
+        setMessages((prev) =>
+            prev.map((msg) =>
+                msg.id === selectedMessage.id
+                    ? { ...msg, reply: replyText, status: "Replied" }
+                    : msg
+            )
+        );
+        toast.success("Reply sent successfully ✅");
+        setShowModal(false);
+        setReplyText("");
+        setSelectedMessage(null);
+    };
+
+    // Show reply in toast + mark Unread → Read
+    const viewReply = (message) => {
+        setMessages((prev) =>
+            prev.map((msg) =>
+                msg.id === message.id && msg.status === "Unread"
+                    ? { ...msg, status: "Read" }
+                    : msg
+            )
+        );
+
+        toast.info(`Reply: ${message.reply}`, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true
+        });
+    };
+
 
     return (
         <div className="dashboard-container">
@@ -153,8 +276,8 @@ export default function DashboardHome() {
                 </div>
                 <div className="kpi-card">
                     <FaStore className="kpi-icon" />
-                    <div>Total Shops Applied</div>
-                    <div>{kpis.totalShopsApplications}</div>
+                    <div>Total Applications</div>
+                    <div>{kpis.totalApplications}</div>
                 </div>
             </div>
 
@@ -174,7 +297,7 @@ export default function DashboardHome() {
                 </div>
 
                 <div className="dashboard-chart-box">
-                    <h3>Seller Status Distribution</h3>
+                    <h3>Application Status Distribution</h3>
                     <ResponsiveContainer width="100%" height={250}>
                         <BarChart data={sellerStatusData}>
                             <CartesianGrid strokeDasharray="3 3" />
@@ -190,19 +313,19 @@ export default function DashboardHome() {
 
             <div className="dashboard-section">
                 <div className="dashboard-header-row">
-                    <h2>Sellers List</h2>
+                    <h2>Seller & Shop Applications</h2>
                     <div className="dashboard-controls">
                         <input
                             type="text"
-                            placeholder="Search sellers..."
-                            value={sellerSearch}
-                            onChange={(e) => setSellerSearch(e.target.value)}
+                            placeholder="Search applications..."
+                            value={applicationSearch}
+                            onChange={(e) => setApplicationSearch(e.target.value)}
                             className="search-input"
                         />
                         <select
                             className="select-filter"
-                            value={sellerFilter}
-                            onChange={(e) => setSellerFilter(e.target.value)}
+                            value={applicationFilter}
+                            onChange={(e) => setApplicationFilter(e.target.value)}
                         >
                             <option value="">All Statuses</option>
                             <option value="Active">Active</option>
@@ -215,118 +338,94 @@ export default function DashboardHome() {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th>Seller</th>
+                            <th>Phone</th>
+                            <th>Shop</th>
+                            <th>Address</th>
                             <th>Status</th>
                             <th>Applied Date</th>
+                            <th>ID Doc</th>
+                            <th>Business Doc</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {paginate(filteredSellers, sellerPage).map((seller) => (
-                            <tr key={seller.id}>
-                                <td>{seller.name}</td>
-                                <td><span className={`status-badge ${seller.status}`}>{seller.status}</span></td>
-                                <td>{seller.appliedDate}</td>
+                        {paginate(filteredApplications, applicationPage).map((app) => (
+                            <tr key={app.id}>
+                                <td>{app.sellerName}</td>
+                                <td>{app.phone}</td>
+                                <td>{app.shopName}</td>
+                                <td>{app.address}</td>
+                                <td><span className={`status-badge ${app.status}`}>{app.status}</span></td>
+                                <td>{app.appliedDate}</td>
+                                <td><a href={`/docs/${app.idDoc}`} target="_blank" rel="noopener noreferrer">{app.idDoc}</a></td>
+                                <td><a href={`/docs/${app.businessDoc}`} target="_blank" rel="noopener noreferrer">{app.businessDoc}</a></td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
                 <div className="pagination">
-                    <button onClick={() => setSellerPage((prev) => Math.max(prev - 1, 1))} disabled={sellerPage === 1}>Prev</button>
-                    <span>Page {sellerPage}</span>
-                    <button onClick={() => setSellerPage((prev) => (prev * itemsPerPage < filteredSellers.length ? prev + 1 : prev))} disabled={sellerPage * itemsPerPage >= filteredSellers.length}>Next</button>
+                    <button onClick={() => setApplicationPage((prev) => Math.max(prev - 1, 1))} disabled={applicationPage === 1}>Prev</button>
+                    <span>Page {applicationPage}</span>
+                    <button onClick={() => setApplicationPage((prev) => (prev * itemsPerPage < filteredApplications.length ? prev + 1 : prev))} disabled={applicationPage * itemsPerPage >= filteredApplications.length}>Next</button>
                 </div>
 
-                <div className="dashboard-header-row">
-                    <h2>Shop Applications</h2>
-                    <div className="dashboard-controls">
-                        <input
-                            type="text"
-                            placeholder="Search shops..."
-                            value={shopSearch}
-                            onChange={(e) => setShopSearch(e.target.value)}
-                            className="search-input"
-                        />
-                        <select
-                            className="select-filter"
-                            value={shopFilter}
-                            onChange={(e) => setShopFilter(e.target.value)}
-                        >
-                            <option value="">All Places</option>
-                            <option value="Kigali">Kigali</option>
-                            <option value="Musanze">Musanze</option>
-                            <option value="Rubavu">Rubavu</option>
-                            <option value="Huye">Huye</option>
-                            <option value="Nyagatare">Nyagatare</option>
-                            <option value="Kibuye">Kibuye</option>
-                        </select>
-                    </div>
-                </div>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Address</th>
-                            <th>ID No</th>
-                            <th>Document</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {paginate(filteredShops, shopPage).map((shop) => (
-                            <tr key={shop.id}>
-                                <td>{shop.name}</td>
-                                <td>{shop.phone}</td>
-                                <td>{shop.address}</td>
-                                <td>{shop.idNo}</td>
-                                <td>{shop.doc}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <div className="pagination">
-                    <button onClick={() => setShopPage((prev) => Math.max(prev - 1, 1))} disabled={shopPage === 1}>Prev</button>
-                    <span>Page {shopPage}</span>
-                    <button onClick={() => setShopPage((prev) => (prev * itemsPerPage < filteredShops.length ? prev + 1 : prev))} disabled={shopPage * itemsPerPage >= filteredShops.length}>Next</button>
-                </div>
+      <div className="dashboard-header-row">
+  <h2>Messages</h2>
+</div>
+<table className="table">
+  <thead>
+    <tr>
+      <th>Sender</th>
+      <th>Type</th>
+      <th>Subject</th>
+      <th>Content</th>
+      <th>Date</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {paginate(filteredMessages, messagePage).map((msg) => (
+      <tr key={msg.id}>
+        <td>{msg.sender}</td>
+        <td>{msg.type}</td>
+        <td>{msg.subject}</td>
+        <td>{msg.content}</td>
+        <td>{msg.date}</td>
+        <td>
+          <span className={`status-badge ${msg.status.toLowerCase()}`}>{msg.status}</span>
+        </td>
+        <td>
+          {msg.status === "Replied" ? (
+            <button onClick={() => viewReply(msg)}  className="view-reply-btn">View Reply</button>
+          ) : (
+            <button onClick={() => handleReply(msg)} className="reply-btn">Reply</button>
+          )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+<div className="pagination">
+  <button
+    onClick={() => setMessagePage((prev) => Math.max(prev - 1, 1))}
+    disabled={messagePage === 1}
+  >
+    Prev
+  </button>
+  <span>Page {messagePage}</span>
+  <button
+    onClick={() =>
+      setMessagePage((prev) =>
+        prev * itemsPerPage < filteredMessages.length ? prev + 1 : prev
+      )
+    }
+    disabled={messagePage * itemsPerPage >= filteredMessages.length}
+  >
+    Next
+  </button>
+</div>
 
-                <div className="dashboard-header-row">
-                    <h2>Messages</h2>
-                    <div className="dashboard-controls">
-                        <input
-                            type="text"
-                            placeholder="Search messages..."
-                            value={messageSearch}
-                            onChange={(e) => setMessageSearch(e.target.value)}
-                            className="search-input"
-                        />
-                        <select className="select-filter">
-                            <option value="">All Messages</option>
-                        </select>
-                    </div>
-                </div>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Sender</th>
-                            <th>Email</th>
-                            <th>Message</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {paginate(filteredMessages, messagePage).map((msg) => (
-                            <tr key={msg.id}>
-                                <td>{msg.sender}</td>
-                                <td>{msg.email}</td>
-                                <td>{msg.message}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <div className="pagination">
-                    <button onClick={() => setMessagePage((prev) => Math.max(prev - 1, 1))} disabled={messagePage === 1}>Prev</button>
-                    <span>Page {messagePage}</span>
-                    <button onClick={() => setMessagePage((prev) => (prev * itemsPerPage < filteredMessages.length ? prev + 1 : prev))} disabled={messagePage * itemsPerPage >= filteredMessages.length}>Next</button>
-                </div>
             </div>
         </div>
     );
