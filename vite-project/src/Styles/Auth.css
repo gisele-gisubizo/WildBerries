@@ -1,59 +1,92 @@
+/* Container */
 .auth-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
+  padding: 20px;
   background: #f5f5f5; /* light gray background */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Form */
 .auth-form {
   background: #fff;
-  padding: 30px;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  width: 350px;
+  padding: 35px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 18px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.auth-form:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* Heading */
 .auth-form h2 {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   color: #333;
   text-align: center;
 }
 
-.auth-form input {
-  padding: 12px;
+/* Inputs */
+.auth-form input,
+.auth-form select,
+.auth-form textarea {
+  padding: 12px 15px;
   border: 1px solid #ddd;
-  border-radius: 20px;
+  border-radius: 12px;
   font-size: 14px;
-  transition: border 0.3s ease;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.auth-form input:focus {
+.auth-form input:focus,
+.auth-form select:focus,
+.auth-form textarea:focus {
   outline: none;
   border-color: #a020f0; /* purple highlight */
-  box-shadow: 0 0 5px rgba(160,32,240,0.3);
+  box-shadow: 0 0 8px rgba(160, 32, 240, 0.25);
 }
 
-/* Purple button (main action) */
+/* File input */
+.auth-form .file-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.auth-form input[type="file"] {
+  padding: 8px;
+  border-radius: 12px;
+}
+
+/* Buttons */
 .btn-dark {
   background: #a020f0;
   color: #fff;
   padding: 12px;
-  border-radius: 20px;
+  border-radius: 25px;
   font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .btn-dark:hover {
   background: #7b12c2;
+  transform: translateY(-2px);
 }
 
 /* Secondary small text */
@@ -61,4 +94,67 @@
   font-size: 13px;
   color: #666;
   text-align: center;
+}
+
+/* Tabs for Customer/Seller toggle */
+.auth-tabs {
+  display: flex;
+  margin-bottom: -10px;
+  border-radius: 25px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.auth-tabs button {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.auth-tabs button:hover {
+  background: #e0e0e0;
+}
+
+.auth-tabs .active-tab {
+  background: #a020f0;
+  color: #fff;
+}
+
+.auth-form-footer {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.login-link {
+  color: #a020f0;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.login-link:hover {
+  color: #7b12c2;
+}
+.comment {
+  font-size: 10px;
+  color: rgba(255, 0, 0, 0.656);
+  margin-top: -10px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+/* Responsive */
+@media (max-width: 500px) {
+  .auth-form {
+    padding: 25px 20px;
+  }
+  .auth-form h2 {
+    font-size: 22px;
+  }
+  .btn-dark {
+    padding: 10px;
+  }
 }
