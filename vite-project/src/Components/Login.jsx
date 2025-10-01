@@ -34,6 +34,14 @@ const Login = () => {
           required
         />
         <button type="submit" className="btn-dark">Login</button>
+                <div className="auth-form-footer">
+  <p className="secondary-text">
+    Don't  have an account?{" "}
+    <a href="/register" className="login-link">
+     Register here
+    </a>
+  </p>
+</div>
       </form>
     </div>
   );
