@@ -143,7 +143,7 @@ const Navbar = () => {
             <FaMapMarkerAlt />
             <span className="icon-label">Location</span>
           </Link>
-          <Link to="/site/login" className="icon-button">
+          <Link to="/site/profile" className="icon-button"> {/* Changed to /site/profile */}
             <FaUser />
             <span className="icon-label">Profile</span>
           </Link>
