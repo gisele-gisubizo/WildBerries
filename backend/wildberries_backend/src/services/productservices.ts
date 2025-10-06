@@ -41,7 +41,7 @@ export class ProductService {
     return product;
   }
 
-  static async updateProduct(id: number, data: any, sellerId: number) {
+  static async updateProduct(id: number, sellerId: number, data: any) {
     const product = await productRepo.findOne({
       where: { id },
       relations: ["seller"],
@@ -111,7 +111,7 @@ export const getAllProducts = async (
 // ========================
 // Get One Product
 // ========================
-export const getProductById = async (id: string) => {
+export const getProductById = async (id: number) => {
   const product = await productRepo.findOne({
     where: { id },
     relations: ["category", "seller"],
@@ -129,7 +129,7 @@ export const updateProduct = async (
   updates: Partial<Product>
 ) => {
   const product = await productRepo.findOne({
-    where: { id: productId },
+    where: { id: parseInt(productId) },
     relations: ["seller"],
   });
 
@@ -146,7 +146,7 @@ export const updateProduct = async (
 // ========================
 // Delete Product
 // ========================
-export const deleteProduct = async (productId: string, sellerId: number) => {
+export const deleteProduct = async (productId: number, sellerId: number) => {
   const product = await productRepo.findOne({
     where: { id: productId },
     relations: ["seller"],
