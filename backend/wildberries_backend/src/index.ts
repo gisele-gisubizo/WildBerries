@@ -12,9 +12,12 @@ import orderRoutes from "./routes/orderRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
 
 import { setupSwagger } from "./swagger";
+import job from "./utilis/cron";
 
 dotenv.config();
 const app = express();
+
+if (process.env.NODE_ENV === "production") job.start(); // Start cron job only in production
 const PORT = process.env.PORT || 4000;
 
 app.use(cors());
