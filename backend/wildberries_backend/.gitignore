@@ -1,2 +1,6 @@
 .env
 node_modules/
+dist/
+build/
+*.d.ts
+*.map
