@@ -1,0 +1,1 @@
+export const API_URL = import.meta.env.VITE_NODE_ENV === 'production' ? 'https://wildberries-gtwe.onrender.com' : 'http://localhost:4000';
