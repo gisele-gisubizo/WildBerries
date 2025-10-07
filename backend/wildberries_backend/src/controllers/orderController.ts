@@ -6,7 +6,8 @@ import asyncHandler from "express-async-handler";
 export const checkout = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.userId; // ✅ from auth middleware
   if (!userId) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
+    res.status(401).json({ success: false, message: "Unauthorized" });
+    return;
   }
 
   const order = await orderService.checkout(Number(userId));
@@ -16,7 +17,8 @@ export const checkout = asyncHandler(async (req: Request, res: Response) => {
 export const getOrders = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.userId; // ✅ from auth middleware
   if (!userId) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
+    res.status(401).json({ success: false, message: "Unauthorized" });
+    return;
   }
 
   const orders = await orderService.getOrders(Number(userId));

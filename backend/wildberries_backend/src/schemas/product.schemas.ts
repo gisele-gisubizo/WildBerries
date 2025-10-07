@@ -1,30 +1,29 @@
-import { z } from "zod";
+import * as z from "zod";
 
 // Product creation schema
 export const createProductSchema = z.object({
   name: z
-    .string({ invalid_type_error: "Name must be a string" })
+    .string({ error: "Name must be a string" })
     .min(1, { message: "Product name is required" })
     .max(255, { message: "Name too long" }),
   price: z
-    .number({ invalid_type_error: "Price must be a number" })
+    .number({ error: "Price must be a number" })
     .min(0.01, { message: "Price must be positive" }),
   description: z
-    .string({ invalid_type_error: "Description must be a string" })
+    .string({ error: "Description must be a string" })
     .min(10, { message: "Description must be at least 10 characters" }),
   stockQuantity: z
-    .number({ invalid_type_error: "Stock quantity must be a number" })
+    .number({ error: "Stock quantity must be a number" })
     .int()
     .min(0, { message: "Stock cannot be negative" }),
   categoryId: z
-    .number({ invalid_type_error: "Category ID must be a number" })
+    .number({ error: "Category ID must be a number" })
     .int()
     .min(1, { message: "Valid category ID required" }),
-  categoryFields: z.record(z.any()).optional(),
+  categoryFields: z.object(z.any()).optional(),
   images: z
     .array(
       z
-        .string({ invalid_type_error: "Image must be a string" })
         .url({ message: "Image must be a valid URL" })
     )
     .optional(),
@@ -49,8 +48,8 @@ export const updateProductSchema = z.object({
   description: z.string().min(10).optional(),
   stockQuantity: z.number().int().min(0).optional(),
   categoryId: z.number().int().positive().optional(),
-  categoryFields: z.record(z.any()).optional(),
-  images: z.array(z.string().url()).optional(),
+  categoryFields: z.record(z.any(), z.any()).optional(),
+  images: z.array(z.url()).optional(),
   status: z
     .enum([
       "draft",

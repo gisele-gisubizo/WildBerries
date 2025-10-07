@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "tsc",
+    "build": "tsc --skipLibCheck",
     "start": "node dist/index.js",
     "seed:categories": "ts-node src/seed/seed.ts"
   },
@@ -19,11 +19,13 @@
     "class-validator": "^0.14.2",
     "cloudinary": "^1.41.3",
     "cors": "^2.8.5",
+    "cron": "^4.3.3",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
+    "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^7.0.6",
     "nodemon": "^3.1.10",
     "pg": "^8.16.3",
