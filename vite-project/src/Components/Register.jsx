@@ -2,7 +2,9 @@ import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../Styles/Auth.css";
-import { registerCustomer, registerSeller } from "../services/AuthService";
+import axios from "axios";
+
+const API_BASE_URL = "http://localhost:4000/users"; // ✅ Update if your backend runs on another port
 
 const Register = () => {
   const [accountType, setAccountType] = useState("customer");
@@ -32,32 +34,46 @@ const Register = () => {
 
     try {
       if (accountType === "customer") {
+        // ✅ Send JSON for customer registration
         const customerData = {
           email: form.email,
           phone: form.phone,
           password: form.password,
-          role: "customer",
+          // role: "customer",
         };
-        const res = await registerCustomer(customerData);
-        toast.success(res.message || "Customer registered successfully!");
+
+        const res = await axios.post(
+          `${API_BASE_URL}/register`,
+          customerData
+        );
+
+        toast.success(res.data.message || "Customer registered successfully!");
       } else {
+        // ✅ Seller requires FormData
         if (!form.nationalId || !form.license) {
           toast.error("Please upload National ID and License!");
           setLoading(false);
           return;
         }
 
-        const sellerData = {
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          password: form.password,
-          address: form.address,
-          idCopy: form.nationalId,
-          licenseDoc: form.license,
-        };
-        const res = await registerSeller(sellerData);
-        toast.success(res.message || "Seller registered successfully!");
+        const formData = new FormData();
+        formData.append("name", form.name);
+        formData.append("email", form.email);
+        formData.append("phone", form.phone);
+        formData.append("password", form.password);
+        formData.append("address", form.address);
+        formData.append("idCopy", form.nationalId); // backend expects "idCopy"
+        formData.append("licenseDoc", form.license); // backend expects "licenseDoc"
+
+        const res = await axios.post(
+          `${API_BASE_URL}/register-seller`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+
+        toast.success(res.data.message || "Seller registered successfully!");
       }
     } catch (err) {
       toast.error(
@@ -132,7 +148,10 @@ const Register = () => {
           onChange={handleChange}
           required
         />
-<p className="comment">*Password must contain at least one lowercase, one uppercase letter, and one number</p>
+        <p className="comment">
+          *Password must contain at least one lowercase, one uppercase letter, and one number
+        </p>
+
         {accountType === "seller" && (
           <>
             <input
@@ -160,6 +179,7 @@ const Register = () => {
                 name="license"
                 accept=".pdf,.jpg,.png"
                 onChange={handleChange}
+                required
               />
             </label>
           </>
