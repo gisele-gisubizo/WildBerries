@@ -1,6 +1,6 @@
 import { AppDataSource } from "./data-source";
 import "reflect-metadata";
-import express from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 
@@ -24,7 +24,7 @@ app.use(cors());
 app.use(express.json());
 
 // Health check
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.send("Hello TypeScript + Postgres 🚀");
 });
 
