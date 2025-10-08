@@ -3,7 +3,7 @@ import asyncHandler from "express-async-handler";
 import { CartService } from "../services/cartService";
 
 interface AuthRequest extends Request {
-  userId?: number; // from authMiddleware
+  userId?: any; // from authMiddleware
 }
 
 export const getCart = asyncHandler(async (req: AuthRequest, res: Response) => {

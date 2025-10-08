@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { FaArrowLeft, FaArrowRight, FaStar } from 'react-icons/fa';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { FaArrowLeft, FaArrowRight, FaStar, FaHeart } from "react-icons/fa";
+import { useNavigate, useLocation } from "react-router-dom";
 
-import clothes1 from '../assets/images/clothes1.jpg';
-import clothes2 from '../assets/images/clothes2.jpg';
-import clothes3 from '../assets/images/clothes3.jpg';
-import clothes4 from '../assets/images/clothes4.jpg';
-import clothes5 from '../assets/images/clothes5.jpg';
-import clothes6 from '../assets/images/clothes6.jpg';
+import clothes1 from "../assets/images/clothes1.jpg";
+import clothes2 from "../assets/images/clothes2.jpg";
+import clothes3 from "../assets/images/clothes3.jpg";
+import clothes4 from "../assets/images/clothes4.jpg";
+import clothes5 from "../assets/images/clothes5.jpg";
+import clothes6 from "../assets/images/clothes6.jpg";
 
-import item1 from '../assets/images/home/item1.jpg';
-import item2 from '../assets/images/home/item2.jpg';
-import item3 from '../assets/images/home/item3.jpg';
-import item4 from '../assets/images/home/item4.jpg';
-import item5 from '../assets/images/home/item5.jpg';
-import item6 from '../assets/images/home/item6.jpg';
-import item7 from '../assets/images/home/item7.jpg';
-import item8 from '../assets/images/home/item8.jpg';
-import item9 from '../assets/images/home/item9.jpg';
-import item10 from '../assets/images/home/item10.jpg';
-import item11 from '../assets/images/home/item11.jpg';
-import item12 from '../assets/images/home/item12.jpg';
+import item1 from "../assets/images/home/item1.jpg";
+import item2 from "../assets/images/home/item2.jpg";
+import item3 from "../assets/images/home/item3.jpg";
+import item4 from "../assets/images/home/item4.jpg";
+import item5 from "../assets/images/home/item5.jpg";
+import item6 from "../assets/images/home/item6.jpg";
+import item7 from "../assets/images/home/item7.jpg";
+import item8 from "../assets/images/home/item8.jpg";
+import item9 from "../assets/images/home/item9.jpg";
+import item10 from "../assets/images/home/item10.jpg";
+import item11 from "../assets/images/home/item11.jpg";
+import item12 from "../assets/images/home/item12.jpg";
 
-import '../Styles/home.css';
+import "../Styles/home.css";
 
-// Static stores data
+// Static stores data (unchanged)
 const storesData = [
   { id: 1, name: "Fashion Hub", categories: ["Clothes", "Shoes", "Accessories"] },
   { id: 2, name: "Tech World", categories: ["Gadgets", "Smart Devices"] },
@@ -39,7 +39,7 @@ const storesData = [
   { id: 11, name: "Garden Center", categories: ["Plants", "Tools"] },
 ];
 
-// Demo items with hidden categories, subcategories, and SHEIN description
+// Demo items with hidden categories, subcategories, and SHEIN description (unchanged)
 const items = [
   { id: 1, name: 'Item 1', image: item1, price: 29.99, storeId: 1, category: "Women Clothing", subcategory: "Tops", description: "Trendy top from SHEIN, perfect for casual outings with a chic design." },
   { id: 2, name: 'Item 2', image: item2, price: 34.99, storeId: 1, category: "Women Clothing", subcategory: "Dresses", description: "Elegant dress from SHEIN, ideal for parties with a modern twist." },
@@ -63,6 +63,7 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedSubcategory, setSelectedSubcategory] = useState("all");
+  const [favorites, setFavorites] = useState(new Set()); // Track favorite item IDs
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -73,8 +74,8 @@ const Home = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const category = searchParams.get('category') || 'all';
-    const subcategory = searchParams.get('subcategory') || 'all';
+    const category = searchParams.get("category") || "all";
+    const subcategory = searchParams.get("subcategory") || "all";
     setSelectedCategory(category);
     setSelectedSubcategory(subcategory);
   }, [location.search]);
@@ -91,7 +92,19 @@ const Home = () => {
     navigate(`/site/product/${id}`);
   };
 
-  const filteredItems = items.filter(item => {
+  const toggleFavorite = (id) => {
+    setFavorites((prev) => {
+      const newFavorites = new Set(prev);
+      if (newFavorites.has(id)) {
+        newFavorites.delete(id);
+      } else {
+        newFavorites.add(id);
+      }
+      return newFavorites;
+    });
+  };
+
+  const filteredItems = items.filter((item) => {
     const categoryMatch = selectedCategory === "all" || item.category === selectedCategory;
     const subcategoryMatch = selectedSubcategory === "all" || item.subcategory === selectedSubcategory;
     return categoryMatch && subcategoryMatch;
@@ -105,22 +118,27 @@ const Home = () => {
           {images.map((image, index) => (
             <div
               key={index}
-              className={`slide ${index === currentSlide ? 'active' : ''}`}
+              className={`slide ${index === currentSlide ? "active" : ""}`}
             >
               <img src={image} alt={`Slide ${index + 1}`} />
               <div className="overlay"></div>
             </div>
           ))}
         </div>
-        <button className="arrow prev" onClick={goToPrevious}><FaArrowLeft /></button>
-        <button className="arrow next" onClick={goToNext}><FaArrowRight /></button>
+        <button className="arrow prev" onClick={goToPrevious}>
+          <FaArrowLeft />
+        </button>
+        <button className="arrow next" onClick={goToNext}>
+          <FaArrowRight />
+        </button>
       </div>
 
       {/* Items section */}
       <h2 className="section-title">Popular Items</h2>
       <div className="items-grid">
         {filteredItems.map((item) => {
-          const store = storesData.find(s => s.id === item.storeId);
+          const store = storesData.find((s) => s.id === item.storeId);
+          const isFavorite = favorites.has(item.id);
           return (
             <div
               key={item.id}
@@ -129,7 +147,17 @@ const Home = () => {
             >
               <div className="item-image">
                 <img src={item.image} alt={item.name} />
-                <div className="discount">-50%</div>
+                <div className="discount">-50%</div> {/* Placeholder; adjust dynamically if needed */}
+                <button
+                  className={`favorite-btn ${isFavorite ? "favorite-active" : ""}`}
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent default behavior
+                    e.stopPropagation(); // Stop event from bubbling to parent
+                    toggleFavorite(item.id);
+                  }}
+                >
+                  <FaHeart />
+                </button>
               </div>
               <div className="item-details">
                 <div className="price">
@@ -137,16 +165,18 @@ const Home = () => {
                   <span className="old-price">${(item.price * 1.5).toFixed(2)}</span>
                 </div>
                 <p className="seller">{store?.name} / {item.name}</p>
-                <div className="rating"><FaStar className="star-icon" /> 4.8 · 1,200 reviews</div>
+                <div className="rating">
+                  <FaStar className="star-icon" /> 4.8 · 1,200 reviews
+                </div>
               </div>
               <button
-                className="buy-btn"
+                className="view-btn"
                 onClick={(e) => {
                   e.stopPropagation();
                   goToProduct(item.id);
                 }}
               >
-                Buy
+                View
               </button>
             </div>
           );

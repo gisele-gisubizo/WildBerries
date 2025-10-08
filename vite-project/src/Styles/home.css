@@ -1,8 +1,8 @@
 /* General Page */
 .home {
   padding: 20px;
-  background: #f5f5f5; /* subtle light gray background like Wildberries */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f5f5; /* Subtle light gray background like Wildberries */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Slider */
@@ -69,8 +69,12 @@
   background: rgba(0, 0, 0, 0.7);
 }
 
-.arrow.prev { left: 10px; }
-.arrow.next { right: 10px; }
+.arrow.prev {
+  left: 10px;
+}
+.arrow.next {
+  right: 10px;
+}
 
 /* Items Grid */
 .items-grid {
@@ -83,28 +87,30 @@
 /* Product Card */
 .item-card {
   background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   text-align: left;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
+  position: relative;
 }
 
 .item-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 /* Image Section */
 .item-image {
   position: relative;
   overflow: hidden;
+  height: 200px;
 }
 
 .item-image img {
   width: 100%;
-  height: 250px;
+  height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
@@ -118,12 +124,36 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  background: #ff5c5c;
+  background: #ff4d4d; /* Red like Wildberries discount badge */
   color: white;
   padding: 4px 8px;
   font-size: 12px;
   border-radius: 4px;
   font-weight: bold;
+}
+
+/* Favorite Button */
+.favorite-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #ff4d4d; /* Red heart icon */
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.favorite-btn:hover,
+.favorite-active {
+  background: #ff4d4d;
+  color: white;
 }
 
 /* Product Details */
@@ -139,7 +169,7 @@
 }
 
 .current-price {
-  color: #a020f0; /* Wildberries purple */
+  color: #d12291; /* Purple from Wildberries gradient */
   font-weight: bold;
   font-size: 16px;
   margin-right: 6px;
@@ -150,24 +180,6 @@
   text-decoration: line-through;
   font-size: 13px;
 }
-
-/* Labels */
-.labels {
-  margin-bottom: 6px;
-}
-
-.label {
-  display: inline-block;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: bold;
-  margin-right: 4px;
-  color: white;
-}
-
-.label.sale { background: orange; }
-.label.good-price { background: purple; }
 
 /* Seller Info */
 .seller {
@@ -180,15 +192,22 @@
 .rating {
   font-size: 12px;
   color: #333;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-/* Buy Button */
-.buy-btn {
+.star-icon {
+  color: #ffca28; /* Gold star */
+}
+
+/* View Button */
+.view-btn {
   margin-top: 8px;
   margin-left: 20px;
-  padding: 8px;
+  padding: 8px 16px;
   width: 80%;
-  background: #a020f0; /* Wildberries purple */
+  background: #7b2bff; /* Purple from Wildberries gradient */
   color: white;
   font-weight: bold;
   border: none;
@@ -201,16 +220,17 @@
   gap: 6px;
 }
 
-.buy-btn:hover {
-  background: #7b12c2;
+.view-btn:hover {
+  background: #5a1aff;
 }
+
 @media (max-width: 992px) {
   .slider {
     height: 250px;
   }
 
-  .item-image img {
-    height: 200px;
+  .item-image {
+    height: 180px;
   }
 
   .current-price {
@@ -221,9 +241,9 @@
     font-size: 12px;
   }
 
-  .buy-btn {
+  .view-btn {
     width: 85%;
-    padding: 6px;
+    padding: 6px 12px;
     font-size: 14px;
   }
 }
@@ -239,7 +259,7 @@
     gap: 15px;
   }
 
-  .item-image img {
+  .item-image {
     height: 150px;
   }
 
@@ -251,25 +271,15 @@
     font-size: 11px;
   }
 
-  .buy-btn {
+  .view-btn {
     width: 90%;
-    padding: 5px;
+    padding: 5px 10px;
     font-size: 13px;
   }
 
   .discount {
     font-size: 11px;
     padding: 3px 6px;
-  }
-
-  .label {
-    font-size: 10px;
-    padding: 1px 4px;
-  }
-
-  .seller,
-  .rating {
-    font-size: 11px;
   }
 }
 
@@ -279,13 +289,13 @@
     height: 150px;
   }
 
-  .item-image img {
+  .item-image {
     height: 120px;
   }
 
-  .buy-btn {
+  .view-btn {
     width: 95%;
-    padding: 4px;
+    padding: 4px 8px;
     font-size: 12px;
   }
 

@@ -22,7 +22,7 @@
 .navbar-left {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 10px; /* Reduced from 15px to decrease space between logo and search */
 }
 .logo {
   font-size: 40px;
@@ -48,28 +48,33 @@
   align-items: center;
 }
 .search-bar {
-  padding: 10px 40px 10px 15px;
+  padding: 24px 60px 14px 25px; /* Increased vertical padding for a taller bar, adjusted horizontal padding */
   border: none;
-  border-radius: 20px;
-  width: 300px;
-  font-size: 14px;
+  border-radius: 30px; /* Larger radius for a softer, more prominent look */
+  width: 1000px;
+  height:37px; /* Increased from 400px to 500px for a larger search bar */
+  font-size: 16px;
   color: #333;
   background-color: #fff;
   outline: none;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-  transition: 0.3s ease-in-out;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  transition: width 0.3s ease-in-out, box-shadow 0.3s;
 }
 .search-bar:focus {
-  width: 350px;
+  box-shadow: 0 0 8px rgba(123, 43, 255, 0.5);
 }
 .search-icon {
   position: absolute;
-  right: 12px;
+  right: 20px; /* Adjusted for larger padding and width */
   top: 50%;
   transform: translateY(-50%);
   color: #888;
-  font-size: 16px;
+  font-size: 18px;
   cursor: pointer;
+  transition: color 0.3s;
+}
+.search-icon:hover {
+  color: #7b2bff;
 }
 
 /* ---------- RIGHT ---------- */
@@ -110,7 +115,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 30px;
+  gap: 20px;
   padding: 10px 20px;
   overflow-x: auto;
   white-space: nowrap;
@@ -124,13 +129,12 @@
   color: white;
   text-decoration: none;
   font-size: 15px;
- font-weight: 500;
-  padding: 5px 5px;
-  margin-left: 1.5em;
-  
+  font-weight: 500;
+  padding: 5px 10px;
   line-height: 20px;
   transition: 0.3s;
   position: relative;
+  white-space: nowrap;
 }
 .nav-link.active {
   border-bottom: 2px solid white;
@@ -224,23 +228,6 @@
 }
 
 /* ---------- RESPONSIVENESS ---------- */
-@media screen and (max-width: 992px) {
-  .navbar-top {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 10px;
-  }
-  .search-bar {
-    width: 220px;
-  }
-  .navbar-right {
-    gap: 15px;
-  }
-  .navbar-bottom {
-    gap: 20px;
-  }
-}
-
 @media screen and (max-width: 600px) {
   .navbar-top {
     flex-direction: column;
@@ -253,7 +240,8 @@
   }
   .search-bar {
     width: 100%;
-    max-width: 300px;
+    max-width: 350px; /* Increased from 300px for a larger mobile search */
+    padding: 10px 50px 10px 20px; /* Adjusted padding for mobile */
   }
   .navbar-right {
     margin-top: 8px;
@@ -263,9 +251,45 @@
     flex-direction: column;
     align-items: flex-start;
     padding: 10px;
-    gap: 15px;
+    gap: 10px;
+  }
+  .nav-link {
+    padding: 5px 8px;
   }
   .sidebar-menu {
     width: 200px;
+  }
+}
+
+@media screen and (min-width: 601px) and (max-width: 992px) {
+  .navbar-top {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px;
+  }
+  .search-bar {
+    width: 350px; /* Increased from 220px for a larger medium-screen search */
+    padding: 12px 55px 12px 22px; /* Adjusted padding */
+  }
+  .navbar-right {
+    gap: 15px;
+  }
+  .navbar-bottom {
+    gap: 15px;
+    padding: 10px 15px;
+  }
+  .nav-link {
+    padding: 5px 10px;
+  }
+}
+
+@media screen and (min-width: 993px) {
+  .navbar-bottom {
+    gap: 25px;
+    padding: 10px 20px;
+    justify-content: center;
+  }
+  .nav-link {
+    padding: 5px 12px;
   }
 }

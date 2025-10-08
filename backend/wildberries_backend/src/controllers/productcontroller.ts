@@ -72,7 +72,9 @@ export const getProducts = asyncHandler(async (req: Request, res: Response) => {
   const categoryId = req.query.categoryId ? Number(req.query.categoryId) : undefined;
   const sellerId = req.query.sellerId ? Number(req.query.sellerId) : undefined;
 
-  const result = await ProductService.getAllProducts(page, limit, sortBy, order, { categoryId, sellerId });
+  // TODO: Implement the sorting logic in the getAllProducts() service
+  // const result = await ProductService.getAllProducts(page, limit, sortBy, order, { categoryId, sellerId });
+  const result = await ProductService.getAllProducts();
   res.status(200).json({ success: true, ...result });
 });
 
@@ -81,7 +83,7 @@ export const getProducts = asyncHandler(async (req: Request, res: Response) => {
 // ========================
 export const getProductById = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const product = await ProductService.getProductById(id);
+  const product = await ProductService.getProductById(parseInt(id));
   res.status(200).json({ success: true, data: product });
 });
 
@@ -93,7 +95,7 @@ export const updateProduct = asyncHandler(async (req: Request, res: Response) =>
   const sellerId = req.userId; // from authMiddleware
   if (!sellerId) return res.status(401).json({ success: false, message: "Unauthorized" });
 
-  const updatedProduct = await ProductService.updateProduct(id, sellerId, req.body);
+  const updatedProduct = await ProductService.updateProduct(parseInt(id), parseInt(sellerId), req.body);
   res.status(200).json({ success: true, data: updatedProduct });
 });
 
@@ -105,6 +107,6 @@ export const deleteProduct = asyncHandler(async (req: Request, res: Response) =>
   const sellerId = req.userId; // from authMiddleware
   if (!sellerId) return res.status(401).json({ success: false, message: "Unauthorized" });
 
-  const deletedProduct = await ProductService.deleteProduct(id, sellerId);
+  const deletedProduct = await ProductService.deleteProduct(parseInt(id), parseInt(sellerId));
   res.status(200).json({ success: true, message: "Product deleted", data: deletedProduct });
 });
