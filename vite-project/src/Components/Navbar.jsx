@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaSearch, FaUser, FaShoppingCart, FaMapMarkerAlt, FaTimes, FaHome } from "react-icons/fa";
+import { FaSearch, FaUser, FaShoppingCart, FaMapMarkerAlt, FaTimes} from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../Styles/navbar.css";
 import shop1 from "../assets/images/shop1.jpg";
@@ -85,7 +85,7 @@ function Navbar() {
       ] 
     },
     { 
-      name: "Men", 
+      name: "Men Clothing", 
       image: shop8, 
       link: "/site?category=Men&subcategory=all", 
       subcategories: [
@@ -95,32 +95,32 @@ function Navbar() {
       ] 
     },
     { 
-      name: "Home", 
+      name: "Underwear & Sleepwear", 
       image: shop9, 
+      link: "/site?category=Underwear & Sleepwear&subcategory=all", 
+      subcategories: []
+    },
+    { 
+      name: "Shoes", 
+      image: shop10, 
+      link: "/site?category=Shoes&subcategory=all", 
+      subcategories: []
+    },
+    { 
+      name: "Home & Kitchen", 
+      image: shop11, 
       link: "/site?category=Home&subcategory=all", 
       subcategories: [
-        { name: "Furniture", image: shop9, link: "/site?category=Home&subcategory=Furniture" },
-        { name: "Decor", image: shop9, link: "/site?category=Home&subcategory=Decor" },
-        { name: "Kitchen", image: shop9, link: "/site?category=Home&subcategory=Kitchen" }
+        { name: "Furniture", image: shop11, link: "/site?category=Home&subcategory=Furniture" },
+        { name: "Decor", image: shop11, link: "/site?category=Home&subcategory=Decor" },
+        { name: "Kitchen", image: shop11, link: "/site?category=Home&subcategory=Kitchen" }
       ] 
     },
     { 
-      name: "Deals", 
-      image: shop10, 
-      link: "/site?category=Deals&subcategory=all", 
-      subcategories: [
-        { name: "Flash Sales", image: shop10, link: "/site?category=Deals&subcategory=Flash Sales" },
-        { name: "Bundles", image: shop10, link: "/site?category=Deals&subcategory=Bundles" }
-      ] 
-    },
-    { 
-      name: "Brands", 
-      image: shop11, 
-      link: "/site?category=Brands&subcategory=all", 
-      subcategories: [
-        { name: "Popular Brands", image: shop11, link: "/site?category=Brands&subcategory=Popular Brands" },
-        { name: "New Brands", image: shop11, link: "/site?category=Brands&subcategory=New Brands" }
-      ] 
+      name: "Jewelry & Accessories", 
+      image: shop1, 
+      link: "/site?category=Jewelry & Accessories&subcategory=all", 
+      subcategories: []
     },
   ];
 
@@ -139,7 +139,6 @@ function Navbar() {
       <div className="navbar-top">
         <div className="navbar-left">
           <span className="menu-icon" onClick={() => setMenuOpen(!menuOpen)}>☰</span>
-         
           <span className="logo">wildBerries</span>
         </div>
 
@@ -182,11 +181,35 @@ function Navbar() {
       </div>
 
       {/* ---------- Sidebar Menu ---------- */}
+
+   
       {menuOpen && (
         <div className="sidebar-menu">
+      
           <button className="close-button" onClick={() => setMenuOpen(false)}>
             <FaTimes />
           </button>
+          
+          {/* Navigation Links at Top */}
+          <div className="sidebar-nav-links">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.link}
+                className="sidebar-nav-link"
+                onClick={() => {
+                  setActiveCategory(link.name.toLowerCase());
+                  navigate(link.link);
+                  setMenuOpen(false);
+                }}
+              >
+            
+                {link.name}
+              </Link>
+            ))}
+          </div>
+
+          {/* Categories */}
           {categories.map((cat) => (
             <div key={cat.name} className="sidebar-category">
               <Link
@@ -195,10 +218,12 @@ function Navbar() {
                 onClick={() => {
                   setActiveCategory(cat.name.toLowerCase());
                   navigate(cat.link);
+                  setMenuOpen(false);
                 }}
               >
                 <img src={cat.image} alt={cat.name} className="sidebar-image" />
                 <span className="sidebar-name">{cat.name}</span>
+                <span className="sidebar-arrow">›</span>
               </Link>
               {cat.subcategories.length > 0 && (
                 <div className="subcategory-section">
@@ -210,6 +235,7 @@ function Navbar() {
                       onClick={() => {
                         setActiveCategory(sub.name.toLowerCase());
                         navigate(sub.link);
+                        setMenuOpen(false);
                       }}
                     >
                       <img src={sub.image} alt={sub.name} className="subcategory-image" />
