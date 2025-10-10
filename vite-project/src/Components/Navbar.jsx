@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaSearch, FaUser, FaShoppingCart, FaMapMarkerAlt, FaTimes } from "react-icons/fa";
+import { FaSearch, FaUser, FaShoppingCart, FaMapMarkerAlt, FaTimes, FaHome } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../Styles/navbar.css";
 import shop1 from "../assets/images/shop1.jpg";
@@ -14,7 +14,7 @@ import shop9 from "../assets/images/shop9.jpg";
 import shop10 from "../assets/images/shop10.jpg";
 import shop11 from "../assets/images/shop11.jpg";
 
-const Navbar = () => {
+function Navbar() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -124,12 +124,22 @@ const Navbar = () => {
     },
   ];
 
+  const navLinks = [
+    { name: "All", link: "/site?category=all&subcategory=all" },
+    { name: "Women", link: "/site?category=Women Clothing&subcategory=all" },
+    { name: "Men", link: "/site?category=Men&subcategory=all" },
+    { name: "Kids", link: "/site?category=Kids&subcategory=all" },
+    { name: "Curve", link: "/site?category=Curve&subcategory=all" },
+    { name: "Home", link: "/site" },
+  ];
+
   return (
     <nav className="navbar">
       {/* ---------- TOP ---------- */}
       <div className="navbar-top">
         <div className="navbar-left">
           <span className="menu-icon" onClick={() => setMenuOpen(!menuOpen)}>☰</span>
+         
           <span className="logo">wildBerries</span>
         </div>
 
@@ -143,7 +153,7 @@ const Navbar = () => {
             <FaMapMarkerAlt />
             <span className="icon-label">Location</span>
           </Link>
-          <Link to="/site/profile" className="icon-button"> {/* Changed to /site/profile */}
+          <Link to="/site/profile" className="icon-button">
             <FaUser />
             <span className="icon-label">Profile</span>
           </Link>
@@ -156,7 +166,7 @@ const Navbar = () => {
 
       {/* ---------- BOTTOM ---------- */}
       <div className="navbar-bottom">
-        {categories.map((cat) => (
+        {navLinks.map((cat) => (
           <Link
             key={cat.name}
             to={cat.link}
@@ -214,6 +224,6 @@ const Navbar = () => {
       )}
     </nav>
   );
-};
+}
 
 export default Navbar;

@@ -20,8 +20,8 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD || "postgres", // must be a string
   database: process.env.DB_NAME,
-  synchronize: false, // always false in production
-  logging: false,
+  synchronize: true, // always false in production
+  logging: true,
   ssl:
     process.env.NODE_ENV === "production"
       ? { rejectUnauthorized: false } // required for Aiven
