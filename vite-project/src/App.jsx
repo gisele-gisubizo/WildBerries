@@ -14,6 +14,7 @@ import Register from "./Components/Register";
 import Checkout from "./Components/Checkout";
 import OrderSuccess from "./Components/OrderSuccess";
 import MomoPayment from "./Components/MomoPayment";
+import OtpVerification from "./Components/OtpVerification";
 import Location from "./Components/Location"; // Added import for Location component
 
 // Admin dashboard components
@@ -62,6 +63,7 @@ function App() {
         <Route path="/" element={<EntryPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+         <Route path="/otp" element={<OtpVerification />} />
 
         {/* Main Site Layout */}
         <Route path="/site" element={<Layout cartCount={cartCount} />}>

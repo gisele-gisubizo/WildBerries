@@ -9,6 +9,7 @@ import { Category } from  "../entities/category"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+
 const userRepo = AppDataSource.getRepository(User);
 const categoryRepo = AppDataSource.getRepository(Category);
 const SALT_ROUNDS = 10;
@@ -138,12 +139,12 @@ export const resendOTP = async (email: string) => {
 // =============================
 // Login
 // =============================
-export const loginUser = async (email: string, password: string) => {
-  const user = await userRepo.findOneBy({ email });
-  if (!user) throw new AppError("User not found", 404);
+export const loginUser = async (phone: string, password: string) => {
+  const user = await userRepo.findOneBy({ phone });
+  if (!user) throw new AppError("Phone number not found", 404);
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw new AppError("Invalid credentials", 401);
+  const isMatch = user ? await bcrypt.compare(password, user.password) : false;
+  if (!isMatch) throw new AppError("Incorrect password", 401);
 
   if (!user.isVerified) throw new AppError("User is not verified", 403);
   if (user.status !== "approved") throw new AppError("User not approved", 403);
