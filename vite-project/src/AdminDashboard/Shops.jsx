@@ -1,16 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useShops } from './ShopContext';
+import axios from 'axios';
 import './dashboard.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const API_BASE_URL = "http://localhost:4000";
 
 export default function ShopsPage() {
-    const { approvedShops } = useShops();
     const navigate = useNavigate();
 
+    const [approvedShops, setApprovedShops] = useState([]);
     const [search, setSearch] = useState('');
     const rowsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(false);
 
+    // -----------------------
+    // Fetch approved shops from backend
+    // -----------------------
+    const fetchApprovedShops = async () => {
+        setLoading(true);
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error("No token found. Please login.");
+
+            const config = {
+                headers: { Authorization: `Bearer ${token}` }
+            };
+
+            const res = await axios.get(`${API_BASE_URL}/users/sellers/approved`, config);
+            setApprovedShops(res.data.data);
+        } catch (err) {
+            console.error("Error fetching approved shops:", err);
+            const message = err.response?.data?.message || err.message;
+            toast.error(`Error fetching approved shops: ${message}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchApprovedShops();
+    }, []);
+
+    // -----------------------
+    // Filtering & Pagination
+    // -----------------------
     const filteredShops = approvedShops.filter(
         shop =>
             (shop.owner && shop.owner.toLowerCase().includes(search.toLowerCase())) ||
@@ -24,6 +60,8 @@ export default function ShopsPage() {
 
     return (
         <div className="dashboard-container">
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+
             <div className="dashboard-header-row">
                 <h2>Approved Shops</h2>
                 <div className="dashboard-controls">
@@ -37,53 +75,57 @@ export default function ShopsPage() {
                 </div>
             </div>
 
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>Owner Name</th>
-                        <th>Shop Name</th>
-                        <th>Address</th>
-                        <th>Email</th>
-                        <th>Applied Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {paginate(filteredShops, currentPage).map(shop => (
-                        <tr key={shop.id}>
-                            <td>{shop.owner || 'N/A'}</td>
-                            <td>{shop.name || 'N/A'}</td>
-                            <td>{shop.address || 'N/A'}</td>
-                            <td>{shop.email || 'N/A'}</td>
-                            <td>{shop.appliedDate || 'N/A'}</td>
-                            <td>
-                                <button
-                                    className="view-shop-btn"
-                                    onClick={() => navigate(`/shops/${shop.id}`)}
-                                >
-                                    View Shop
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            {loading ? (
+                <p>Loading approved shops...</p>
+            ) : (
+                <>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Shop Name</th>
+                                <th>Address</th>
+                                <th>Email</th>
+                                <th>Applied Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {paginate(filteredShops, currentPage).map(shop => (
+                                <tr key={shop.id}>
+                                    <td>{shop.name || 'N/A'}</td>
+                                    <td>{shop.address || 'N/A'}</td>
+                                    <td>{shop.email || 'N/A'}</td>
+                                    <td>{shop.createdAt || 'N/A'}</td>
+                                    <td>
+                                        <button
+                                            className="view-shop-btn"
+                                            onClick={() => navigate(`/shops/${shop.id}`)}
+                                        >
+                                            View Shop
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
 
-            <div className="pagination">
-                <button
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                >
-                    Prev
-                </button>
-                <span>Page {currentPage} / {totalPages}</span>
-                <button
-                    onClick={() => setCurrentPage(prev => (prev < totalPages ? prev + 1 : prev))}
-                    disabled={currentPage === totalPages}
-                >
-                    Next
-                </button>
-            </div>
+                    <div className="pagination">
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                        >
+                            Prev
+                        </button>
+                        <span>Page {currentPage} / {totalPages}</span>
+                        <button
+                            onClick={() => setCurrentPage(prev => (prev < totalPages ? prev + 1 : prev))}
+                            disabled={currentPage === totalPages}
+                        >
+                            Next
+                        </button>
+                    </div>
+                </>
+            )}
         </div>
     );
 }

@@ -74,6 +74,7 @@ const Register = () => {
         );
 
         toast.success(res.data.message || "Seller registered successfully!");
+        window.location.href = "/otp";
       }
     } catch (err) {
       toast.error(
@@ -121,7 +122,6 @@ const Register = () => {
           />
         )}
 
-        {accountType === "customer" && (
           <input
             type="email"
             name="email"
@@ -130,7 +130,6 @@ const Register = () => {
             onChange={handleChange}
             required
           />
-        )}
 
         <input
           type="tel"

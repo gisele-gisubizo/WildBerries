@@ -7,11 +7,25 @@ import {
   FaEnvelope,
   FaCog,
   FaSignOutAlt,
-} from "react-icons/fa";
+} from "react-icons/fa"
+import { useNavigate } from "react-router-dom";
 import "./sidebar.css";
 
 const Sidebar = () => {
   const location = useLocation();
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Remove token from localStorage
+    localStorage.removeItem("token");
+
+    // Optional: remove any other stored user data
+    // localStorage.removeItem("user");
+
+    // Redirect to home or login
+    navigate("/", { replace: true });
+  };
 
   const isActive = (path) => location.pathname === path;
 
@@ -58,9 +72,9 @@ const Sidebar = () => {
           <FaCog /> Settings
         </Link>
 
-        <Link to="/" className="nav-item logout">
-          <FaSignOutAlt /> Logout
-        </Link>
+        <button onClick={handleLogout} className="nav-item logout">
+      <FaSignOutAlt /> Logout
+    </button>
       </nav>
     </aside>
   );

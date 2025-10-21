@@ -1,5 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../Styles/Auth.css";
 
 const Login = () => {
@@ -17,35 +19,46 @@ const Login = () => {
     setError("");
 
     try {
-      // 🧩 Replace with your actual backend API URL
       const res = await axios.post("http://localhost:4000/users/login", {
         phone: form.phone,
         password: form.password,
       });
 
       if (res.data.success) {
-        alert("✅ Login successful!");
+        toast.success("Login successful!");
+
         console.log("User data:", res.data.data);
 
         // Save token to localStorage for auth persistence
         localStorage.setItem("token", res.data.data.token);
 
-        // Example: redirect to dashboard after successful login
-        window.location.href = "/dashboard";
+        // Get user role
+        const role = res.data.data.role;
+
+        // Redirect based on role
+        if (role === "admin") {
+          window.location.href = "/dashboard";
+        } else if (role === "seller") {
+          window.location.href = "/seller-dashboard";
+        } else if (role === "customer") {
+          window.location.href = "/site";
+        } else {
+          toast.error("Unknown role. Please contact support.");
+        }
       }
+
     } catch (err) {
       console.error("Login error:", err);
       if (err.response) {
         if (err.response.status === 400) {
-          setError("❌ Invalid phone number or password.");
+          setError("Invalid phone number or password.");
         } else if (err.response.status === 401) {
-          setError("❌ Unauthorized. Please check your credentials.");
+          setError("Unauthorized. Please check your credentials.");
         } else {
-          setError("⚠️ Something went wrong. Please try again later.");
+          setError("Something went wrong. Please try again later.");
         }
-      }
-       else {
-        setError("⚠️ Network error. Please check your connection.");
+      } else {
+        setError("Network error. Please check your connection.");
       }
     } finally {
       setLoading(false);
@@ -90,6 +103,9 @@ const Login = () => {
           </p>
         </div>
       </form>
+
+      {/* Toast container */}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </div>
   );
 };

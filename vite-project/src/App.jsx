@@ -16,6 +16,7 @@ import OrderSuccess from "./Components/OrderSuccess";
 import MomoPayment from "./Components/MomoPayment";
 import OtpVerification from "./Components/OtpVerification";
 import Location from "./Components/Location"; // Added import for Location component
+// import ProtectedRoute from "./ProtectedRoute";
 
 // Admin dashboard components
 import DashboardLayout from "./AdminDashboard/Layout";
@@ -32,6 +33,7 @@ import SellerDashboardLayout from "./SellersDashboard/SellerDashboardLayout";
 import SellerDashboard from "./SellersDashboard/SellerDashboard";
 import ProductsPage from "./SellersDashboard/Products";
 import AddProductPage from "./SellersDashboard/Addproduct";
+
 
 import "./App.css";
 
