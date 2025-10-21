@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { User } from "./user";
+import { Users } from "./user";
 import { Product } from "./product";
 
 @Entity()
@@ -7,9 +7,9 @@ export class Review {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => Users)
   @JoinColumn()
-  customer!: User;
+  customer!: Users;
 
   @ManyToOne(() => Product)
   @JoinColumn()

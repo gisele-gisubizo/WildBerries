@@ -8,7 +8,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { User } from "./user";
+import { Users } from "./user";
 import { OrderItem } from "./orderItem";
 
 @Entity()
@@ -16,8 +16,8 @@ export class Order {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => User, (user) => user.orders, { eager: true })
-  user!: User;
+  @ManyToOne(() => Users, (user) => user.orders, { eager: true })
+  user!: Users;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {
     cascade: true,

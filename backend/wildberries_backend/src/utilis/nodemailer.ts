@@ -1,7 +1,7 @@
 // utilis/nodemailer.ts
 import nodemailer from "nodemailer";
 
-export const sendEmail = async (to: string, subject: string, text: string) => {
+export const sendEmail = async (to: string, subject: string, html: string) => {
   // Create a transporter
   const transporter = nodemailer.createTransport({
     service: "gmail", // You can change this to "hotmail", "yahoo", etc.
@@ -13,10 +13,10 @@ export const sendEmail = async (to: string, subject: string, text: string) => {
 
   // Send the email
   await transporter.sendMail({
-    from: process.env.EMAIL_USER,
+    from:  `"WildBerries Company" <${process.env.EMAIL_USER}> `,
     to,
     subject,
-    text,
+    html,
   });
 
   console.log(`Email sent to ${to}`);

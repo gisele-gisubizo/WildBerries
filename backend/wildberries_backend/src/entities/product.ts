@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Category } from "./category";
-import { User } from "./user";
+import { Users } from "./user";
 
 @Entity()
 export class Product {
@@ -35,8 +35,8 @@ export class Product {
   @ManyToOne(() => Category, (category) => category.products, { eager: true })
   category!: Category;
 
-  @ManyToOne(() => User, (user) => user.products, { eager: true })
-  seller!: User;
+  @ManyToOne(() => Users, (user) => user.products, { eager: true })
+  seller!: Users;
 
   @CreateDateColumn()
   createdAt!: Date;

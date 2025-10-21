@@ -1,12 +1,12 @@
 import { AppDataSource } from "../data-source";
 import { Product } from "../entities/product";
 import { Category } from "../entities/category";
-import { User } from "../entities/user";
+import { Users } from "../entities/user";
 import { AppError } from "../utilis/errors";
 
 const productRepo = AppDataSource.getRepository(Product);
 const categoryRepo = AppDataSource.getRepository(Category);
-const userRepo = AppDataSource.getRepository(User);
+const userRepo = AppDataSource.getRepository(Users);
 
 export class ProductService {
   static async createProduct(data: any, sellerId: number) {
