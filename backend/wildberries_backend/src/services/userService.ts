@@ -3,14 +3,14 @@ import { AppDataSource } from "../data-source";
 import { AppError } from "../utilis/errors";
 import { generateOTP } from "../utilis/otp";
 import { sendEmail } from "../utilis/nodemailer";
-import { User, UserRole } from "../entities/user";
+import { Users, UserRole } from "../entities/user";
 import { Category } from  "../entities/category"
 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 
-const userRepo = AppDataSource.getRepository(User);
+const userRepo = AppDataSource.getRepository(Users);
 const categoryRepo = AppDataSource.getRepository(Category);
 const SALT_ROUNDS = 10;
 
@@ -48,10 +48,41 @@ export const registerCustomer = async (
     status: "approved",
   });
 
-  await userRepo.save(user);
-  await sendEmail(email, "Your OTP Verification Code", `Your OTP is: ${otp}`);
+await userRepo.save(user);
 
-  return user;
+const htmlMessage = `
+  <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px;">
+    <div style="max-width: 500px; margin: auto; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 25px;">
+      <h2 style="color: #6B2C91; text-align: center;">WildBerries Company</h2>
+      <p style="font-size: 16px;">Hello dear <strong>${user.name}</strong>,</p>
+      <p style="font-size: 15px; line-height: 1.6;">
+        Thank you for registering with <strong>WildBerries Company</strong>. 
+        To complete your verification, please use the One-Time Password (OTP) below:
+      </p>
+      <div style="text-align: center; margin: 25px 0;">
+        <span style="background-color: #6B2C91; color: white; padding: 12px 24px; border-radius: 6px; font-size: 20px; letter-spacing: 2px; display: inline-block;">
+          ${otp}
+        </span>
+      </div>
+      <p style="font-size: 14px; color: #555;">
+        This OTP will expire in <strong>10 minutes</strong>. Please do not share it with anyone for your security.
+      </p>
+      <p style="margin-top: 25px; font-size: 14px; color: #777;">Kind regards,<br>
+        <strong>WildBerries Support Team</strong><br>
+        <a href="https://wildberries.com" style="color: #6B2C91; text-decoration: none;">www.wildberries.com</a>
+      </p>
+    </div>
+  </div>
+`;
+
+await sendEmail(
+  email,
+  "Your WildBerries OTP Verification Code",
+  htmlMessage
+);
+
+return user;
+
 };
 
 // =============================
@@ -91,10 +122,41 @@ export const registerSeller = async (
     status: "pending",
   });
 
-  await userRepo.save(seller);
-  await sendEmail(email, "Your OTP Verification Code", `Your OTP is: ${otp}`);
+await userRepo.save(seller);
 
-  return seller;
+const htmlMessage = `
+  <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px;">
+    <div style="max-width: 500px; margin: auto; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 25px;">
+      <h2 style="color: #6B2C91; text-align: center;">WildBerries Company</h2>
+      <p style="font-size: 16px;">Hello dear <strong>${seller.name}</strong>,</p>
+      <p style="font-size: 15px; line-height: 1.6;">
+        Thank you for registering with <strong>WildBerries Company</strong>. 
+        To complete your verification, please use the One-Time Password (OTP) below:
+      </p>
+      <div style="text-align: center; margin: 25px 0;">
+        <span style="background-color: #6B2C91; color: white; padding: 12px 24px; border-radius: 6px; font-size: 20px; letter-spacing: 2px; display: inline-block;">
+          ${otp}
+        </span>
+      </div>
+      <p style="font-size: 14px; color: #555;">
+        This OTP will expire in <strong>10 minutes</strong>. Please do not share it with anyone for your security.
+      </p>
+      <p style="margin-top: 25px; font-size: 14px; color: #777;">Kind regards,<br>
+        <strong>WildBerries Support Team</strong><br>
+        <a href="https://wildberries.com" style="color: #6B2C91; text-decoration: none;">www.wildberries.com</a>
+      </p>
+    </div>
+  </div>
+`;
+
+await sendEmail(
+  email,
+  "Your WildBerries OTP Verification Code",
+  htmlMessage
+);
+
+return seller;
+
 };
 
 // =============================
@@ -130,9 +192,39 @@ export const resendOTP = async (email: string) => {
   user.otp = newOtp;
   await userRepo.save(user);
 
-  await sendEmail(email, "Your New OTP Verification Code", `Your new OTP is: ${newOtp}`);
+const htmlMessage = `
+  <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px;">
+    <div style="max-width: 500px; margin: auto; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 25px;">
+      <h2 style="color: #6B2C91; text-align: center;">WildBerries Company</h2>
+      <p style="font-size: 16px;">Hello dear <strong>${user.name}</strong>,</p>
+      <p style="font-size: 15px; line-height: 1.6;">
+        You requested a new One-Time Password (OTP) from <strong>WildBerries Company</strong>. 
+        Please use the code below to complete your verification:
+      </p>
+      <div style="text-align: center; margin: 25px 0;">
+        <span style="background-color: #6B2C91; color: white; padding: 12px 24px; border-radius: 6px; font-size: 20px; letter-spacing: 2px; display: inline-block;">
+          ${newOtp}
+        </span>
+      </div>
+      <p style="font-size: 14px; color: #555;">
+        This OTP will expire in <strong>10 minutes</strong>. Please do not share it with anyone for your account’s safety.
+      </p>
+      <p style="margin-top: 25px; font-size: 14px; color: #777;">Kind regards,<br>
+        <strong>WildBerries Support Team</strong><br>
+        <a href="https://wildberries.com" style="color: #6B2C91; text-decoration: none;">www.wildberries.com</a>
+      </p>
+    </div>
+  </div>
+`;
 
-  return { message: "A new OTP has been sent to your email" };
+await sendEmail(
+  email,
+  "Your New WildBerries OTP Verification Code",
+  htmlMessage
+);
+
+return { message: "A new OTP has been sent to your email" };
+
 };
 
 
@@ -176,21 +268,61 @@ export const reviewSeller = async (
   seller.status = status;
   await userRepo.save(seller);
 
-  if (status === "approved") {
-    await sendEmail(
-      seller.email,
-      "Seller Approval",
-      "Congratulations! Your seller account has been approved."
-    );
-  } else {
-    await sendEmail(
-      seller.email,
-      "Seller Rejection",
-      "Sorry, your seller account has been rejected."
-    );
-  }
+await userRepo.save(seller);
 
-  return seller;
+let subject, htmlMessage;
+
+if (status === "approved") {
+  subject = "Seller Account Approved - WildBerries Company";
+  htmlMessage = `
+    <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+      <div style="max-width: 500px; margin: auto; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 25px;">
+        <h2 style="color: #6B2C91; text-align: center;">WildBerries Company</h2>
+        <p style="font-size: 16px;">Hello dear <strong>${seller.name}</strong>,</p>
+        <p style="font-size: 15px; line-height: 1.6; color: #333;">
+          🎉 Congratulations! We’re pleased to inform you that your <strong>seller account</strong> has been
+          <span style="color: #28A745; font-weight: bold;">approved</span>.
+        </p>
+        <p style="font-size: 15px; color: #555;">
+          You can now log in to your WildBerries Seller Dashboard and start managing your products.
+        </p>
+        <div style="text-align: center; margin: 25px 0;">
+          <a href="https://wildberries.com/seller-dashboard" style="background-color: #6B2C91; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold;">Go to Dashboard</a>
+        </div>
+        <p style="font-size: 14px; color: #777;">Best regards,<br>
+          <strong>WildBerries Support Team</strong><br>
+          <a href="https://wildberries.com" style="color: #6B2C91; text-decoration: none;">www.wildberries.com</a>
+        </p>
+      </div>
+    </div>
+  `;
+} else {
+  subject = "Seller Account Rejection - WildBerries Company";
+  htmlMessage = `
+    <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+      <div style="max-width: 500px; margin: auto; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 25px;">
+        <h2 style="color: #6B2C91; text-align: center;">WildBerries Company</h2>
+        <p style="font-size: 16px;">Hello dear <strong>${seller.name}</strong>,</p>
+        <p style="font-size: 15px; line-height: 1.6; color: #333;">
+          We appreciate your interest in becoming a <strong>seller</strong> with <strong>WildBerries Company</strong>. 
+          Unfortunately, your account has been <span style="color: #E53935; font-weight: bold;">rejected</span> at this time.
+        </p>
+        <p style="font-size: 15px; color: #555;">
+          You are welcome to review your submission and reapply once you’ve made the necessary improvements.
+        </p>
+        <p style="font-size: 14px; color: #777; margin-top: 25px;">Kind regards,<br>
+          <strong>WildBerries Support Team</strong><br>
+          <a href="https://wildberries.com" style="color: #6B2C91; text-decoration: none;">www.wildberries.com</a>
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+await sendEmail(seller.email, subject, htmlMessage);
+
+return seller;
+
 };
 
 
@@ -205,7 +337,7 @@ export const comparePassword = async (plain: string, hashed: string) => {
 };
 
 // Generate JWT
-export const generateToken = (user: User) => {
+export const generateToken = (user: Users) => {
   if (!process.env.JWT_SECRET) {
     throw new Error("JWT_SECRET is not defined");
   }
@@ -275,7 +407,7 @@ export const getUsersByFilter = async (filter: UserFilter) => {
 // =============================
 // Update user
 // =============================
-export const updateUser = async (id: number, data: Partial<User>) => {
+export const updateUser = async (id: number, data: Partial<Users>) => {
   const user = await userRepo.findOneBy({ id });
   if (!user) throw new AppError("User not found", 404);
 

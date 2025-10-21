@@ -1,9 +1,9 @@
 import { ZodIssue } from "zod";
 import { Request } from "express";
-import { User } from "../entities/user";
+import { Users } from "../entities/user";
 
 export interface AuthenticatedRequest extends Request {
-  user?: User;
+  user?: Users;
 }
 
 export interface ValidationResult<T> {

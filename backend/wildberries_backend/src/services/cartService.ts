@@ -2,13 +2,13 @@ import { AppDataSource } from "../data-source";
 import { Cart } from "../entities/cart";
 import { CartItem } from "../entities/cartItem";
 import { Product } from "../entities/product";
-import { User } from "../entities/user";
+import { Users } from "../entities/user";
 import { AppError } from "../utilis/errors";
 
 const cartRepo = AppDataSource.getRepository(Cart);
 const cartItemRepo = AppDataSource.getRepository(CartItem);
 const productRepo = AppDataSource.getRepository(Product);
-const userRepo = AppDataSource.getRepository(User);
+const userRepo = AppDataSource.getRepository(Users);
 
 export class CartService {
   static async getOrCreateCart(userId: number) {

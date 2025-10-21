@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { Product } from "./product";
-import { User } from "./user";
+import { Users } from "./user";
 
 export type CategoryType =
   | "Fashion & Clothing"
@@ -65,8 +65,8 @@ export class Category {
   products!: Product[];
 
   // ✅ Relation: one category has many sellers
-  @OneToMany(() => User, (user) => user.category)
-  sellers!: User[];
+  @OneToMany(() => Users, (user) => user.category)
+  sellers!: Users[];
 
   @CreateDateColumn()
   createdAt!: Date;

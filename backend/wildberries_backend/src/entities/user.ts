@@ -8,7 +8,7 @@ export type UserRole = "admin" | "seller" | "customer";
 export type UserStatus = "pending" | "approved" | "rejected";
 
 @Entity()
-export class User {
+export class Users {
   @PrimaryGeneratedColumn()
   id!: number;
 

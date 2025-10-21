@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../middlewares/errorHandler";
 import { ProductService } from "../services/productservices";
-import { User} from "../entities/user"
+import { Users} from "../entities/user"
 import { AppDataSource } from "../data-source";
 // import cloudinary from "../utilis/cloudinary";
 
@@ -36,7 +36,7 @@ export const createProduct = asyncHandler(async (req: MulterFilesRequest, res: R
   }
 
   // ✅ Use Data Mapper to get the seller
-  const userRepo = AppDataSource.getRepository(User);
+  const userRepo = AppDataSource.getRepository(Users);
   const seller = await userRepo.findOne({ where: { id: Number(sellerId) } });
   if (!seller) {
     return res.status(404).json({ success: false, message: "Seller not found" });
