@@ -1,40 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useShops } from './ShopContext';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './dashboard.css';
+
+const API_BASE_URL = "http://localhost:4000"; // your backend URL
 
 export default function ApplicationsPage() {
     const { addApprovedShop } = useShops();
 
-    const [applications, setApplications] = useState([
-        { id: 1, type: 'Seller', name: 'Alice Mutesi', email: 'alice@example.com', shop: '', phone: '+250788123456', appliedDate: '2025-08-25', status: 'Pending',  address: 'Kigali City', idDoc: 'ID001.pdf', registrationDoc: 'reg_kf.pdf' },
-        { id: 2, type: 'Seller', name: '', email: 'brian@example.com', shop: 'Musanze Groceries', phone: '+250788987654', appliedDate: '2025-09-01', status: 'Pending', address: 'Musanze Town', idDoc: 'ID002.pdf', registrationDoc: 'reg_mg.pdf' },
-        { id: 3, type: 'Seller', name: 'Catherine Iradukunda', email: 'catherine@example.com', shop: '', phone: '+250785112233', appliedDate: '2025-08-28', status: 'Pending',  address: 'Ruhango', idDoc: 'ID003.pdf', registrationDoc: 'reg_rt.pdf' },
-        { id: 4, type: 'Shop', name: 'Huye Market', email: 'huye@example.com', phone: '+250788556677', appliedDate: '2025-08-30', status: 'Pending', address: 'Huye District', idDoc: 'ID004.pdf', registrationDoc: 'registration_hm.pdf' },
-        { id: 5, type: 'Shop', name: 'Nyagatare Shop', email: 'nyagatare@example.com', phone: '+250788667788', appliedDate: '2025-08-20', status: 'Pending', address: 'Nyagatare Town', idDoc: 'ID005.pdf', registrationDoc: 'registration_ns.pdf' },
-        { id: 6, type: 'Seller', name: '', email: 'david@example.com', shop: 'Huye Market', phone: '+250788556678', appliedDate: '2025-08-31', status: 'Pending',  address: 'Huye', idDoc: 'ID006.pdf', registrationDoc: 'reg_hm.pdf' },
-        { id: 7, type: 'Seller', name: 'Esther Mukamana', email: 'esther@example.com', shop: '', phone: '+250788667789', appliedDate: '2025-08-22', status: 'Pending', address: 'Kigali', idDoc: 'ID007.pdf', registrationDoc: 'reg_ns.pdf' },
-        { id: 8, type: 'Shop', name: 'Kigali Central', email: 'kigali@example.com', phone: '+250788334455', appliedDate: '2025-09-02', status: 'Pending', address: 'Kigali City', idDoc: 'ID008.pdf', registrationDoc: 'registration_kc.pdf' },
-        { id: 9, type: 'Seller', name: '', email: 'fabrice@example.com', shop: 'Kibuye Essentials', phone: '+250788445566', appliedDate: '2025-09-03', status: 'Pending',  address: 'Kibuye', idDoc: 'ID009.pdf', registrationDoc: 'reg_ke.pdf' },
-        { id: 10, type: 'Shop', name: 'Rubavu Traders', email: 'rubavu@example.com', phone: '+250788112244', appliedDate: '2025-09-04', status: 'Pending', address: 'Rubavu District', idDoc: 'ID010.pdf', registrationDoc: 'registration_rt.pdf' },
-    ]);
-
-
+    const [applications, setApplications] = useState([]);
     const [search, setSearch] = useState('');
     const [filterStatus, setFilterStatus] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [modalApp, setModalApp] = useState(null);
+    const [loading, setLoading] = useState(false);
     const rowsPerPage = 5;
 
-    const filteredApplications = applications
-        .filter(a => a.status !== 'Approved') 
-        .filter(a =>
-            ((a.name && a.name.toLowerCase().includes(search.toLowerCase())) ||
-                (a.shop && a.shop.toLowerCase().includes(search.toLowerCase())) ||
-                (a.address && a.address.toLowerCase().includes(search.toLowerCase())) ||
-                a.phone.includes(search) ||
-                (a.email && a.email.toLowerCase().includes(search.toLowerCase()))) &&
-            (filterStatus === '' || a.status === filterStatus)
-        );
+    // -----------------------
+    // Fetch pending and rejected sellers from backend
+    // -----------------------
+    const fetchSellers = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("No token found. Please login.");
+
+            const config = {
+                headers: { Authorization: `Bearer ${token}` }
+            };
+
+            const [pendingRes, rejectedRes] = await Promise.all([
+                axios.get(`${API_BASE_URL}/users/sellers/pending`, config),
+                axios.get(`${API_BASE_URL}/users/sellers/rejected`, config)
+            ]);
+
+            const mapSellers = (data, status) =>
+                data.map(s => ({
+                    id: s.id,
+                    type: 'Seller',
+                    name: s.name || '',
+                    shop: s.shop || '',
+                    email: s.email,
+                    phone: s.phone,
+                    appliedDate: s.createdAt.split('T')[0],
+                    status: status,
+                    address: s.address || 'N/A',
+                    idCopy: s.idCopy || 'N/A',
+                    registrationDoc: s.licenseDoc || 'N/A',
+                }));
+
+            setApplications([
+                ...mapSellers(pendingRes.data.data, 'Pending'),
+                ...mapSellers(rejectedRes.data.data, 'Declined'),
+            ]);
+        } catch (err) {
+            console.error("Error fetching sellers:", err);
+            const message = err.response?.data?.message || err.message;
+            toast.error(`Error fetching sellers: ${message}`);
+        }
+    };
+
+    useEffect(() => {
+        fetchSellers();
+    }, []);
+
+    // -----------------------
+    // Pagination & Filtering
+    // -----------------------
+    const filteredApplications = applications.filter(a =>
+        ((a.name && a.name.toLowerCase().includes(search.toLowerCase())) ||
+         (a.shop && a.shop.toLowerCase().includes(search.toLowerCase())) ||
+         (a.address && a.address.toLowerCase().includes(search.toLowerCase())) ||
+         a.phone.includes(search) ||
+         (a.email && a.email.toLowerCase().includes(search.toLowerCase()))) &&
+        (filterStatus === '' || a.status === filterStatus)
+    );
 
     const totalPages = Math.ceil(filteredApplications.length / rowsPerPage);
     const paginate = (data, page) => data.slice((page - 1) * rowsPerPage, page * rowsPerPage);
@@ -42,32 +83,55 @@ export default function ApplicationsPage() {
     const openModal = (app) => setModalApp(app);
     const closeModal = () => setModalApp(null);
 
-    const changeStatus = (appId, newStatus) => {
-        setApplications(prev => {
-            return prev.map(a => {
-                if (a.id === appId) {
-                    const updatedApp = { ...a, status: newStatus };
+// -----------------------
+// Approve / Reject API calls
+// -----------------------
+const changeStatus = async (appId, newStatus) => {
+    if (!['Approved', 'Declined'].includes(newStatus)) return;
 
-                    // Only add to approvedShops if approving
-                    if (newStatus === 'Approved') {
-                        addApprovedShop({
-                            id: a.id,
-                            owner: a.type === 'Seller' ? a.name || 'N/A' : a.name,
-                            name: a.type === 'Seller' ? a.shop || a.name : a.name,
-                            address: a.address || 'N/A',
-                            email: a.email || 'N/A',
-                            appliedDate: a.appliedDate,
-                            status: 'Approved',
-                        });
-                    }
+    setLoading(true);
+    try {
+        const token = localStorage.getItem("token");
+        const config = { headers: { Authorization: `Bearer ${token}` } };
 
-                    return updatedApp;
-                }
-                return a;
+        // Choose endpoint based on status
+        let endpoint = '';
+        if (newStatus === 'Approved') {
+            endpoint = `${API_BASE_URL}/users/sellers/${appId}/approve`;
+        } else if (newStatus === 'Declined') {
+            endpoint = `${API_BASE_URL}/users/sellers/${appId}/reject`;
+        }
+
+        await axios.put(endpoint, {}, config);
+
+        setApplications(prev =>
+            prev.map(a => a.id === appId ? { ...a, status: newStatus } : a)
+        );
+
+        toast.success(`Application ${newStatus} successfully!`);
+
+        if (newStatus === 'Approved') {
+            const approvedApp = applications.find(a => a.id === appId);
+            addApprovedShop({
+                id: approvedApp.id,
+                owner: approvedApp.name || 'N/A',
+                name: approvedApp.shop || approvedApp.name,
+                address: approvedApp.address || 'N/A',
+                email: approvedApp.email || 'N/A',
+                appliedDate: approvedApp.appliedDate,
+                status: 'Approved',
             });
-        });
+        }
+
         closeModal();
-    };
+    } catch (err) {
+        console.error(`Error updating status: ${err}`);
+        const message = err.response?.data?.message || err.message;
+        toast.error(`Error updating status: ${message}`);
+    } finally {
+        setLoading(false);
+    }
+};
 
 
     const statusColors = { active: '#1f7a5f', pending: '#b0881a', approved: '#217abf', declined: '#c62828' };
@@ -76,6 +140,8 @@ export default function ApplicationsPage() {
 
     return (
         <div className="dashboard-container">
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+
             <div className="dashboard-header-row">
                 <h2>Applications</h2>
                 <div className="dashboard-controls">
@@ -108,15 +174,14 @@ export default function ApplicationsPage() {
                                     <div className="application-section upper">
                                         <strong>{app.type} Info</strong>
                                         {(app.name || app.shop) && <p><b>Name:</b> {app.name || app.shop}</p>}
-                                        {app.type === 'Shop' && <p><b>Address:</b> {app.address}</p>}
-                                        {app.email && <p><b>Email:</b> {app.email}</p>}
+                                        <p><b>Email:</b> {app.email}</p>
                                         <p><b>Phone:</b> {app.phone}</p>
                                         <p><b>Address:</b> {app.address}</p>
                                         <p><b>Applied Date:</b> {app.appliedDate}</p>
                                     </div>
                                     <div className="application-section lower">
                                         <strong>Documents</strong>
-                                        <p><b>ID Doc:</b> <a href={`#`} target="_blank" rel="noopener noreferrer">{app.idDoc}</a></p>
+                                        <p><b>ID Doc:</b> <a href={`#`} target="_blank" rel="noopener noreferrer">{app.idCopy}</a></p>
                                         <p><b>Registration Doc:</b> <a href={`#`} target="_blank" rel="noopener noreferrer">{app.registrationDoc}</a></p>
                                     </div>
                                     <div className="application-actions">
@@ -154,13 +219,14 @@ export default function ApplicationsPage() {
                     <div className="modal">
                         <h3>Change Status for {modalApp.name || modalApp.shop}</h3>
                         <div className="modal-buttons">
-                            {['Pending', 'Approved', 'Declined'].filter(s => s !== modalApp.status).map(statusOption => (
+                            {['Approved', 'Declined'].filter(s => s !== modalApp.status).map(statusOption => (
                                 <button
                                     key={statusOption}
                                     onClick={() => changeStatus(modalApp.id, statusOption)}
                                     className={`status-option-btn ${statusOption.toLowerCase()}`}
+                                    disabled={loading}
                                 >
-                                    {statusOption}
+                                    {loading ? 'Processing...' : statusOption}
                                 </button>
                             ))}
                         </div>

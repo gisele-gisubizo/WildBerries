@@ -24,42 +24,42 @@ const SellerSidebar = () => {
 
       <nav className="sidebar-nav">
         <Link
-          to="/SellerDashboard"
-          className={isActive("/SellerDashboard") ? "nav-item active" : "nav-item"}
+          to="/seller-dashboard"
+          className={isActive("/seller-dashboard") ? "nav-item active" : "nav-item"}
         >
           <FaHome /> Dashboard
         </Link>
 
         <Link
-          to="/SellerDashboard/products"
-          className={isActive("/SellerDashboard/products") ? "nav-item active" : "nav-item"}
+          to="/seller-dashboard/products"
+          className={isActive("/seller-dashboard/products") ? "nav-item active" : "nav-item"}
         >
           <FaBoxOpen /> Products
         </Link>
 
         <Link
-          to="/SellerDashboard/orders"
-          className={isActive("/SellerDashboard/orders") ? "nav-item active" : "nav-item"}
+          to="/seller-dashboard/orders"
+          className={isActive("/seller-dashboard/orders") ? "nav-item active" : "nav-item"}
         >
           <FaShoppingCart /> Orders
         </Link>
 
         <Link
-          to="/SellerDashboard/payments"
-          className={isActive("/SellerDashboard/payments") ? "nav-item active" : "nav-item"}
+          to="/seller-dashboard/payments"
+          className={isActive("/seller-dashboard/payments") ? "nav-item active" : "nav-item"}
         >
           <FaMoneyBillWave /> Payments
         </Link>
      <Link
-          to="/SellerDashboard/messages"
-          className={isActive("/SellerDashboard/messages") ? "nav-item active" : "nav-item"}
+          to="/seller-dashboard/messages"
+          className={isActive("/seller-dashboard/messages") ? "nav-item active" : "nav-item"}
         >
           <FaEnvelope /> Messages
         </Link>
 
         <Link
-          to="/SellerDashboard/settings"
-          className={isActive("/SellerDashboard/settings") ? "nav-item active" : "nav-item"}
+          to="/seller-dashboard/settings"
+          className={isActive("/seller-dashboard/settings") ? "nav-item active" : "nav-item"}
         >
           <FaCog /> Settings
         </Link>

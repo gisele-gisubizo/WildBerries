@@ -40,7 +40,7 @@ const ProductsPage = () => {
 
     return (
         <div className="dashboard-section">
-<button className="export-btn">+ Add Product</button>
+<button className="export-btn" onClick={'/seller-dashboard/add-product'}>+ Add Product</button>
             <div className="dashboard-header-row">
                 <h2>My Products</h2>
                 <div className="dashboard-controls">
