@@ -363,8 +363,8 @@ export default function DashboardHome() {
                                 >{app.status}
                                 </span></td>
                                 <td>{app.createdAt}</td>
-                                <td><a href={`${app.idCopy}`} target="_blank" rel="noopener noreferrer">{app.idCopy}</a></td>
-                                <td><a href={`${app.licenseDoc}`} target="_blank" rel="noopener noreferrer">{app.licenseDoc}</a></td>
+                                <td><a href={`${app.idCopy}`} target="_blank" rel="noopener noreferrer">National Identity</a></td>
+                                <td><a href={`${app.licenseDoc}`} target="_blank" rel="noopener noreferrer">License Document</a></td>
                             </tr>
                         ))}
                     </tbody>

@@ -4,6 +4,9 @@ import axios from 'axios';
 import './dashboard.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaRegEye , FaEdit, FaRegTrashAlt  } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
+
 
 const API_BASE_URL = "http://localhost:4000";
 
@@ -79,35 +82,74 @@ export default function ShopsPage() {
                 <p>Loading approved shops...</p>
             ) : (
                 <>
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>Shop Name</th>
-                                <th>Address</th>
-                                <th>Email</th>
-                                <th>Applied Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paginate(filteredShops, currentPage).map(shop => (
-                                <tr key={shop.id}>
-                                    <td>{shop.name || 'N/A'}</td>
-                                    <td>{shop.address || 'N/A'}</td>
-                                    <td>{shop.email || 'N/A'}</td>
-                                    <td>{shop.createdAt || 'N/A'}</td>
-                                    <td>
-                                        <button
-                                            className="view-shop-btn"
-                                            onClick={() => navigate(`/shops/${shop.id}`)}
-                                        >
-                                            View Shop
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+
+<table className="table">
+  <thead>
+    <tr>
+      <th>Shop Name</th>
+      <th>Address</th>
+      <th>Email</th>
+      <th>Applied Date</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {paginate(filteredShops, currentPage).map((shop) => (
+      <tr key={shop.id}>
+        <td>{shop.name || "N/A"}</td>
+        <td>{shop.address || "N/A"}</td>
+        <td>{shop.email || "N/A"}</td>
+        <td>{shop.createdAt || "N/A"}</td>
+        <td
+          style={{
+            display: "flex",
+            gap: "12px",
+          }}
+        >
+          <FaRegEye 
+            title="View Shop"
+            onClick={() => navigate(`/shops/${shop.id}`)}
+            style={{
+              color: "#007bff",
+              cursor: "pointer",
+              fontSize: "1.2rem",
+              transition: "transform 0.2s",
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.2)")}
+            onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          />
+
+          <MdEdit   
+            title="Edit Shop"
+            onClick={() => handleEdit(shop.id)}
+            style={{
+              color: "#007bff",
+              cursor: "pointer",
+              fontSize: "1.2rem",
+              transition: "transform 0.2s",
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.2)")}
+            onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          />
+
+          <FaRegTrashAlt 
+            title="Delete Shop"
+            onClick={() => handleDelete(shop.id)}
+            style={{
+              color: "#c6131b",
+              cursor: "pointer",
+              fontSize: "1.2rem",
+              transition: "transform 0.2s",
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.2)")}
+            onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          />
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
 
                     <div className="pagination">
                         <button

@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./dashboard.css";
-import { FaCog, FaUserCircle } from "react-icons/fa";
+import {
+  FaCog,
+  FaUserCircle,
+  FaBell,
+  FaDesktop,
+  FaLock,
+  FaSave,
+} from "react-icons/fa";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
@@ -27,22 +34,27 @@ export default function SettingsPage() {
 
   const handleSave = () => {
     console.log("Saved settings:", settings);
-    toast.success(" Settings saved successfully!", {
+    toast.success("✅ Settings saved successfully!", {
       position: "top-right",
-      autoClose: 3000,
+      autoClose: 2500,
     });
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container settings-page">
       <div className="dashboard-header-row">
-        <h2> <FaCog />  Admin Settings</h2>
+        <h2>
+          <FaCog style={{ marginRight: "10px", color: "#007bff" }} /> Admin
+          Settings
+        </h2>
       </div>
 
       <div className="settings-container">
-        {/* Profile Section */}
-        <section className="settings-section">
-          <h3>  <FaUserCircle className="user-icon" /> Profile Settings</h3>
+        {/* PROFILE SETTINGS */}
+        <section className="settings-section card">
+          <h3 className="settings-title">
+            <FaUserCircle className="section-icon" /> Profile Information
+          </h3>
           <div className="settings-row">
             <label>Name</label>
             <input
@@ -50,6 +62,7 @@ export default function SettingsPage() {
               name="name"
               value={settings.name}
               onChange={handleChange}
+              placeholder="Enter your full name"
             />
           </div>
           <div className="settings-row">
@@ -59,6 +72,7 @@ export default function SettingsPage() {
               name="email"
               value={settings.email}
               onChange={handleChange}
+              placeholder="Enter your email"
             />
           </div>
           <div className="settings-row">
@@ -73,9 +87,11 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        {/* Notification Preferences */}
-        <section className="settings-section">
-          <h3>🔔 Notification Preferences</h3>
+        {/* NOTIFICATION SETTINGS */}
+        <section className="settings-section card">
+          <h3 className="settings-title">
+            <FaBell className="section-icon" /> Notification Preferences
+          </h3>
           <div className="checkbox-row">
             <label>
               <input
@@ -111,9 +127,11 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        {/* System Preferences */}
-        <section className="settings-section">
-          <h3>🖥️ System Preferences</h3>
+        {/* SYSTEM SETTINGS */}
+        <section className="settings-section card">
+          <h3 className="settings-title">
+            <FaDesktop className="section-icon" /> System Preferences
+          </h3>
           <div className="settings-row">
             <label>Theme</label>
             <select
@@ -139,8 +157,11 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        <section className="settings-section">
-          <h3>🔒 Security</h3>
+        {/* SECURITY SETTINGS */}
+        <section className="settings-section card">
+          <h3 className="settings-title">
+            <FaLock className="section-icon" /> Security
+          </h3>
           <div className="checkbox-row">
             <label>
               <input
@@ -154,15 +175,14 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        {/* Save Button */}
+        {/* SAVE BUTTON */}
         <div className="settings-actions">
           <button className="save-btn" onClick={handleSave}>
-             Save Settings
+            <FaSave style={{ marginRight: "8px" }} /> Save Settings
           </button>
         </div>
       </div>
 
-      {/* Toast Notification */}
       <ToastContainer />
     </div>
   );

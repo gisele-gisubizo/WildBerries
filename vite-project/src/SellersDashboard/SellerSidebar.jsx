@@ -10,10 +10,24 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import '../AdminDashboard/sidebar.css';
+import { useNavigate } from "react-router-dom";
 
 const SellerSidebar = () => {
   const location = useLocation();
 
+
+  const navigate = useNavigate();
+  
+    const handleLogout = () => {
+      // Remove token from localStorage
+      localStorage.removeItem("token");
+  
+      // Optional: remove any other stored user data
+      localStorage.removeItem("user");
+  
+      // Redirect to home or login
+      navigate("/login", { replace: true });
+    };
   const isActive = (path) => location.pathname === path;
 
   return (
@@ -64,9 +78,9 @@ const SellerSidebar = () => {
           <FaCog /> Settings
         </Link>
 
-        <Link to="/" className="nav-item logout">
-          <FaSignOutAlt /> Logout
-        </Link>
+        <button onClick={handleLogout} className="nav-item logout">
+              <FaSignOutAlt /> Logout
+            </button>
       </nav>
     </aside>
   );
