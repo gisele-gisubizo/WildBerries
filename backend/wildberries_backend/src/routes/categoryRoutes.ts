@@ -5,6 +5,7 @@ import {
   getCategoryByIdController,
   updateCategoryController,
   deleteCategoryController,
+  getCategoryWithSubcategoriesController,
 } from "../controllers/categoryController";
 
 const router = Router();
@@ -138,4 +139,5 @@ router.put("/:id", updateCategoryController);
  */
 router.delete("/:id", deleteCategoryController);
 
+router.get("/structured/:name", getCategoryWithSubcategoriesController);
 export default router;

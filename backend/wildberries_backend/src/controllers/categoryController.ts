@@ -3,6 +3,7 @@ import { asyncHandler } from "../middlewares/errorHandler";
 import { ApiResponse } from "../types/common.types";
 import { createCategorySchema, updateCategorySchema } from "../schemas/category.schemas";
 import * as CategoryService from "../services/categoryService";
+import { CategoryType } from "../entities/category";
 
 // ========================
 // Create Category
@@ -57,6 +58,49 @@ export const getCategoryByIdController = asyncHandler(
     });
   }
 );
+
+
+// ========================
+// Get Category with Subcategories
+// ========================
+export const getCategoryWithSubcategoriesController = asyncHandler(
+  async (req: Request, res: Response<ApiResponse>) => {
+    const name = req.params.name;
+
+    // ✅ Type-safe validation
+    const validCategories: CategoryType[] = [
+      "Fashion & Clothing",
+      "Electronics & Gadgets",
+      "Home & Furniture",
+      "Food & Beverages",
+      "Beauty & Personal Care",
+      "Books & Stationery",
+      "Health & Fitness",
+      "Automotive & Accessories",
+      "Kids & Baby Products",
+      "Real Estate & Property",
+      "Services",
+    ];
+
+    if (!validCategories.includes(name as CategoryType)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid category name",
+      });
+    }
+
+    const category = await CategoryService.getCategoryWithSubcategories(
+      name as CategoryType
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Category with subcategories retrieved successfully",
+      data: category,
+    });
+  }
+);
+
 
 // ========================
 // Update Category
