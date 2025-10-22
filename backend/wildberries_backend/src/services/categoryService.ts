@@ -1,6 +1,7 @@
 import { AppDataSource } from "../data-source";
 import { AppError } from "../utilis/errors";
 import { Category } from "../entities/category";
+import { CategoryType } from "../entities/category";
 
 const categoryRepo = AppDataSource.getRepository(Category);
 
@@ -35,6 +36,39 @@ export const getCategoryById = async (id: number) => {
   if (!category) throw new AppError("Category not found", 404);
   return category;
 };
+
+// =============================
+// Get Category with Subcategories and Options
+// =============================
+export const getCategoryWithSubcategories = async (name: CategoryType) => {
+  // Find the category by name
+  const category = await categoryRepo.findOneBy({ name });
+  if (!category) throw new AppError("Category not found", 404);
+
+  // Map the fields to a structured object
+  const subcategories = category.fields.map((field) => {
+    const optionsObj: Record<string, string[]> = {};
+    field.options?.forEach((opt) => {
+      const [key, values] = opt.split(":").map((s) => s.trim());
+      if (key && values) {
+        optionsObj[key] = values.split(",").map((v) => v.trim());
+      }
+    });
+
+    return {
+      subcategory: field.name,
+      options: optionsObj,
+    };
+  });
+
+  return {
+    id: category.id,
+    name: category.name,
+    description: category.description,
+    subcategories,
+  };
+};
+
 
 // =============================
 // Update Category
