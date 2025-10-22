@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './dashboard.css';
 
-const API_BASE_URL = "http://localhost:4000"; // your backend URL
+const API_BASE_URL = "http://localhost:4000"; 
 
 export default function ApplicationsPage() {
     const { addApprovedShop } = useShops();

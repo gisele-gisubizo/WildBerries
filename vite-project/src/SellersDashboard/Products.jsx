@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const ProductsPage = () => {
+export default function ProductsPage() {
+    const navigate = useNavigate();
     const [products] = useState([
         { id: 1, name: "Nike Air Force 1 Sneakers", category: "Fashion & Clothing", subcategory: "Shoes", price: 156000, quantity: 2, status: "Active", stock: 45, brand: "Nike" },
         { id: 2, name: "Zara Summer Dress", category: "Fashion & Clothing", subcategory: "Dresses", price: 97500, quantity: 1, status: "Out of Stock", stock: 0, brand: "Zara" },
@@ -40,7 +42,12 @@ const ProductsPage = () => {
 
     return (
         <div className="dashboard-section">
-<button className="export-btn" onClick={'/seller-dashboard/add-product'}>+ Add Product</button>
+            <button
+                className="export-btn"
+                onClick={() => navigate("/seller-dashboard/add-product")}
+            >
+                + Add Product
+            </button>
             <div className="dashboard-header-row">
                 <h2>My Products</h2>
                 <div className="dashboard-controls">
@@ -133,4 +140,3 @@ const ProductsPage = () => {
     );
 };
 
-export default ProductsPage;

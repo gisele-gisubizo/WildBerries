@@ -21,10 +21,10 @@ const Sidebar = () => {
     localStorage.removeItem("token");
 
     // Optional: remove any other stored user data
-    // localStorage.removeItem("user");
+    localStorage.removeItem("user");
 
     // Redirect to home or login
-    navigate("/", { replace: true });
+    navigate("/login", { replace: true });
   };
 
   const isActive = (path) => location.pathname === path;
