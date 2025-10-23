@@ -6,6 +6,14 @@ import { ApiResponse, AuthenticatedRequest } from "../types/common.types";
 import { registerCustomerSchema, registerSellerSchema, loginSchema } from "../schemas/user.schemas";
 import * as UserService from "../services/userService";
 import {resendOTP} from "../services/userService"
+import { AppDataSource } from "../data-source";
+import { updateUserStatus } from "../services/userService";
+import { User , UserStatus } from "../entities/user";
+import { updateOwnProfile } from "../services/userService";
+
+export const userRepo = AppDataSource.getRepository(User);
+
+
 
 // ========================
 // Register Customer
@@ -234,3 +242,114 @@ export const deleteUserController = asyncHandler(
     res.status(200).json({ success: true, message: "User deleted", data: deletedUser });
   }
 );
+
+
+
+export const countSellersController = asyncHandler(async (req: Request, res: Response) => {
+  const count = await UserService.countSellers();
+  res.status(200).json({ success: true, totalSellers: count });
+});
+
+export const countCustomersController = asyncHandler(async (req: Request, res: Response) => {
+  const count = await UserService.countCustomers();
+  res.status(200).json({ success: true, totalCustomers: count });
+});
+
+export const countPendingSellersController = asyncHandler(async (req: Request, res: Response) => {
+  const count = await UserService.countPendingSellers();
+  res.status(200).json({ success: true, pendingSellers: count });
+});
+
+export const countApprovedSellersController = asyncHandler(async (req: Request, res: Response) => {
+  const count = await UserService.countApprovedSellers();
+  res.status(200).json({ success: true, approvedSellers: count });
+});
+
+export const countRejectedSellersController = asyncHandler(async (req: Request, res: Response) => {
+  const count = await UserService.countRejectedSellers();
+  res.status(200).json({ success: true, rejectedSellers: count });
+});
+
+// =============================
+// Get overall user statistics
+// =============================
+export const getUserStatsController = asyncHandler(async (req: Request, res: Response) => {
+  const stats = await UserService.getUserStats();
+  res.status(200).json({
+    success: true,
+    message: "User statistics retrieved successfully",
+    data: stats,
+  });
+});
+
+
+
+
+
+
+// =============================
+// Update user status (approve/reject) - admin only
+// =============================
+export const updateUserStatusController = async (req: Request, res: Response) => {
+  try {
+    console.log("Headers:", req.headers);
+    console.log("Body:", req.body);
+    console.log("Params:", req.params);
+    console.log("req.userId:", req.userId);
+    console.log("req.userRole:", req.userRole);
+
+    const adminIdStr = req.userId;
+    if (!adminIdStr) return res.status(401).json({ message: "Unauthorized: missing userId" });
+
+    const adminId = Number(adminIdStr);
+    if (isNaN(adminId)) return res.status(400).json({ message: "Invalid admin ID" });
+
+    const userId = Number(req.params.id);
+    if (isNaN(userId)) return res.status(400).json({ message: "Invalid user ID" });
+
+    const { status } = req.body;
+    console.log("Status from body:", status);
+
+    if (!["approved", "rejected"].includes(status))
+      throw new AppError("Status must be 'approved' or 'rejected'", 400);
+
+    const updatedUser = await updateUserStatus(adminId, userId, status as "approved" | "rejected");
+
+    res.status(200).json({ success: true, message: `User ${status}`, data: updatedUser });
+  } catch (error) {
+    console.error("Caught error:", error);
+    if (error instanceof AppError) return res.status(error.statusCode).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+
+export const updateOwnProfileController = asyncHandler(async (req: Request, res: Response) => {
+  const userIdStr = req.userId;
+  if (!userIdStr) return res.status(401).json({ message: "Unauthorized: missing userId" });
+
+  const userId = Number(userIdStr);
+  if (isNaN(userId)) return res.status(400).json({ message: "Invalid user ID" });
+
+  const data = req.body;
+  if (!data || Object.keys(data).length === 0) {
+    throw new AppError("No data provided for update", 400);
+  }
+
+  const updatedUser = await updateOwnProfile(userId, data);
+
+  res.status(200).json({
+    success: true,
+    message: "Profile updated successfully",
+    data: {
+      id: updatedUser.id,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+      name: updatedUser.name,
+      address: updatedUser.address,
+      role: updatedUser.role,
+      status: updatedUser.status,
+    },
+  });
+});

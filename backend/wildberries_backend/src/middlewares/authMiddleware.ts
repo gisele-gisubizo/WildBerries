@@ -2,14 +2,14 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken"
 
 interface JwtPayload {
-  userId: string;
+  userId: number;  // <-- change to number
   role: string;
 }
 
 declare global {
   namespace Express {
     interface Request {
-      userId?: string;
+      userId?: number;  // <-- change to number
       userRole?: string;
     }
   }
@@ -26,13 +26,14 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
   try {
     const secret = process.env.JWT_SECRET || "secret123";
     const payload = jwt.verify(token, secret) as JwtPayload;
-    req.userId = payload.userId;
+    req.userId = payload.userId;  // now this is a number
     req.userRole = payload.role;
     next();
   } catch (err) {
     return res.status(401).json({ message: "Invalid token" });
   }
 };
+
 
 // ✅ Admin-only check (same file, no extra file)
 export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {

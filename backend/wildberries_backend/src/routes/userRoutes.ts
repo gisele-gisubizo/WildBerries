@@ -14,7 +14,15 @@ import {
   getPendingSellersController,
   getApprovedSellersController,
   resendOtpController,
+  countCustomersController,
+  countPendingSellersController,
+  countApprovedSellersController,
+  countRejectedSellersController,
+  getUserStatsController,
   getRejectedSellersController,
+  countSellersController,
+  updateUserStatusController,
+  updateOwnProfileController
 } from "../controllers/userController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import fs from "fs";
@@ -347,5 +355,23 @@ router.get("/:id", getUserByIdController);
  *         description: User not found
  */
 router.delete("/:id", deleteUserController);
+
+router.get("/stats/sellers", countSellersController);
+router.get("/stats/customers", countCustomersController);
+router.get("/stats/sellers/pending", countPendingSellersController);
+router.get("/stats/sellers/approved", countApprovedSellersController);
+router.get("/stats/sellers/rejected", countRejectedSellersController);
+
+// Overall summary
+router.get("/stats/summary", getUserStatsController);
+
+// Update user status (admin only)
+router.put("/status/:id", updateUserStatusController);
+
+
+
+// PUT /users/me/profile
+router.put("/me/profile", authMiddleware, updateOwnProfileController);
+
 
 export default router;
