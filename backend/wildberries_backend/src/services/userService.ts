@@ -5,7 +5,6 @@ import { generateOTP } from "../utilis/otp";
 import { sendEmail } from "../utilis/nodemailer";
 import { Users, UserRole } from "../entities/user";
 import { Category } from  "../entities/category"
-
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -424,5 +423,117 @@ export const deleteUser = async (id: number) => {
   if (!user) throw new AppError("User not found", 404);
 
   await userRepo.remove(user);
+  return user;
+};
+
+
+
+
+// =============================
+// Get all sellers (regardless of status)
+// =============================
+export const getAllSellers = async () => {
+  return userRepo.find({
+    where: { role: "seller" },
+  });
+};
+
+
+// =============================
+// Count all users by role or status
+// =============================
+export const countSellers = async () => {
+  return userRepo.count({ where: { role: "seller" } });
+};
+
+export const countCustomers = async () => {
+  return userRepo.count({ where: { role: "customer" } });
+};
+
+export const countPendingSellers = async () => {
+  return userRepo.count({ where: { role: "seller", status: "pending" } });
+};
+
+export const countApprovedSellers = async () => {
+  return userRepo.count({ where: { role: "seller", status: "approved" } });
+};
+
+export const countRejectedSellers = async () => {
+  return userRepo.count({ where: { role: "seller", status: "rejected" } });
+};
+
+// Optional: overall summary
+export const getUserStats = async () => {
+  const sellers = await countSellers();
+  const customers = await countCustomers();
+  const pending = await countPendingSellers();
+  const approved = await countApprovedSellers();
+  const rejected = await countRejectedSellers();
+
+  return {
+    totalSellers: sellers,
+    totalCustomers: customers,
+    pendingSellers: pending,
+    approvedSellers: approved,
+    rejectedSellers: rejected,
+  };
+};
+
+
+
+
+
+// =============================
+// Update user status (approve/reject) - admin only
+// =============================
+
+
+export const updateUserStatus = async (
+  adminId: number, 
+  userId: number,
+  status: "approved" | "rejected"
+) => {
+  // Optional: you can verify that adminId belongs to an admin user
+  const admin = await userRepo.findOneBy({ id: adminId });
+  if (!admin || admin.role !== "admin") throw new AppError("Only admins can update user status", 403);
+
+  const user = await userRepo.findOneBy({ id: userId });
+  if (!user) throw new AppError("User not found", 404);
+
+  // Only allow changing status if it’s different
+  if (user.status === status) throw new AppError(`User is already ${status}`, 400);
+
+  user.status = status;
+  await userRepo.save(user);
+
+  // Optionally, notify user by email
+  const subject = status === "approved" ? "Account Approved" : "Account Rejected";
+  const message =
+    status === "approved"
+      ? "Congratulations! Your account has been approved."
+      : "Sorry, your account has been rejected.";
+
+  await sendEmail(user.email, subject, message);
+
+  return user;
+};
+
+
+
+export const updateOwnProfile = async (userId: number, data: Partial<User>): Promise<User> => {
+  const user = await userRepo.findOneBy({ id: userId });
+  if (!user) throw new AppError("User not found", 404);
+
+  // Only allow updating safe fields
+  const updatableFields: (keyof User)[] = ["email", "phone", "name", "address"];
+
+  updatableFields.forEach((field) => {
+    if (data[field] !== undefined) {
+      // ✅ Cast user to any to bypass TypeScript complaint
+      (user as any)[field] = data[field];
+    }
+  });
+
+  await userRepo.save(user);
   return user;
 };

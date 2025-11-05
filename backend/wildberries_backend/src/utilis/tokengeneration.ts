@@ -1,5 +1,11 @@
-import {v4 as uuidv4} from 'uuid';
+import jwt from "jsonwebtoken";
 
-export function tokengeneration():string{
-    return uuidv4();
+export function generateToken(userId: number, role: string): string {
+  const secret = process.env.JWT_SECRET || "secret123"; 
+
+  return jwt.sign(
+    { userId, role },   
+    secret,
+    { expiresIn: "7d" } 
+  );
 }

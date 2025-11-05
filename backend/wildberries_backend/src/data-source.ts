@@ -26,7 +26,7 @@ export const AppDataSource = new DataSource({
   logging: false,
   ssl:
     process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: false } // required for Aiven
+      ? { rejectUnauthorized: false } // required for Aiven  
       : false,
   entities: [Users, Category, Product, Order, OrderItem, Review, Cart, CartItem],
   migrations: ["src/migrations/*.ts"],
