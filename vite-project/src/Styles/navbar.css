@@ -109,6 +109,16 @@
   color: #c6b6f5;
   margin-top: 2px;
 }
+.cart-badge {
+  background-color: #ffb703;
+  color: #333;
+  border-radius: 999px;
+  padding: 0 6px;
+  margin-left: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  display: inline-block;
+}
 
 /* ---------- BOTTOM ---------- */
 .navbar-bottom {

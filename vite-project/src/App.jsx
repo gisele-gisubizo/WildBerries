@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 // Main site components
@@ -38,25 +37,6 @@ import AddProductPage from "./SellersDashboard/Addproduct";
 import "./App.css";
 
 function App() {
-  const [cartCount, setCartCount] = useState(0);
-
-  // Load cart count from localStorage
-  useEffect(() => {
-    const savedCart = localStorage.getItem("cartItems");
-    const items = savedCart ? JSON.parse(savedCart) : [];
-    setCartCount(items.reduce((sum, item) => sum + (item.quantity || 1), 0));
-  }, []);
-
-  // Update cart count on storage changes
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedCart = localStorage.getItem("cartItems");
-      const items = savedCart ? JSON.parse(savedCart) : [];
-      setCartCount(items.reduce((sum, item) => sum + (item.quantity || 1), 0));
-    };
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
 
   return (
     <BrowserRouter>
@@ -68,11 +48,11 @@ function App() {
          <Route path="/otp" element={<OtpVerification />} />
 
         {/* Main Site Layout */}
-        <Route path="/site" element={<Layout cartCount={cartCount} />}>
+        <Route path="/site" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="category/:category" element={<Home />} />
           <Route path="category/:category/:subcategory" element={<Home />} />
-          <Route path="product/:id" element={<PageDetails setCartCount={setCartCount} />} />
+          <Route path="product/:id" element={<PageDetails />} />
           <Route path="stores" element={<Stores />} />
           <Route path="profile" element={<Profile />} />
           <Route path="cart" element={<Cart />} />

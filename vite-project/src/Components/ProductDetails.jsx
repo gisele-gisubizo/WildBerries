@@ -1,84 +1,131 @@
-import React, { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaStar, FaShoppingCart, FaRulerCombined, FaHeart, FaPlus, FaMinus, FaCheckCircle } from "react-icons/fa";
 import "../Styles/productDetails.css";
+import { fetchProductById, fetchProducts } from "../services/ProductService";
+import { useCart } from "../contexts/CartContext";
 
-// Product images
-import clothes3 from "../assets/images/clothes3.jpg";
-import clothes4 from "../assets/images/clothes4.jpg";
-import clothes5 from "../assets/images/clothes5.jpg";
-import clothes6 from "../assets/images/clothes6.jpg";
 import item1 from "../assets/images/home/item1.jpg";
 import item2 from "../assets/images/home/item2.jpg";
 import item3 from "../assets/images/home/item3.jpg";
 import item4 from "../assets/images/home/item4.jpg";
 import item5 from "../assets/images/home/item5.jpg";
 
-const ProductDetails = ({ setCartCount }) => {
+const fallbackImages = [item1, item2, item3, item4, item5];
+
+const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addItem } = useCart();
+  const [product, setProduct] = useState(null);
+  const [similarProducts, setSimilarProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [quantity, setQuantity] = useState(1); // Added quantity selector
+  const [quantity, setQuantity] = useState(1);
 
-  // Product mock data (unchanged)
-  const productImages = [clothes3, clothes4, clothes5, clothes6];
-  const product = {
-    id,
-    name: "Trendy Summer Outfit",
-    price: 688,
-    oldPrice: 1300,
-    rating: 4.9,
-    reviews: 156375,
-    discount: 53,
-    sizes: ["S", "M", "L", "XL"],
-    description:
-      "Stylish, comfortable, and perfect for summer outings. Made from premium cotton and designed for all-day comfort.",
-    specs: {
-      Material: "100% Cotton",
-      Color: "White & Beige",
-      Fit: "Regular",
-      Weight: "350g",
-      "Available Stock": 32,
-    },
-  };
+  useEffect(() => {
+    const loadProduct = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const response = await fetchProductById(id);
+        if (!response?.product) {
+          throw new Error("Product not found");
+        }
 
-  const similarProducts = [
-    { id: 1, name: "Similar Product 1", image: item1, price: 127 },
-    { id: 2, name: "Similar Product 2", image: item2, price: 207 },
-    { id: 3, name: "Similar Product 3", image: item3, price: 852 },
-    { id: 4, name: "Similar Product 4", image: item4, price: 514 },
-    { id: 5, name: "Similar Product 5", image: item5, price: 1141 },
-  ];
+        setProduct(response.product);
+        const attributeSizes =
+          response.product?.attributes?.sizes ||
+          response.product?.attributes?.size;
+        if (Array.isArray(attributeSizes) && attributeSizes.length > 0) {
+          setSelectedSize(attributeSizes[0]);
+        }
 
-  const addToCart = () => {
-    if (!selectedSize) {
+        const listResponse = await fetchProducts({ limit: 8 });
+        const related = listResponse.products
+          .filter((item) => item.id !== response.product.id)
+          .filter((item) => item.category?.id === response.product.category?.id)
+          .slice(0, 5);
+        setSimilarProducts(related);
+      } catch (err) {
+        console.error("Failed to fetch product details", err);
+        setError(
+          err?.response?.data?.message ||
+            err?.message ||
+            "Unable to load product details.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProduct();
+  }, [id]);
+
+  const productImages = useMemo(() => {
+    if (product?.images?.length) return product.images;
+    return fallbackImages;
+  }, [product]);
+
+  const sizeOptions = useMemo(() => {
+    if (!product?.attributes) return [];
+    if (Array.isArray(product.attributes.sizes)) return product.attributes.sizes;
+    if (Array.isArray(product.attributes.size)) return product.attributes.size;
+    return [];
+  }, [product]);
+
+  const addToCart = async () => {
+    if (sizeOptions.length > 0 && !selectedSize) {
       alert("Please select a size before adding to cart!");
       return;
     }
-    const cartItem = { ...product, size: selectedSize, quantity, image: productImages[activeImage] };
-    const savedCart = localStorage.getItem("cartItems");
-    const cartItems = savedCart ? JSON.parse(savedCart) : [];
-    const existingItem = cartItems.find((item) => item.id === product.id && item.size === selectedSize);
-    if (existingItem) {
-      existingItem.quantity += quantity;
-    } else {
-      cartItems.push(cartItem);
+    try {
+      await addItem(product.id, quantity);
+      alert("Item added to cart!");
+    } catch (err) {
+      console.error("Failed to add item to cart", err);
+      alert(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Failed to add item to cart.",
+      );
     }
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-    setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0));
-    alert("Item added to cart!");
   };
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
   };
 
-  const subtotal = product.price * quantity;
-  const totalDiscount = (product.discount / 100) * subtotal;
+  const specs = useMemo(() => {
+    if (!product?.attributes) return {};
+    const { description, sizes, size, ...rest } = product.attributes;
+    return rest;
+  }, [product]);
+
+  const price = Number(product?.price) || 0;
+  const subtotal = price * quantity;
+  const totalDiscount = subtotal * 0.1;
   const total = subtotal - totalDiscount;
+
+  if (loading) {
+    return (
+      <div className="product-details-page">
+        <p>Loading product...</p>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="product-details-page">
+        <p className="error-message">{error || "Product not available."}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="product-details-page">
@@ -92,7 +139,7 @@ const ProductDetails = ({ setCartCount }) => {
           <img src={productImages[activeImage]} alt={product.name} className="basket-item-image" />
           <div className="basket-item-details">
             <p className="basket-item-name">{product.name}</p>
-            <p className="basket-item-spec">Long sleeve hoodie, - 1 pcs</p>
+            <p className="basket-item-spec">{product.category?.name}</p>
             <div className="quantity-controls">
               <button onClick={() => setQuantity(Math.max(1, quantity - 1))}><FaMinus /></button>
               <span>{quantity}</span>
@@ -158,49 +205,55 @@ const ProductDetails = ({ setCartCount }) => {
           </div>
           <div className="price-section">
             <span className="current-price">₽ {product.price}</span>
-            <span className="old-price">₽ {product.oldPrice}</span>
-            <span className="discount">-{product.discount}%</span>
+            <span className="old-price">₽ {(Number(product.price) * 1.2).toFixed(0)}</span>
+            <span className="discount">-10%</span>
           </div>
 
           {/* Sizes */}
-          <div className="sizes">
-            <h3>Available Sizes</h3>
-            <div className="size-options">
-              {product.sizes.map((size, idx) => (
-                <button
-                  key={idx}
-                  className={`size-btn ${selectedSize === size ? "active" : ""}`}
-                  onClick={() => setSelectedSize(size)}
-                >
-                  {size}
+          {sizeOptions.length > 0 && (
+            <div className="sizes">
+              <h3>Available Sizes</h3>
+              <div className="size-options">
+                {sizeOptions.map((size, idx) => (
+                  <button
+                    key={idx}
+                    className={`size-btn ${selectedSize === size ? "active" : ""}`}
+                    onClick={() => setSelectedSize(size)}
+                  >
+                    {size}
+                  </button>
+                ))}
+                <button className="size-guide-btn" onClick={() => setShowSizeGuide(true)}>
+                  <FaRulerCombined /> Size Guide
                 </button>
-              ))}
-              <button className="size-guide-btn" onClick={() => setShowSizeGuide(true)}>
-                <FaRulerCombined /> Size Guide
-              </button>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Description */}
           <div className="description">
             <h3>Product Description</h3>
-            <p>{product.description}</p>
+            <p>{product.attributes?.description || "No description available."}</p>
           </div>
 
           {/* Specifications */}
-          <div className="specifications">
-            <h3>Specifications</h3>
-            <table>
-              <tbody>
-                {Object.entries(product.specs).map(([key, value], idx) => (
-                  <tr key={idx}>
-                    <td className="label">{key}</td>
-                    <td className="value">{value}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {Object.keys(specs).length > 0 && (
+            <div className="specifications">
+              <h3>Specifications</h3>
+              <table>
+                <tbody>
+                  {Object.entries(specs).map(([key, value], idx) => (
+                    <tr key={idx}>
+                      <td className="label">{key}</td>
+                      <td className="value">
+                        {Array.isArray(value) ? value.join(", ") : String(value)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
 
@@ -241,7 +294,7 @@ const ProductDetails = ({ setCartCount }) => {
       </div>
 
       {/* Size Guide Modal */}
-      {showSizeGuide && (
+      {showSizeGuide && sizeOptions.length > 0 && (
         <div className="size-guide-modal">
           <div className="modal-content">
             <h2>Size Guide</h2>
@@ -290,14 +343,19 @@ const ProductDetails = ({ setCartCount }) => {
       <div className="similar-products">
         <h3>View Similar</h3>
         <div className="similar-container">
-          {similarProducts.map((similar) => (
+          {similarProducts.map((similar, idx) => {
+            const cover =
+              similar.images?.[0] || fallbackImages[idx % fallbackImages.length];
+            return (
             <div key={similar.id} className="similar-card" onClick={() => navigate(`/site/product/${similar.id}`)}>
-              <img src={similar.image} alt={similar.name} />
-              <p>{similar.name}</p>
-              <span className="similar-price">₽ {similar.price}</span>
-              <button className="similar-view-btn">View</button>
-            </div>
-          ))}
+                <img src={cover} alt={similar.name} />
+                <p>{similar.name}</p>
+                <span className="similar-price">₽ {similar.price}</span>
+                <button className="similar-view-btn">View</button>
+              </div>
+            );
+          })}
+          {similarProducts.length === 0 && <p>No similar products available.</p>}
         </div>
       </div>
     </div>

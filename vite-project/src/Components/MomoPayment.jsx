@@ -1,33 +1,54 @@
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Styles/momoPayment.css";
+import { useCart } from "../contexts/CartContext";
 
 const MomoPayment = () => {
   const navigate = useNavigate();
+  const { cartItems, clearCart } = useCart();
   const [phone, setPhone] = useState("");
-  const total = localStorage.getItem("orderTotal") || "0.00";
 
-  const handlePayment = () => {
+  const total = useMemo(() => {
+    return cartItems
+      .reduce((sum, item) => {
+        const price = Number(item.product?.price) || 0;
+        return sum + price * (item.quantity || 0);
+      }, 0)
+      .toFixed(2);
+  }, [cartItems]);
+
+  const handlePayment = async () => {
     if (!phone) {
       alert("Please enter your Mobile Money number to proceed.");
       return;
     }
 
-    // Simulate MoMo payment request
     alert(`A Mobile Money payment request of $${total} has been sent to ${phone}.`);
 
-    // After “payment”, redirect to a final confirmation page or home
-    localStorage.removeItem("cartItems"); // clear cart
-    localStorage.removeItem("orderTotal");
-    localStorage.removeItem("paymentMethod");
-    navigate("/site/order-success?paid=true"); // can use query param to show payment completed
+    await clearCart();
+    navigate("/site/order-success", {
+      state: {
+        order: {
+          id: "momo",
+          status: "pending",
+          totalAmount: Number(total),
+        },
+        totals: {
+          subtotal: Number(total),
+          shipping: 0,
+          total: Number(total),
+        },
+      },
+    });
   };
 
   return (
     <div className="momo-payment-container">
       <div className="momo-card">
         <h2>💜 Mobile Money Payment</h2>
-        <p>Total Amount: <strong>${total}</strong></p>
+        <p>
+          Total Amount: <strong>${total}</strong>
+        </p>
         <p>Enter your Mobile Money number to complete the payment.</p>
 
         <input
@@ -46,4 +67,3 @@ const MomoPayment = () => {
 };
 
 export default MomoPayment;
-;

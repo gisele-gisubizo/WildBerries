@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend,
   PieChart, Pie, Cell,
@@ -7,14 +7,17 @@ import {
 import "../AdminDashboard/dashboard.css";
 import { FaBoxOpen, FaShoppingCart, FaMoneyBillWave } from "react-icons/fa";
 import { FiFileText } from "react-icons/fi";
+import { fetchProducts } from "../services/ProductService";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function SellerDashboard() {
-  const [isApproved] = useState(true);
-
-  const [kpis] = useState({
-    totalProducts: "20",
-    totalOrders: "45",
-    totalPayments: "100,000",
+  const { user } = useAuth();
+  const [products, setProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [kpis, setKpis] = useState({
+    totalProducts: "0",
+    totalOrders: "0",
+    totalPayments: "0",
   });
 const [isExporting, setIsExporting] = useState(false);
 
@@ -27,34 +30,48 @@ const handleExportPDF = () => {
   }, 1000);
 };
 
-  const productsData = [
-    // Fashion & Clothing
-    { id: 1, name: "Nike Air Force 1 Sneakers", category: "Fashion & Clothing", subcategory: "Shoes", price: 120, status: "Active", stock: 45, brand: "Nike" },
-    { id: 2, name: "Zara Summer Dress", category: "Fashion & Clothing", subcategory: "Dresses", price: 75, status: "Out of Stock", stock: 0, brand: "Zara" },
-    { id: 3, name: "Levi’s Slim Fit Jeans", category: "Fashion & Clothing", subcategory: "Jeans", price: 60, status: "Active", stock: 30, brand: "Levi’s" },
+  useEffect(() => {
+    const loadProducts = async () => {
+      if (!user?.id) return;
+      setLoadingProducts(true);
+      try {
+        const response = await fetchProducts({ limit: 200 });
+        const sellerProducts = (response.products || []).filter(
+          (product) => product.seller?.id === user.id,
+        );
+        setProducts(sellerProducts);
+        setKpis((prev) => ({
+          ...prev,
+          totalProducts: String(sellerProducts.length),
+        }));
+      } catch (err) {
+        console.error("Failed to load seller products", err);
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
 
-    // Electronics
-    { id: 4, name: "iPhone 14 Pro", category: "Electronics", subcategory: "Smartphones", price: 1300, status: "Active", stock: 15, brand: "Apple" },
-    { id: 5, name: "Samsung 4K Smart TV", category: "Electronics", subcategory: "Televisions", price: 800, status: "Draft", stock: 10, brand: "Samsung" },
-    { id: 6, name: "Sony WH-1000XM5 Headphones", category: "Electronics", subcategory: "Headphones", price: 350, status: "Delivered", stock: 5, brand: "Sony" },
+    loadProducts();
+  }, [user?.id]);
 
-    // Home Appliances
-    { id: 7, name: "LG Washing Machine", category: "Home Appliances", subcategory: "Washing Machines", price: 550, status: "Ordered", stock: 12, brand: "LG" },
-    { id: 8, name: "Philips Air Fryer", category: "Home Appliances", subcategory: "Kitchen", price: 150, status: "Cancelled", stock: 20, brand: "Philips" },
-    { id: 9, name: "Dyson Vacuum Cleaner", category: "Home Appliances", subcategory: "Cleaning", price: 400, status: "Shipped", stock: 8, brand: "Dyson" },
-
-    // Beauty
-    { id: 10, name: "Maybelline Lipstick", category: "Beauty", subcategory: "Makeup", price: 20, status: "Active", stock: 100, brand: "Maybelline" },
-    { id: 11, name: "L’Oreal Shampoo", category: "Beauty", subcategory: "Haircare", price: 15, status: "Returned", stock: 50, brand: "L’Oreal" },
-
-    // Books
-    { id: 12, name: "Atomic Habits", category: "Books", subcategory: "Self-Help", price: 25, status: "Active", stock: 70, brand: "Penguin" },
-    { id: 13, name: "Harry Potter Box Set", category: "Books", subcategory: "Fantasy", price: 120, status: "Delivered", stock: 25, brand: "Bloomsbury" },
-
-    // Sports
-    { id: 14, name: "Adidas Football", category: "Sports", subcategory: "Balls", price: 50, status: "Active", stock: 40, brand: "Adidas" },
-    { id: 15, name: "Wilson Tennis Racket", category: "Sports", subcategory: "Rackets", price: 200, status: "Draft", stock: 18, brand: "Wilson" },
-  ];
+  const productsData = useMemo(() => {
+    return products.map((product) => {
+      const stock = Number(product.stock) || 0;
+      const status = stock > 0 ? "Active" : "Out of Stock";
+      return {
+        id: product.id,
+        name: product.name,
+        category: product.category?.name || "N/A",
+        subcategory: Object.keys(product.attributes || {})
+          .slice(0, 1)
+          .join(", "),
+        price: Number(product.price) || 0,
+        status,
+        stock,
+        brand: product.attributes?.Brand || product.attributes?.brand || "",
+      };
+    });
+  }, [products]);
 
 
   const ordersData = [
@@ -80,11 +97,14 @@ const handleExportPDF = () => {
   const itemsPerPage = 5;
 
   const filteredProducts = productsData
-    .filter(p =>
-      p.name.toLowerCase().includes(productSearch.toLowerCase()) ||
-      p.category.toLowerCase().includes(productSearch.toLowerCase()) ||
-      p.subcategory.toLowerCase().includes(productSearch.toLowerCase())
-    )
+    .filter((p) => {
+      const query = productSearch.toLowerCase();
+      return (
+        p.name.toLowerCase().includes(query) ||
+        p.category.toLowerCase().includes(query) ||
+        (p.subcategory && p.subcategory.toLowerCase().includes(query))
+      );
+    })
     .filter(p => (productFilter ? p.status === productFilter : true));
 
   const totalProductPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -166,6 +186,8 @@ const handleExportPDF = () => {
   ];
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+
+  const isApproved = user?.status === "approved";
 
   if (!isApproved) {
     return (
@@ -275,46 +297,72 @@ const handleExportPDF = () => {
               className="select-filter"
             >
               <option value="">All</option>
-              <option value="Draft">Draft</option>
               <option value="Active">Active</option>
               <option value="Out of Stock">Out of Stock</option>
-              <option value="Ordered">Ordered</option>
-              <option value="Shipped">Shipped</option>
-              <option value="Delivered">Delivered</option>
-              <option value="Cancelled">Cancelled</option>
-              <option value="Returned">Returned</option>
             </select>
           </div>
         </div>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Subcategory</th>
-              <th>Price (RWF)</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedProducts.map((p) => (
-              <tr key={p.id}>
-                <td>{p.name}</td>
-                <td>{p.category}</td>
-                <td>{p.subcategory}</td>
-                <td>{p.price}</td>
-                <td><span className={`status-badge ${p.status.replace(" ", "-").toLowerCase()}`}>{p.status}</span></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {loadingProducts ? (
+          <p>Loading products...</p>
+        ) : (
+          <>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Price (RWF)</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedProducts.map((p) => (
+                  <tr key={p.id}>
+                    <td>{p.name}</td>
+                    <td>{p.category}</td>
+                    <td>{p.price.toLocaleString()}</td>
+                    <td>{p.stock}</td>
+                    <td>
+                      <span
+                        className={`status-badge ${p.status
+                          .replace(" ", "-")
+                          .toLowerCase()}`}
+                      >
+                        {p.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-        <div className="pagination">
-          <button onClick={() => setProductPage((prev) => Math.max(prev - 1, 1))} disabled={productPage === 1}>Prev</button>
-          <span>Page {productPage} of {totalProductPages}</span>
-          <button onClick={() => setProductPage((prev) => (prev < totalProductPages ? prev + 1 : prev))} disabled={productPage === totalProductPages}>Next</button>
-        </div>
+            <div className="pagination">
+              <button
+                onClick={() =>
+                  setProductPage((prev) => Math.max(prev - 1, 1))
+                }
+                disabled={productPage === 1}
+              >
+                Prev
+              </button>
+              <span>
+                Page {productPage} of {totalProductPages}
+              </span>
+              <button
+                onClick={() =>
+                  setProductPage((prev) =>
+                    prev < totalProductPages ? prev + 1 : prev,
+                  )
+                }
+                disabled={productPage === totalProductPages}
+              >
+                Next
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Orders Table */}
