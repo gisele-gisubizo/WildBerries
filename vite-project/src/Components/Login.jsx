@@ -1,12 +1,14 @@
 import { useState } from "react";
-import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../Styles/Auth.css";
+import { useAuth } from "../contexts/AuthContext";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { login, authLoading } = useAuth();
   const [form, setForm] = useState({ phone: "", password: "" });
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -15,53 +17,35 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:4000/users/login", {
+      const payload = await login({
         phone: form.phone,
         password: form.password,
       });
 
-      if (res.data.success) {
-        toast.success("Login successful!");
+      if (payload?.success) {
+        toast.success(payload?.message || "Login successful!");
+        const role = payload?.data?.role;
 
-        console.log("User data:", res.data.data);
-
-        // Save token to localStorage for auth persistence
-        localStorage.setItem("token", res.data.data.token);
-
-        // Get user role
-        const role = res.data.data.role;
-
-        // Redirect based on role
         if (role === "admin") {
-          window.location.href = "/dashboard";
+          navigate("/dashboard", { replace: true });
         } else if (role === "seller") {
-          window.location.href = "/seller-dashboard";
-        } else if (role === "customer") {
-          window.location.href = "/site";
+          navigate("/seller-dashboard", { replace: true });
         } else {
-          toast.error("Unknown role. Please contact support.");
-        }
-      }
-
-    } catch (err) {
-      console.error("Login error:", err);
-      if (err.response) {
-        if (err.response.status === 400) {
-          setError("Invalid phone number or password.");
-        } else if (err.response.status === 401) {
-          setError("Unauthorized. Please check your credentials.");
-        } else {
-          setError("Something went wrong. Please try again later.");
+          navigate("/site", { replace: true });
         }
       } else {
-        setError("Network error. Please check your connection.");
+        setError(payload?.message || "Login failed. Please try again.");
       }
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      console.error("Login error:", err);
+      const apiMessage =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Something went wrong. Please try again later.";
+      setError(apiMessage);
     }
   };
 
@@ -90,21 +74,20 @@ const Login = () => {
 
         {error && <p className="error-message">{error}</p>}
 
-        <button type="submit" className="btn-dark" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+        <button type="submit" className="btn-dark" disabled={authLoading}>
+          {authLoading ? "Logging in..." : "Login"}
         </button>
 
         <div className="auth-form-footer">
           <p className="secondary-text">
             Don't have an account?{" "}
-            <a href="/register" className="login-link">
+            <Link to="/register" className="login-link">
               Register here
-            </a>
+            </Link>
           </p>
         </div>
       </form>
 
-      {/* Toast container */}
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </div>
   );

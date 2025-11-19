@@ -34,7 +34,7 @@ export default function SettingsPage() {
 
   const handleSave = () => {
     console.log("Saved settings:", settings);
-    toast.success("✅ Settings saved successfully!", {
+    toast.success("Settings saved successfully!", {
       position: "top-right",
       autoClose: 2500,
     });

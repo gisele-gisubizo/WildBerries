@@ -1,12 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../Styles/Auth.css";
-import axios from "axios";
-
-const API_BASE_URL = "http://localhost:4000/users"; // ✅ Update if your backend runs on another port
+import { useAuth } from "../contexts/AuthContext";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const { registerCustomer, registerSeller } = useAuth();
   const [accountType, setAccountType] = useState("customer");
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -28,58 +29,53 @@ const Register = () => {
     }
   };
 
+  const redirectToOtp = (email) => {
+    sessionStorage.setItem("pendingVerificationEmail", email);
+    navigate("/otp", { state: { email } });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       if (accountType === "customer") {
-        // ✅ Send JSON for customer registration
-        const customerData = {
+        const payload = {
           email: form.email,
           phone: form.phone,
           password: form.password,
-          // role: "customer",
+          role: "customer",
         };
 
-        const res = await axios.post(
-          `${API_BASE_URL}/register`,
-          customerData
-        );
-
-        toast.success(res.data.message || "Customer registered successfully!");
+        const response = await registerCustomer(payload);
+        toast.success(response?.message || "Customer registered successfully!");
+        redirectToOtp(form.email);
       } else {
-        // ✅ Seller requires FormData
         if (!form.nationalId || !form.license) {
-          toast.error("Please upload National ID and License!");
+          toast.error("Please upload both National ID and Shop License.");
           setLoading(false);
           return;
         }
 
-        const formData = new FormData();
-        formData.append("name", form.name);
-        formData.append("email", form.email);
-        formData.append("phone", form.phone);
-        formData.append("password", form.password);
-        formData.append("address", form.address);
-        formData.append("idCopy", form.nationalId); // backend expects "idCopy"
-        formData.append("licenseDoc", form.license); // backend expects "licenseDoc"
+        const response = await registerSeller({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          password: form.password,
+          address: form.address,
+          idCopy: form.nationalId,
+          licenseDoc: form.license,
+        });
 
-        const res = await axios.post(
-          `${API_BASE_URL}/register-seller`,
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
-
-        toast.success(res.data.message || "Seller registered successfully!");
-        window.location.href = "/otp";
+        toast.success(response?.message || "Seller registered successfully!");
+        redirectToOtp(form.email);
       }
-    } catch (err) {
-      toast.error(
-        err?.response?.data?.message || "Registration failed!"
-      );
+    } catch (error) {
+      const apiMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Registration failed!";
+      toast.error(apiMessage);
     } finally {
       setLoading(false);
     }

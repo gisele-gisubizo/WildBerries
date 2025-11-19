@@ -1,10 +1,22 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../Styles/orderSuccess.css";
 
 const OrderSuccess = () => {
-  const orderNumber = Math.floor(Math.random() * 1000000); // simple random order number
-  const totalPaid = localStorage.getItem("orderTotal") || "0.00";
+  const location = useLocation();
+  const navigate = useNavigate();
+  const order = location.state?.order;
+  const totals = location.state?.totals;
+
+  useEffect(() => {
+    if (!order) {
+      navigate("/site", { replace: true });
+    }
+  }, [order, navigate]);
+
+  if (!order) {
+    return null;
+  }
 
   return (
     <div className="order-success-container">
@@ -13,8 +25,14 @@ const OrderSuccess = () => {
         <p>Your order has been placed successfully.</p>
 
         <div className="order-details">
-          <p><strong>Order Number:</strong> #{orderNumber}</p>
-          <p><strong>Total Paid:</strong> ${totalPaid}</p>
+          <p>
+            <strong>Order Number:</strong> #{order.id}
+          </p>
+          <p>
+            <strong>Total Paid:</strong> $
+            {((totals?.total ?? Number(order.totalAmount)) || 0).toFixed(2)}
+          </p>
+          <p>Status: {order.status}</p>
           <p>We will process your order and notify you shortly.</p>
         </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
 import { FaSearch, FaUser, FaShoppingCart, FaMapMarkerAlt, FaTimes } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../Styles/navbar.css";
@@ -13,116 +13,69 @@ import shop8 from "../assets/images/shop8.jpg";
 import shop9 from "../assets/images/shop9.jpg";
 import shop10 from "../assets/images/shop10.jpg";
 import shop11 from "../assets/images/shop11.jpg";
+import { useCatalog } from "../contexts/CatalogContext";
+import { useCart } from "../contexts/CartContext";
 
 const Navbar = () => {
   const [activeCategory, setActiveCategory] = useState("all");
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { categories, categoriesLoading } = useCatalog();
+  const { cartCount } = useCart();
 
-  const categories = [
-    { 
-      name: "All", 
-      image: shop1, 
-      link: "/site?category=all&subcategory=all", 
-      subcategories: [] 
-    },
-    { 
-      name: "New In", 
-      image: shop2, 
-      link: "/site?category=New In&subcategory=all", 
-      subcategories: [
-        { name: "New Arrivals", image: shop2, link: "/site?category=New In&subcategory=New Arrivals" },
-        { name: "Trending Now", image: shop2, link: "/site?category=New In&subcategory=Trending Now" }
-      ] 
-    },
-    { 
-      name: "Sale", 
-      image: shop3, 
-      link: "/site?category=Sale&subcategory=all", 
-      subcategories: [
-        { name: "Clearance", image: shop3, link: "/site?category=Sale&subcategory=Clearance" },
-        { name: "Discounts", image: shop3, link: "/site?category=Sale&subcategory=Discounts" }
-      ] 
-    },
-    { 
-      name: "Women Clothing", 
-      image: shop4, 
-      link: "/site?category=Women Clothing&subcategory=all", 
-      subcategories: [
-        { name: "Dresses", image: shop4, link: "/site?category=Women Clothing&subcategory=Dresses" },
-        { name: "Tops", image: shop4, link: "/site?category=Women Clothing&subcategory=Tops" },
-        { name: "Pants", image: shop4, link: "/site?category=Women Clothing&subcategory=Pants" },
-        { name: "Skirts", image: shop4, link: "/site?category=Women Clothing&subcategory=Skirts" }
-      ] 
-    },
-    { 
-      name: "Beachwear", 
-      image: shop5, 
-      link: "/site?category=Beachwear&subcategory=all", 
-      subcategories: [
-        { name: "Swimwear", image: shop5, link: "/site?category=Beachwear&subcategory=Swimwear" },
-        { name: "Cover-Ups", image: shop5, link: "/site?category=Beachwear&subcategory=Cover-Ups" },
-        { name: "Accessories", image: shop5, link: "/site?category=Beachwear&subcategory=Accessories" }
-      ] 
-    },
-    { 
-      name: "Kids", 
-      image: shop6, 
-      link: "/site?category=Kids&subcategory=all", 
-      subcategories: [
-        { name: "Boys", image: shop6, link: "/site?category=Kids&subcategory=Boys" },
-        { name: "Girls", image: shop6, link: "/site?category=Kids&subcategory=Girls" },
-        { name: "Baby", image: shop6, link: "/site?category=Kids&subcategory=Baby" }
-      ] 
-    },
-    { 
-      name: "Curve", 
-      image: shop7, 
-      link: "/site?category=Curve&subcategory=all", 
-      subcategories: [
-        { name: "Plus Size Tops", image: shop7, link: "/site?category=Curve&subcategory=Plus Size Tops" },
-        { name: "Plus Size Dresses", image: shop7, link: "/site?category=Curve&subcategory=Plus Size Dresses" }
-      ] 
-    },
-    { 
-      name: "Men", 
-      image: shop8, 
-      link: "/site?category=Men&subcategory=all", 
-      subcategories: [
-        { name: "Shirts", image: shop8, link: "/site?category=Men&subcategory=Shirts" },
-        { name: "Jeans", image: shop8, link: "/site?category=Men&subcategory=Jeans" },
-        { name: "Shoes", image: shop8, link: "/site?category=Men&subcategory=Shoes" }
-      ] 
-    },
-    { 
-      name: "Home", 
-      image: shop9, 
-      link: "/site?category=Home&subcategory=all", 
-      subcategories: [
-        { name: "Furniture", image: shop9, link: "/site?category=Home&subcategory=Furniture" },
-        { name: "Decor", image: shop9, link: "/site?category=Home&subcategory=Decor" },
-        { name: "Kitchen", image: shop9, link: "/site?category=Home&subcategory=Kitchen" }
-      ] 
-    },
-    { 
-      name: "Deals", 
-      image: shop10, 
-      link: "/site?category=Deals&subcategory=all", 
-      subcategories: [
-        { name: "Flash Sales", image: shop10, link: "/site?category=Deals&subcategory=Flash Sales" },
-        { name: "Bundles", image: shop10, link: "/site?category=Deals&subcategory=Bundles" }
-      ] 
-    },
-    { 
-      name: "Brands", 
-      image: shop11, 
-      link: "/site?category=Brands&subcategory=all", 
-      subcategories: [
-        { name: "Popular Brands", image: shop11, link: "/site?category=Brands&subcategory=Popular Brands" },
-        { name: "New Brands", image: shop11, link: "/site?category=Brands&subcategory=New Brands" }
-      ] 
-    },
-  ];
+  const categoryImages = useMemo(
+    () => ({
+      "Fashion & Clothing": shop4,
+      "Electronics & Gadgets": shop2,
+      "Home & Furniture": shop9,
+      "Food & Beverages": shop10,
+      "Beauty & Personal Care": shop5,
+      "Books & Stationery": shop3,
+      "Health & Fitness": shop7,
+      "Automotive & Accessories": shop8,
+      "Kids & Baby Products": shop6,
+      "Real Estate & Property": shop1,
+      Services: shop11,
+    }),
+    [],
+  );
+
+  const fallbackImages = [shop4, shop5, shop6, shop7, shop8, shop9, shop10, shop11, shop2, shop3];
+
+  const menuCategories = useMemo(() => {
+    const dynamicCategories =
+      categories?.map((category, index) => {
+        const image =
+          categoryImages[category.name] ||
+          fallbackImages[index % fallbackImages.length] ||
+          shop1;
+
+        const subcategories =
+          category.fields?.map((field, idx) => ({
+            name: field.name,
+            image:
+              fallbackImages[(index + idx) % fallbackImages.length] || image,
+            link: `/site?category=${encodeURIComponent(category.name)}&subcategory=${encodeURIComponent(field.name)}`,
+          })) || [];
+
+        return {
+          name: category.name,
+          image,
+          link: `/site?category=${encodeURIComponent(category.name)}&subcategory=all`,
+          subcategories,
+        };
+      }) || [];
+
+    return [
+      {
+        name: "All",
+        image: shop1,
+        link: "/site?category=all&subcategory=all",
+        subcategories: [],
+      },
+      ...dynamicCategories,
+    ];
+  }, [categories, categoryImages, fallbackImages]);
 
   return (
     <nav className="navbar">
@@ -149,26 +102,33 @@ const Navbar = () => {
           </Link>
           <Link to="/site/cart" className="icon-button">
             <FaShoppingCart />
-            <span className="icon-label">Cart</span>
+            <span className="icon-label">
+              Cart
+              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            </span>
           </Link>
         </div>
       </div>
 
       {/* ---------- BOTTOM ---------- */}
       <div className="navbar-bottom">
-        {categories.map((cat) => (
-          <Link
-            key={cat.name}
-            to={cat.link}
-            className={`nav-link ${activeCategory === cat.name.toLowerCase() ? "active" : ""}`}
-            onClick={() => {
-              setActiveCategory(cat.name.toLowerCase());
-              navigate(cat.link);
-            }}
-          >
-            {cat.name}
-          </Link>
-        ))}
+        {categoriesLoading ? (
+          <span className="nav-loading">Loading categories...</span>
+        ) : (
+          menuCategories.map((cat) => (
+            <Link
+              key={cat.name}
+              to={cat.link}
+              className={`nav-link ${activeCategory === cat.name.toLowerCase() ? "active" : ""}`}
+              onClick={() => {
+                setActiveCategory(cat.name.toLowerCase());
+                navigate(cat.link);
+              }}
+            >
+              {cat.name}
+            </Link>
+          ))
+        )}
       </div>
 
       {/* ---------- Sidebar Menu ---------- */}
@@ -177,7 +137,7 @@ const Navbar = () => {
           <button className="close-button" onClick={() => setMenuOpen(false)}>
             <FaTimes />
           </button>
-          {categories.map((cat) => (
+          {menuCategories.map((cat) => (
             <div key={cat.name} className="sidebar-category">
               <Link
                 to={cat.link}

@@ -1,63 +1,87 @@
-import { useState } from "react";
-import axios from "axios";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../Styles/Auth.css";
+import { useAuth } from "../contexts/AuthContext";
 
-const OtpVerification = ({ email }) => {
+const OtpVerification = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { verifyOtp, resendOtp } = useAuth();
+
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [email, setEmail] = useState("");
+
+  const resolvedEmail = useMemo(() => {
+    return (
+      location.state?.email ||
+      sessionStorage.getItem("pendingVerificationEmail") ||
+      ""
+    );
+  }, [location.state]);
+
+  useEffect(() => {
+    if (!resolvedEmail) {
+      navigate("/register");
+      return;
+    }
+    setEmail(resolvedEmail);
+  }, [navigate, resolvedEmail]);
 
   const handleChange = (e) => {
     setOtp(e.target.value);
   };
 
-  // Handle OTP verification
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!email) return;
+
     setLoading(true);
     setError("");
     setMessage("");
 
     try {
-      const res = await axios.post("http://localhost:4000/users/verify-otp", {
-        email,
-        otp,
-      });
-
-      if (res.data.success) {
-        setMessage("✅ OTP verified successfully!");
-        // Redirect to dashboard or next page
-        window.location.href = "/login"; 
+      const response = await verifyOtp({ email, otp });
+      if (response?.success) {
+        setMessage(response.message || "OTP verified successfully!");
+        sessionStorage.removeItem("pendingVerificationEmail");
+        setTimeout(() => navigate("/login"), 1500);
       } else {
-        setError("❌ Verification failed. Please try again.");
+        setError(response?.message || "Verification failed. Please try again.");
       }
     } catch (err) {
-      console.error(err);
-      if (err.response?.data?.message) {
-        setError(err.response.data.message);
-      } else {
-        setError("⚠️ Something went wrong. Try again later.");
-      }
+      const apiMessage =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Something went wrong. Try again later.";
+      setError(apiMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle resending OTP
   const handleResend = async () => {
+    if (!email) return;
+
     setLoading(true);
     setError("");
     setMessage("");
 
     try {
-      const res = await axios.post("http://localhost:4000/resend-otp", { email });
-      if (res.data.success) {
-        setMessage("✅ OTP resent successfully! Check your email.");
+      const response = await resendOtp({ email });
+      if (response?.success) {
+        setMessage(response?.message || "OTP resent successfully. Check your email.");
+      } else {
+        setError(response?.message || "Failed to resend OTP. Try again later.");
       }
     } catch (err) {
-      console.error(err);
-      setError("⚠️ Failed to resend OTP. Try again later.");
+      const apiMessage =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to resend OTP. Try again later.";
+      setError(apiMessage);
     } finally {
       setLoading(false);
     }
@@ -67,7 +91,9 @@ const OtpVerification = ({ email }) => {
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit}>
         <h2>Verify OTP</h2>
-        <p className="secondary-text">Enter the 6-digit code sent to your email/phone</p>
+        <p className="secondary-text">
+          Enter the 6-digit code sent to {email}
+        </p>
 
         <input
           type="text"
@@ -89,7 +115,11 @@ const OtpVerification = ({ email }) => {
         <div className="auth-form-footer">
           <p className="secondary-text">
             Didn’t receive the code?{" "}
-            <span onClick={handleResend} className="login-link" style={{ cursor: "pointer" }}>
+            <span
+              onClick={handleResend}
+              className="login-link"
+              style={{ cursor: "pointer" }}
+            >
               Resend
             </span>
           </p>

@@ -66,7 +66,7 @@ export default function MessagesPage() {
           : msg
       )
     );
-    toast.success("Reply sent successfully ✅");
+    toast.success("Reply sent successfully!");
     setShowModal(false);
     setReplyText("");
     setSelectedMessage(null);

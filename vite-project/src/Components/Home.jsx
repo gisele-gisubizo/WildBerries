@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaArrowLeft, FaArrowRight, FaStar, FaHeart } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
+import { fetchProducts } from "../services/ProductService";
+import { useCatalog } from "../contexts/CatalogContext";
 
 import clothes1 from "../assets/images/clothes1.jpg";
 import clothes2 from "../assets/images/clothes2.jpg";
@@ -24,46 +26,19 @@ import item12 from "../assets/images/home/item12.jpg";
 
 import "../Styles/home.css";
 
-// Static stores data (unchanged)
-const storesData = [
-  { id: 1, name: "Fashion Hub", categories: ["Clothes", "Shoes", "Accessories"] },
-  { id: 2, name: "Tech World", categories: ["Gadgets", "Smart Devices"] },
-  { id: 3, name: "Home Essentials", categories: ["Furniture", "Decor"] },
-  { id: 4, name: "Beauty Plus", categories: ["Makeup", "Skincare"] },
-  { id: 5, name: "Sports Arena", categories: ["Shoes", "Gear"] },
-  { id: 6, name: "Kids Zone", categories: ["Toys", "Clothes"] },
-  { id: 7, name: "Book World", categories: ["Books", "Stationery"] },
-  { id: 8, name: "Pet Shop", categories: ["Pet Food", "Accessories"] },
-  { id: 9, name: "Grocery King", categories: ["Food", "Beverages"] },
-  { id: 10, name: "Music Hub", categories: ["Instruments", "Accessories"] },
-  { id: 11, name: "Garden Center", categories: ["Plants", "Tools"] },
-];
-
-// Demo items with hidden categories, subcategories, and SHEIN description (unchanged)
-const items = [
-  { id: 1, name: 'Item 1', image: item1, price: 29.99, storeId: 1, category: "Women Clothing", subcategory: "Tops", description: "Trendy top from SHEIN, perfect for casual outings with a chic design." },
-  { id: 2, name: 'Item 2', image: item2, price: 34.99, storeId: 1, category: "Women Clothing", subcategory: "Dresses", description: "Elegant dress from SHEIN, ideal for parties with a modern twist." },
-  { id: 3, name: 'Item 3', image: item3, price: 19.99, storeId: 2, category: "Gadgets", subcategory: "Smartphones", description: "SHEIN-inspired smart gadget accessory, sleek and functional." },
-  { id: 4, name: 'Item 4', image: item4, price: 39.99, storeId: 2, category: "Smart Devices", subcategory: "Watches", description: "Stylish smart watch from SHEIN collection, great for fitness." },
-  { id: 5, name: 'Item 5', image: item5, price: 24.99, storeId: 3, category: "Home", subcategory: "Furniture", description: "Comfortable chair from SHEIN home line, trendy and affordable." },
-  { id: 6, name: 'Item 6', image: item6, price: 44.99, storeId: 3, category: "Home", subcategory: "Decor", description: "SHEIN decorative wall art, perfect for home styling." },
-  { id: 7, name: 'Item 7', image: item7, price: 29.99, storeId: 4, category: "Makeup", subcategory: "Lipstick", description: "Vibrant lipstick from SHEIN beauty range, long-lasting wear." },
-  { id: 8, name: 'Item 8', image: item8, price: 34.99, storeId: 4, category: "Skincare", subcategory: "Moisturizers", description: "Hydrating moisturizer from SHEIN, skin-friendly formula." },
-  { id: 9, name: 'Item 9', image: item9, price: 19.99, storeId: 5, category: "Shoes", subcategory: "Sneakers", description: "Stylish sneakers from SHEIN sports line, lightweight design." },
-  { id: 10, name: 'Item 10', image: item10, price: 39.99, storeId: 5, category: "Gear", subcategory: "Bags", description: "Durable sports bag from SHEIN, perfect for workouts." },
-  { id: 11, name: 'Item 11', image: item11, price: 24.99, storeId: 6, category: "Kids", subcategory: "Educational", description: "Educational toy from SHEIN kids collection, fun learning." },
-  { id: 12, name: 'Item 12', image: item12, price: 44.99, storeId: 6, category: "Kids", subcategory: "Kids Wear", description: "Cute kids wear from SHEIN, comfortable and trendy." },
-];
-
 const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { categories } = useCatalog();
   const images = [clothes1, clothes2, clothes3, clothes4, clothes5, clothes6];
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedSubcategory, setSelectedSubcategory] = useState("all");
   const [favorites, setFavorites] = useState(new Set()); // Track favorite item IDs
+  const [products, setProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [productsError, setProductsError] = useState("");
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -79,6 +54,28 @@ const Home = () => {
     setSelectedCategory(category);
     setSelectedSubcategory(subcategory);
   }, [location.search]);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      setLoadingProducts(true);
+      setProductsError("");
+      try {
+        const payload = await fetchProducts({ limit: 50 });
+        setProducts(payload.products);
+      } catch (error) {
+        console.error("Failed to fetch products", error);
+        setProductsError(
+          error?.response?.data?.message ||
+            error?.message ||
+            "Failed to load products.",
+        );
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
 
   const goToPrevious = () => {
     setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
@@ -104,11 +101,54 @@ const Home = () => {
     });
   };
 
-  const filteredItems = items.filter((item) => {
-    const categoryMatch = selectedCategory === "all" || item.category === selectedCategory;
-    const subcategoryMatch = selectedSubcategory === "all" || item.subcategory === selectedSubcategory;
-    return categoryMatch && subcategoryMatch;
-  });
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      const productCategory = product?.category?.name || "all";
+      const productAttributes = product?.attributes || {};
+
+      const categoryMatch =
+        selectedCategory === "all" ||
+        productCategory.toLowerCase() === selectedCategory.toLowerCase();
+
+      let subcategoryMatch = true;
+      if (selectedSubcategory !== "all") {
+        subcategoryMatch = Object.values(productAttributes)
+          .flat()
+          .map((value) =>
+            typeof value === "string" ? value.toLowerCase() : value,
+          )
+          .includes(selectedSubcategory.toLowerCase());
+      }
+
+      return categoryMatch && subcategoryMatch;
+    });
+  }, [products, selectedCategory, selectedSubcategory]);
+
+  const getProductImage = (product) => {
+    if (product?.images?.length) return product.images[0];
+
+    const fallbackMap = {
+      0: item1,
+      1: item2,
+      2: item3,
+      3: item4,
+      4: item5,
+      5: item6,
+      6: item7,
+      7: item8,
+      8: item9,
+      9: item10,
+      10: item11,
+      11: item12,
+    };
+
+    const index = product?.id ? product.id % Object.keys(fallbackMap).length : 0;
+    return fallbackMap[index] || item1;
+  };
+
+  const getSellerName = (product) => {
+    return product?.seller?.name || product?.seller?.email || "Marketplace";
+  };
 
   return (
     <div className="home">
@@ -136,52 +176,64 @@ const Home = () => {
       {/* Items section */}
       <h2 className="section-title">Popular Items</h2>
       <div className="items-grid">
-        {filteredItems.map((item) => {
-          const store = storesData.find((s) => s.id === item.storeId);
-          const isFavorite = favorites.has(item.id);
+        {loadingProducts && <p>Loading products...</p>}
+        {productsError && <p className="error-text">{productsError}</p>}
+        {!loadingProducts && !productsError && filteredProducts.length === 0 && (
+          <p>No items found in this category.</p>
+        )}
+        {!loadingProducts &&
+          !productsError &&
+          filteredProducts.map((product) => {
+            const productId = product.id;
+            const isFavorite = favorites.has(productId);
           return (
             <div
-              key={item.id}
-              className="item-card"
-              onClick={() => goToProduct(item.id)}
-            >
-              <div className="item-image">
-                <img src={item.image} alt={item.name} />
-                <div className="discount">-50%</div> {/* Placeholder; adjust dynamically if needed */}
+                key={productId}
+                className="item-card"
+                onClick={() => goToProduct(productId)}
+              >
+                <div className="item-image">
+                  <img src={getProductImage(product)} alt={product.name} />
+                  <div className="discount">-15%</div>
+                  <button
+                    className={`favorite-btn ${isFavorite ? "favorite-active" : ""}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleFavorite(productId);
+                    }}
+                  >
+                    <FaHeart />
+                  </button>
+                </div>
+                <div className="item-details">
+                  <div className="price">
+                    <span className="current-price">
+                      ${Number(product.price).toFixed(2)}
+                    </span>
+                    <span className="old-price">
+                      ${(Number(product.price) * 1.2).toFixed(2)}
+                    </span>
+                  </div>
+                  <p className="seller">
+                    {getSellerName(product)} / {product.name}
+                  </p>
+                  <div className="rating">
+                    <FaStar className="star-icon" /> 4.8 · 1,200 reviews
+                  </div>
+                </div>
                 <button
-                  className={`favorite-btn ${isFavorite ? "favorite-active" : ""}`}
+                  className="view-btn"
                   onClick={(e) => {
-                    e.preventDefault(); // Prevent default behavior
-                    e.stopPropagation(); // Stop event from bubbling to parent
-                    toggleFavorite(item.id);
+                    e.stopPropagation();
+                    goToProduct(productId);
                   }}
                 >
-                  <FaHeart />
+                  View
                 </button>
               </div>
-              <div className="item-details">
-                <div className="price">
-                  <span className="current-price">${item.price.toFixed(2)}</span>
-                  <span className="old-price">${(item.price * 1.5).toFixed(2)}</span>
-                </div>
-                <p className="seller">{store?.name} / {item.name}</p>
-                <div className="rating">
-                  <FaStar className="star-icon" /> 4.8 · 1,200 reviews
-                </div>
-              </div>
-              <button
-                className="view-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  goToProduct(item.id);
-                }}
-              >
-                View
-              </button>
-            </div>
-          );
-        })}
-        {filteredItems.length === 0 && <p>No items found in this category.</p>}
+            );
+          })}
       </div>
     </div>
   );
