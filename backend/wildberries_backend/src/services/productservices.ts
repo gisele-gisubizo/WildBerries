@@ -32,11 +32,11 @@ export class ProductService {
   }
 
   static async getAllProducts() {
-    return await productRepo.find();
+    return await productRepo.find({ relations: ["category", "seller"] });
   }
 
   static async getProductById(id: number) {
-    const product = await productRepo.findOne({ where: { id } });
+    const product = await productRepo.findOne({ where: { id }, relations: ["category", "seller"] });
     if (!product) throw new AppError("Product not found", 404);
     return product;
   }

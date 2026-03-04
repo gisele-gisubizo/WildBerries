@@ -10,23 +10,24 @@ import { Product } from "./product";
 import { Users } from "./user";
 
 export type CategoryType =
-  | "Fashion & Clothing"
-  | "Electronics & Gadgets"
-  | "Home & Furniture"
-  | "Food & Beverages"
-  | "Beauty & Personal Care"
-  | "Books & Stationery"
-  | "Health & Fitness"
-  | "Automotive & Accessories"
-  | "Kids & Baby Products"
-  | "Real Estate & Property"
-  | "Services";
+  | "Women's Clothing"
+  | "Men's Clothing"
+  | "Kids & Baby Clothing"
+  | "Shoes & Footwear"
+  | "Bags & Accessories"
+  | "Jewelry & Watches"
+  | "Beauty & Makeup"
+  | "Skincare & Hair Care"
+  | "Sportswear & Activewear"
+  | "Lingerie & Sleepwear"
+  | "Home & Living"
+  | "Phone & Electronics Accessories";
 
 export interface CategoryField {
   name: string;
   type: "string" | "number" | "boolean" | "array" | "date";
   required: boolean;
-  options?: string[]; // for enum/array fields
+  options?: string[];
 }
 
 @Entity()
@@ -37,34 +38,32 @@ export class Category {
   @Column({
     type: "enum",
     enum: [
-      "Fashion & Clothing",
-      "Electronics & Gadgets",
-      "Home & Furniture",
-      "Food & Beverages",
-      "Beauty & Personal Care",
-      "Books & Stationery",
-      "Health & Fitness",
-      "Automotive & Accessories",
-      "Kids & Baby Products",
-      "Real Estate & Property",
-      "Services",
+      "Women's Clothing",
+      "Men's Clothing",
+      "Kids & Baby Clothing",
+      "Shoes & Footwear",
+      "Bags & Accessories",
+      "Jewelry & Watches",
+      "Beauty & Makeup",
+      "Skincare & Hair Care",
+      "Sportswear & Activewear",
+      "Lingerie & Sleepwear",
+      "Home & Living",
+      "Phone & Electronics Accessories",
     ],
     unique: true,
   })
   name!: CategoryType;
 
-  // ✅ Dynamic fields per category (size, brand, color, etc.)
   @Column({ type: "jsonb" })
   fields!: CategoryField[];
 
   @Column({ nullable: true })
   description?: string;
 
-  // ✅ Relation: one category has many products
   @OneToMany(() => Product, (product) => product.category)
   products!: Product[];
 
-  // ✅ Relation: one category has many sellers
   @OneToMany(() => Users, (user) => user.category)
   sellers!: Users[];
 

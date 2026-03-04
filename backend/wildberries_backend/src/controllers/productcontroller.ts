@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../middlewares/errorHandler";
-import { ProductService } from "../services/productservices";
+import { ProductService, getAllProducts } from "../services/productservices";
 import { Users} from "../entities/user"
 import { AppDataSource } from "../data-source";
 // import cloudinary from "../utilis/cloudinary";
@@ -72,9 +72,7 @@ export const getProducts = asyncHandler(async (req: Request, res: Response) => {
   const categoryId = req.query.categoryId ? Number(req.query.categoryId) : undefined;
   const sellerId = req.query.sellerId ? Number(req.query.sellerId) : undefined;
 
-  // TODO: Implement the sorting logic in the getAllProducts() service
-  // const result = await ProductService.getAllProducts(page, limit, sortBy, order, { categoryId, sellerId });
-  const result = await ProductService.getAllProducts();
+  const result = await getAllProducts(page, limit, sortBy, order, { categoryId, sellerId });
   res.status(200).json({ success: true, ...result });
 });
 

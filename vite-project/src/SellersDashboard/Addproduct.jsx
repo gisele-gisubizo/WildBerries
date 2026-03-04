@@ -10,6 +10,7 @@ export default function AddProductPage() {
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
+  const [currency, setCurrency] = useState("RWF");
   const [stock, setStock] = useState("");
   const [mainImage, setMainImage] = useState(null);
   const [gallery, setGallery] = useState([]);
@@ -70,9 +71,10 @@ export default function AddProductPage() {
       await createProduct({
         name: productName,
         price: Number(price),
+        currency,
         stock: Number(stock),
         categoryId: Number(selectedCategoryId),
-        attributes: attributeValues,
+        attributes: { ...attributeValues, currency },
         mainImage,
         gallery,
       });
@@ -191,12 +193,28 @@ export default function AddProductPage() {
 
         <div className="form-group">
           <label>Price</label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-          />
+          <div style={{ display: "flex", gap: "8px" }}>
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              style={{ width: "110px", flexShrink: 0 }}
+            >
+              <option value="RWF">RWF</option>
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="KES">KES</option>
+              <option value="UGX">UGX</option>
+              <option value="TZS">TZS</option>
+            </select>
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="Enter price"
+              required
+              style={{ flex: 1 }}
+            />
+          </div>
         </div>
 
         <div className="form-group">
@@ -215,12 +233,24 @@ export default function AddProductPage() {
         </div>
 
         <div className="form-group">
-          <label>Gallery Images</label>
+          <label>Gallery Images <span style={{ color: "#888", fontWeight: "normal", fontSize: "13px" }}>(max 5 images)</span></label>
           <input
             type="file"
             multiple
-            onChange={(e) => setGallery(Array.from(e.target.files))}
+            accept="image/*"
+            onChange={(e) => {
+              const files = Array.from(e.target.files);
+              if (files.length > 5) {
+                toast.error("You can only upload up to 5 gallery images.");
+                e.target.value = "";
+                return;
+              }
+              setGallery(files);
+            }}
           />
+          {gallery.length > 0 && (
+            <small style={{ color: "#555" }}>{gallery.length} file(s) selected</small>
+          )}
         </div>
 
         {selectedCategory?.fields?.map((field) => (
