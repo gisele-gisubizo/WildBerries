@@ -1,6 +1,6 @@
 // src/routes/productRoutes.ts
 import { Router } from "express";
-import { upload } from "../middlewares/upload";
+import { upload } from "../utilis/cloudinary";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import {
   createProduct,

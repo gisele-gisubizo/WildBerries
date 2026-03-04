@@ -33,6 +33,13 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallb
 };
 
 // Multer upload using Cloudinary storage
-const upload = multer({ storage, fileFilter });
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 20 * 1024 * 1024, // 20MB per file
+    files: 6, // 1 main + 5 gallery
+  },
+});
 
 export { cloudinary, upload };

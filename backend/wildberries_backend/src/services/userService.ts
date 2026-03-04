@@ -53,7 +53,7 @@ const htmlMessage = `
   <div style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px;">
     <div style="max-width: 500px; margin: auto; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 25px;">
       <h2 style="color: #6B2C91; text-align: center;">WildBerries Company</h2>
-      <p style="font-size: 16px;">Hello dear <strong>${user.name}</strong>,</p>
+      <p style="font-size: 16px;">Hello dear <strong>${user.name || user.email}</strong>,</p>
       <p style="font-size: 15px; line-height: 1.6;">
         Thank you for registering with <strong>WildBerries Company</strong>. 
         To complete your verification, please use the One-Time Password (OTP) below:

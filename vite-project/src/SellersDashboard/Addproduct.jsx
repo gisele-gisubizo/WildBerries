@@ -4,6 +4,38 @@ import "react-toastify/dist/ReactToastify.css";
 import { fetchCategories } from "../services/CategoryService";
 import { createProduct } from "../services/ProductService";
 
+// Compress image to stay under Cloudinary's 10MB free plan limit
+const compressImage = (file, maxWidthPx = 1200, quality = 0.8) => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target.result;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let { width, height } = img;
+        if (width > maxWidthPx) {
+          height = Math.round((height * maxWidthPx) / width);
+          width = maxWidthPx;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            const compressed = new File([blob], file.name, { type: "image/jpeg" });
+            resolve(compressed);
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+    };
+  });
+};
+
 export default function AddProductPage() {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -68,6 +100,11 @@ export default function AddProductPage() {
 
     setLoading(true);
     try {
+      // Compress all images before upload to stay within Cloudinary 10MB limit
+      toast.info("Compressing images...", { autoClose: 1500 });
+      const compressedMain = await compressImage(mainImage);
+      const compressedGallery = await Promise.all(gallery.map((f) => compressImage(f)));
+
       await createProduct({
         name: productName,
         price: Number(price),
@@ -75,8 +112,8 @@ export default function AddProductPage() {
         stock: Number(stock),
         categoryId: Number(selectedCategoryId),
         attributes: { ...attributeValues, currency },
-        mainImage,
-        gallery,
+        mainImage: compressedMain,
+        gallery: compressedGallery,
       });
 
       toast.success("Product added successfully!");
@@ -96,17 +133,126 @@ export default function AddProductPage() {
     }
   };
 
+  // Color palette presets
+  const COLOR_PALETTE = [
+    { name: "Black", hex: "#000000" },
+    { name: "White", hex: "#FFFFFF" },
+    { name: "Red", hex: "#E53935" },
+    { name: "Pink", hex: "#EC407A" },
+    { name: "Purple", hex: "#8E24AA" },
+    { name: "Deep Purple", hex: "#5E35B1" },
+    { name: "Blue", hex: "#1E88E5" },
+    { name: "Light Blue", hex: "#64B5F6" },
+    { name: "Cyan", hex: "#00ACC1" },
+    { name: "Teal", hex: "#00897B" },
+    { name: "Green", hex: "#43A047" },
+    { name: "Light Green", hex: "#9CCC65" },
+    { name: "Yellow", hex: "#FDD835" },
+    { name: "Amber", hex: "#FFB300" },
+    { name: "Orange", hex: "#FB8C00" },
+    { name: "Deep Orange", hex: "#F4511E" },
+    { name: "Brown", hex: "#6D4C41" },
+    { name: "Grey", hex: "#757575" },
+    { name: "Navy", hex: "#1A237E" },
+    { name: "Beige", hex: "#F5F5DC" },
+    { name: "Cream", hex: "#FFFDD0" },
+    { name: "Mint", hex: "#98FF98" },
+    { name: "Lavender", hex: "#E6E6FA" },
+    { name: "Coral", hex: "#FF6B6B" },
+  ];
+
   const renderAttributeField = (field) => {
     const fieldName = field.name;
-    const value = attributeValues[fieldName] || "";
+    const value = attributeValues[fieldName];
+    const lowerName = fieldName.toLowerCase();
 
+    // ── SIZE: multi-select checkboxes ──
+    if ((lowerName === "sizes" || lowerName === "size") && Array.isArray(field.options)) {
+      const selected = Array.isArray(value) ? value : [];
+      const toggle = (opt) => {
+        const next = selected.includes(opt)
+          ? selected.filter((s) => s !== opt)
+          : [...selected, opt];
+        handleAttributeChange(fieldName, next);
+      };
+      return (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "6px" }}>
+          {field.options.map((opt) => (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => toggle(opt)}
+              style={{
+                padding: "6px 14px",
+                border: selected.includes(opt) ? "2px solid #6B2C91" : "1.5px solid #ccc",
+                borderRadius: "6px",
+                background: selected.includes(opt) ? "#f3e8ff" : "#fff",
+                color: selected.includes(opt) ? "#6B2C91" : "#333",
+                fontWeight: selected.includes(opt) ? "700" : "400",
+                cursor: "pointer",
+                fontSize: "13px",
+              }}
+            >
+              {opt}
+            </button>
+          ))}
+          {selected.length > 0 && (
+            <small style={{ width: "100%", color: "#6B2C91", marginTop: "4px" }}>
+              Selected: {selected.join(", ")}
+            </small>
+          )}
+        </div>
+      );
+    }
+
+    // ── COLOR: palette picker ──
+    if (lowerName === "color" || lowerName === "coloroptions" || lowerName === "colour") {
+      const selected = Array.isArray(value) ? value : (value ? [value] : []);
+      const toggle = (colorName) => {
+        const next = selected.includes(colorName)
+          ? selected.filter((c) => c !== colorName)
+          : [...selected, colorName];
+        handleAttributeChange(fieldName, next);
+      };
+      return (
+        <div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "8px" }}>
+            {COLOR_PALETTE.map((color) => (
+              <div
+                key={color.name}
+                title={color.name}
+                onClick={() => toggle(color.name)}
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  borderRadius: "50%",
+                  background: color.hex,
+                  cursor: "pointer",
+                  border: selected.includes(color.name)
+                    ? "3px solid #6B2C91"
+                    : "2px solid #ddd",
+                  boxShadow: selected.includes(color.name) ? "0 0 0 2px #f3e8ff" : "none",
+                  transform: selected.includes(color.name) ? "scale(1.2)" : "scale(1)",
+                  transition: "all 0.15s",
+                }}
+              />
+            ))}
+          </div>
+          {selected.length > 0 && (
+            <small style={{ color: "#6B2C91", marginTop: "6px", display: "block" }}>
+              Selected: {selected.join(", ")}
+            </small>
+          )}
+        </div>
+      );
+    }
+
+    // ── BOOLEAN ──
     if (field.type === "boolean") {
       return (
         <select
-          value={value}
-          onChange={(e) =>
-            handleAttributeChange(fieldName, e.target.value === "true")
-          }
+          value={value || ""}
+          onChange={(e) => handleAttributeChange(fieldName, e.target.value === "true")}
         >
           <option value="">-- Select --</option>
           <option value="true">Yes</option>
@@ -115,46 +261,48 @@ export default function AddProductPage() {
       );
     }
 
+    // ── OPTIONS DROPDOWN ──
     if (Array.isArray(field.options) && field.options.length > 0) {
       return (
         <select
-          value={value}
+          value={value || ""}
           onChange={(e) => handleAttributeChange(fieldName, e.target.value)}
         >
           <option value="">-- Select --</option>
           {field.options.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
+            <option key={option} value={option}>{option}</option>
           ))}
         </select>
       );
     }
 
+    // ── NUMBER ──
     if (field.type === "number") {
       return (
         <input
           type="number"
-          value={value}
+          value={value || ""}
           onChange={(e) => handleAttributeChange(fieldName, e.target.value)}
         />
       );
     }
 
+    // ── DATE ──
     if (field.type === "date") {
       return (
         <input
           type="date"
-          value={value}
+          value={value || ""}
           onChange={(e) => handleAttributeChange(fieldName, e.target.value)}
         />
       );
     }
 
+    // ── TEXT (default) ──
     return (
       <input
         type="text"
-        value={value}
+        value={value || ""}
         onChange={(e) => handleAttributeChange(fieldName, e.target.value)}
       />
     );
