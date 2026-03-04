@@ -122,8 +122,10 @@ export const loginController = asyncHandler(async (req: Request, res: Response<A
     message: "Login successful",
     data: {
       id: user.id,
-      phone: user.phone, // ✅ changed email → phone
+      phone: user.phone,
       role: user.role,
+      name: user.name ?? null,
+      status: user.status,
       token,
     },
   });

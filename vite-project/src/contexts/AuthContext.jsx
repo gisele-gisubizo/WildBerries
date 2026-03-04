@@ -78,6 +78,8 @@ export const AuthProvider = ({ children }) => {
             id: session.id ?? session.userId ?? session.user?.id,
             phone: session.phone ?? session.user?.phone ?? null,
             role: session.role ?? session.user?.role ?? null,
+            name: session.name ?? session.user?.name ?? null,
+            status: session.status ?? session.user?.status ?? null,
           };
 
           updateState({ token: session.token, user: normalizedUser });

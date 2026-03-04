@@ -2,10 +2,12 @@ import React from 'react'
 import { useTranslation } from 'react-i18next';
 import { FaUserCircle } from 'react-icons/fa';
 import '../AdminDashboard/navbar.css';
+import { useAuth } from '../contexts/AuthContext';
 const SellerNavbar = () => {
+const { user: authUser } = useAuth();
 const user = {
-    username: 'Alice',
-    profile_picture_url: null,                                                                                                                                                                                                                                       
+    username: authUser?.name || authUser?.phone || 'Seller',
+    profile_picture_url: null,
   };
 
   const { i18n } = useTranslation();
