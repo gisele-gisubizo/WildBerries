@@ -8,11 +8,11 @@ const Footer = () => {
       <div className="footer-container">
         <div className="footer-section">
           <h3>About Us</h3>
-          <p>Learn more about wildBerries and our mission to bring you the best shopping experience.</p>
+          <p>Learn more about Veru and our mission to bring you the best shopping experience.</p>
         </div>
         <div className="footer-section">
           <h3>Contacts</h3>
-          <p>Email: support@wildberries.com</p>
+          <p>Email: support@veru.com</p>
           <p>Phone: +1-800-555-1234</p>
         </div>
         <div className="footer-section">
@@ -40,7 +40,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; 2025 wildBerries. All rights reserved.</p>
+        <p>&copy; 2026 Veru. All rights reserved.</p>
       </div>
     </footer>
   );

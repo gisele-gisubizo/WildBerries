@@ -82,4 +82,9 @@ export const getRejectedSellers = async () => {
   return response.data;
 };
 
+export const updateMyProfile = async (data) => {
+  const response = await apiClient.put(`${USERS_PREFIX}/me/profile`, data);
+  return response.data;
+};
+
 export const getApiBase = getApiBaseUrl;

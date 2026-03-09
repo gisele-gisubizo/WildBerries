@@ -179,6 +179,58 @@
   .item-image img { height: 140px; }
 }
 
+/* ---- Profile edit buttons ---- */
+.profile-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  background: #fff;
+  color: #6B2C91;
+  border: 2px solid #6B2C91;
+  border-radius: 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.profile-edit-btn:hover { background: #6B2C91; color: #fff; }
+
+.profile-save-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  background: #6B2C91;
+  color: #fff;
+  border: none;
+  border-radius: 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.18s;
+}
+.profile-save-btn:hover { opacity: 0.85; }
+.profile-save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.profile-cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  background: #fff;
+  color: #888;
+  border: 2px solid #ddd;
+  border-radius: 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.profile-cancel-btn:hover { border-color: #aaa; color: #555; }
+
+.logout-tab {
+  color: #e53935 !important;
+  margin-top: 8px;
+}
+
 @media (max-width: 480px) {
   .profile-container { padding: 10px; }
   .tab-content h3 { font-size: 18px; }
