@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { FaSearch, FaUser, FaShoppingCart, FaMapMarkerAlt, FaTimes } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../Styles/navbar.css";
+import veruLogo from "../assets/images/veru-logo-white.svg";
 import shop1 from "../assets/images/shop1.jpg";
 import shop2 from "../assets/images/shop2.jpg";
 import shop3 from "../assets/images/shop3.jpg";
@@ -19,9 +20,20 @@ import { useCart } from "../contexts/CartContext";
 const Navbar = () => {
   const [activeCategory, setActiveCategory] = useState("all");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const { categories, categoriesLoading } = useCatalog();
   const { cartCount } = useCart();
+
+  const handleSearch = useCallback(() => {
+    const q = searchQuery.trim();
+    if (!q) return;
+    navigate(`/site?search=${encodeURIComponent(q)}&category=all&subcategory=all`);
+  }, [searchQuery, navigate]);
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") handleSearch();
+  };
 
   const categoryImages = useMemo(
     () => ({
@@ -53,8 +65,7 @@ const Navbar = () => {
         const subcategories =
           category.fields?.map((field, idx) => ({
             name: field.name,
-            image:
-              fallbackImages[(index + idx) % fallbackImages.length] || image,
+            image: fallbackImages[(index + idx) % fallbackImages.length] || image,
             link: `/site?category=${encodeURIComponent(category.name)}&subcategory=${encodeURIComponent(field.name)}`,
           })) || [];
 
@@ -67,12 +78,7 @@ const Navbar = () => {
       }) || [];
 
     return [
-      {
-        name: "All",
-        image: shop1,
-        link: "/site?category=all&subcategory=all",
-        subcategories: [],
-      },
+      { name: "All", image: shop1, link: "/site?category=all&subcategory=all", subcategories: [] },
       ...dynamicCategories,
     ];
   }, [categories, categoryImages, fallbackImages]);
@@ -83,12 +89,23 @@ const Navbar = () => {
       <div className="navbar-top">
         <div className="navbar-left">
           <span className="menu-icon" onClick={() => setMenuOpen(!menuOpen)}>☰</span>
-          <span className="logo">wildBerries</span>
+          <Link to="/site" className="logo-link">
+            <img src={veruLogo} alt="Veru" className="veru-logo" />
+          </Link>
         </div>
 
         <div className="search-container">
-          <input type="text" placeholder="Search..." className="search-bar" />
-          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="search-bar"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
+          />
+          <button className="search-btn" onClick={handleSearch} aria-label="Search">
+            <FaSearch />
+          </button>
         </div>
 
         <div className="navbar-right">
@@ -96,7 +113,7 @@ const Navbar = () => {
             <FaMapMarkerAlt />
             <span className="icon-label">Location</span>
           </Link>
-          <Link to="/site/profile" className="icon-button"> {/* Changed to /site/profile */}
+          <Link to="/site/profile" className="icon-button">
             <FaUser />
             <span className="icon-label">Profile</span>
           </Link>
@@ -110,7 +127,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* ---------- BOTTOM ---------- */}
+      {/* ---------- CATEGORY BAR ---------- */}
       <div className="navbar-bottom">
         {categoriesLoading ? (
           <span className="nav-loading">Loading categories...</span>
@@ -120,10 +137,7 @@ const Navbar = () => {
               key={cat.name}
               to={cat.link}
               className={`nav-link ${activeCategory === cat.name.toLowerCase() ? "active" : ""}`}
-              onClick={() => {
-                setActiveCategory(cat.name.toLowerCase());
-                navigate(cat.link);
-              }}
+              onClick={() => setActiveCategory(cat.name.toLowerCase())}
             >
               {cat.name}
             </Link>
@@ -131,7 +145,7 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* ---------- Sidebar Menu ---------- */}
+      {/* ---------- SIDEBAR ---------- */}
       {menuOpen && (
         <div className="sidebar-menu">
           <button className="close-button" onClick={() => setMenuOpen(false)}>
@@ -142,10 +156,7 @@ const Navbar = () => {
               <Link
                 to={cat.link}
                 className={`sidebar-link ${activeCategory === cat.name.toLowerCase() ? "active" : ""}`}
-                onClick={() => {
-                  setActiveCategory(cat.name.toLowerCase());
-                  navigate(cat.link);
-                }}
+                onClick={() => { setActiveCategory(cat.name.toLowerCase()); setMenuOpen(false); }}
               >
                 <img src={cat.image} alt={cat.name} className="sidebar-image" />
                 <span className="sidebar-name">{cat.name}</span>
@@ -157,10 +168,7 @@ const Navbar = () => {
                       key={sub.name}
                       to={sub.link}
                       className="subcategory-link"
-                      onClick={() => {
-                        setActiveCategory(sub.name.toLowerCase());
-                        navigate(sub.link);
-                      }}
+                      onClick={() => { setActiveCategory(sub.name.toLowerCase()); setMenuOpen(false); }}
                     >
                       <img src={sub.image} alt={sub.name} className="subcategory-image" />
                       <span className="subcategory-name">{sub.name}</span>

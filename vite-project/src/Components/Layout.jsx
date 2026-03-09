@@ -4,9 +4,11 @@ import { Outlet } from "react-router-dom";
 
 function Layout() {
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", width: "100%", overflowX: "hidden" }}>
       <Navbar />
-      <Outlet />
+      <main style={{ flex: 1, width: "100%", overflowX: "hidden" }}>
+        <Outlet />
+      </main>
       <Footer />
     </div>
   );

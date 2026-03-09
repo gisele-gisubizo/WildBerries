@@ -47,12 +47,16 @@ const Home = () => {
     return () => clearInterval(interval);
   }, [images.length]);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const category = searchParams.get("category") || "all";
     const subcategory = searchParams.get("subcategory") || "all";
+    const search = searchParams.get("search") || "";
     setSelectedCategory(category);
     setSelectedSubcategory(subcategory);
+    setSearchQuery(search);
   }, [location.search]);
 
   useEffect(() => {
@@ -106,23 +110,36 @@ const Home = () => {
       const productCategory = product?.category?.name || "all";
       const productAttributes = product?.attributes || {};
 
+      // Category filter
       const categoryMatch =
         selectedCategory === "all" ||
         productCategory.toLowerCase() === selectedCategory.toLowerCase();
 
+      // Subcategory filter
       let subcategoryMatch = true;
       if (selectedSubcategory !== "all") {
         subcategoryMatch = Object.values(productAttributes)
           .flat()
-          .map((value) =>
-            typeof value === "string" ? value.toLowerCase() : value,
-          )
+          .map((v) => (typeof v === "string" ? v.toLowerCase() : v))
           .includes(selectedSubcategory.toLowerCase());
       }
 
-      return categoryMatch && subcategoryMatch;
+      // Search filter — matches name, category, seller, description
+      let searchMatch = true;
+      if (searchQuery.trim()) {
+        const q = searchQuery.trim().toLowerCase();
+        const nameMatch = product.name?.toLowerCase().includes(q);
+        const catMatch = productCategory.toLowerCase().includes(q);
+        const sellerMatch =
+          product.seller?.name?.toLowerCase().includes(q) ||
+          product.seller?.email?.toLowerCase().includes(q);
+        const descMatch = productAttributes.description?.toLowerCase().includes(q);
+        searchMatch = nameMatch || catMatch || sellerMatch || descMatch;
+      }
+
+      return categoryMatch && subcategoryMatch && searchMatch;
     });
-  }, [products, selectedCategory, selectedSubcategory]);
+  }, [products, selectedCategory, selectedSubcategory, searchQuery]);
 
   const getProductImage = (product) => {
     if (product?.images?.length) return product.images[0];
@@ -179,7 +196,9 @@ const Home = () => {
         {loadingProducts && <p>Loading products...</p>}
         {productsError && <p className="error-text">{productsError}</p>}
         {!loadingProducts && !productsError && filteredProducts.length === 0 && (
-          <p>No items found in this category.</p>
+          <p style={{ padding: "20px", color: "#888", fontSize: "15px" }}>
+            {searchQuery ? `No products found for "${searchQuery}"` : "No items found in this category."}
+          </p>
         )}
         {!loadingProducts &&
           !productsError &&

@@ -62,9 +62,12 @@ export const fetchProducts = async (params = {}) => {
 export const fetchProductById = async (productId) => {
   const response = await apiClient.get(`${PRODUCTS_PREFIX}/${productId}`);
   const payload = response.data;
+  // Backend returns { success: true, data: product }
+  const product = payload?.data ?? payload?.product ?? payload;
   return {
     success: payload?.success ?? true,
-    product: payload?.data ?? payload,
+    product,
+    data: product,
     raw: payload,
   };
 };
